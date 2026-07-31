@@ -1,0 +1,63 @@
+"use client";
+
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Clock, User2 } from "lucide-react";
+import { Container } from "@/components/ui/Container";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
+import { blogs } from "@/data/blogs";
+
+export function BlogSection() {
+  return (
+    <section id="blogs" className="py-10 lg:py-16">
+      <Container>
+        <SectionHeading eyebrow="Read & Explore" title="Travel Stories" />
+        <ResponsiveScroller gridClassName="lg:grid-cols-3 lg:gap-6">
+          {blogs.map((blog, i) => (
+            <motion.article
+              key={blog.id}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              whileHover={{ y: -4 }}
+              className="w-[82%] xs:w-[72%] sm:w-[56%] shrink-0 snap-start lg:w-full overflow-hidden rounded-3xl bg-surface shadow-soft border border-black/[0.04]"
+            >
+              <div className="relative h-48 w-full overflow-hidden">
+                <Image
+                  src={blog.image}
+                  alt={blog.title}
+                  fill
+                  sizes="(max-width: 768px) 70vw, 30vw"
+                  className="object-cover transition-transform duration-700 hover:scale-110"
+                />
+                <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold text-ink backdrop-blur">
+                  {blog.category}
+                </span>
+              </div>
+              <div className="p-5">
+                <h3 className="font-bold text-ink leading-snug line-clamp-2">
+                  {blog.title}
+                </h3>
+                <p className="mt-2 text-sm text-ink/55 line-clamp-2">
+                  {blog.excerpt}
+                </p>
+                <div className="mt-4 flex items-center justify-between text-xs text-ink/45">
+                  <span className="flex items-center gap-1">
+                    <User2 className="h-3.5 w-3.5" />
+                    {blog.author}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-3.5 w-3.5" />
+                    {blog.readTime}
+                  </span>
+                </div>
+              </div>
+            </motion.article>
+          ))}
+        </ResponsiveScroller>
+      </Container>
+    </section>
+  );
+}
