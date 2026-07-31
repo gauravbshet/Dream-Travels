@@ -3,11 +3,12 @@
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Marquee } from "@/components/ui/Marquee";
+import { Section } from "@/components/ui/Section";
 import { features } from "@/data/site";
 
 export function WhyChooseUs() {
   return (
-    <section id="about" className="py-10 lg:py-16">
+    <Section id="about">
       <Container>
         <SectionHeading
           eyebrow="Why Us"
@@ -19,7 +20,8 @@ export function WhyChooseUs() {
         {features.map((feature) => (
           <div
             key={feature.id}
-            className="flex w-64 sm:w-72 shrink-0 flex-col gap-3 rounded-2xl bg-surface p-6 shadow-soft border border-black/[0.04] transition-transform hover:-translate-y-1"
+            tabIndex={0}
+            className="flex w-64 sm:w-72 shrink-0 flex-col gap-3 rounded-2xl bg-surface p-6 shadow-soft border border-black/[0.04] transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           >
             <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent">
               <feature.icon className="h-6 w-6" />
@@ -31,6 +33,6 @@ export function WhyChooseUs() {
           </div>
         ))}
       </Marquee>
-    </section>
+    </Section>
   );
 }

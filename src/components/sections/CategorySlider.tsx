@@ -4,13 +4,15 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { categories } from "@/data/categories";
 import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { cn } from "@/lib/utils";
 
 export function CategorySlider() {
   const [active, setActive] = useState("nearby");
 
   return (
-    <section className="pt-6 pb-2 lg:py-10">
+    // Intentionally tighter top spacing under the hero — flush overrides default py
+    <Section flush className="pt-6 pb-2 lg:py-10">
       <Container>
         <div
           className={cn(
@@ -26,6 +28,10 @@ export function CategorySlider() {
               <motion.button
                 key={cat.id}
                 onClick={() => setActive(cat.id)}
+                // NOTE: Category selection is currently decorative — it highlights
+                // the active button visually but does not filter downstream content.
+                // aria-pressed reflects the toggle state for screen readers.
+                aria-pressed={isActive}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -56,6 +62,6 @@ export function CategorySlider() {
           })}
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

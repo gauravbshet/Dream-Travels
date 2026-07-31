@@ -8,6 +8,7 @@ import { MagneticButton } from "@/components/ui/MagneticButton";
 import { HeroSearch } from "./HeroSearch";
 import { HeroCarousel } from "./HeroCarousel";
 import { unsplash, IMG } from "@/data/images";
+import { heroBadge } from "@/data/site";
 
 export function Hero() {
   return (
@@ -40,14 +41,14 @@ export function Hero() {
                 className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-white/90 backdrop-blur"
               >
                 <Star className="h-3.5 w-3.5 fill-secondary text-secondary" />
-                Rated 4.9 by 75,000+ travellers
+                Rated {heroBadge.rating} by {heroBadge.reviewCountLabel} travellers
               </motion.span>
 
               <motion.h1
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="text-balance mt-6 text-5xl xl:text-6xl font-bold leading-[1.05] text-white tracking-tight"
+                className="font-display text-balance mt-6 text-5xl xl:text-6xl font-bold leading-[1.05] text-white tracking-tight"
               >
                 Your Dream Trip Starts With One Search
               </motion.h1>
@@ -107,8 +108,8 @@ export function Hero() {
                   <TrendingUp className="h-5 w-5" />
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-ink">250+ Destinations</p>
-                  <p className="text-xs text-ink/60">Across 40 countries</p>
+                  <p className="text-sm font-bold text-ink">{heroBadge.destinations}+ Destinations</p>
+                  <p className="text-xs text-ink/60">Across {heroBadge.countries} countries</p>
                 </div>
               </motion.div>
             </div>

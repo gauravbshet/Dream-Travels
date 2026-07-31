@@ -5,21 +5,24 @@ import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Section } from "@/components/ui/Section";
+import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
 import { seasonalCollections } from "@/data/destinations";
 
 export function SeasonalCollections() {
   return (
-    <section className="py-10 lg:py-16">
+    <Section>
       <Container>
         <SectionHeading eyebrow="Curated Collections" title="Seasonal Collections" />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
           {seasonalCollections.map((c, i) => (
             <motion.div
               key={c.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.45, delay: (i % 6) * 0.05 }}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              transition={fadeUpDelay(i % 6)}
               whileHover={{ y: -4 }}
               className="group relative h-36 sm:h-44 lg:h-48 overflow-hidden rounded-2xl shadow-soft"
             >
@@ -39,6 +42,6 @@ export function SeasonalCollections() {
           ))}
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

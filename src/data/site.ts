@@ -101,3 +101,20 @@ export const stats: Stat[] = [
   { id: "rating", label: "Google Rating", value: 4.9, suffix: "★" },
   { id: "satisfaction", label: "Customer Satisfaction", value: 99, suffix: "%" },
 ];
+
+/** Social-proof numbers used in Hero badge and JSON-LD aggregateRating.
+ *  Edit here — Hero.tsx and structured data both derive values from this object.
+ */
+export const heroBadge = {
+  /** Star rating displayed in the Hero badge and JSON-LD aggregateRating. */
+  rating: 4.9,
+  /** Human-readable traveller count for the Hero badge (e.g. "75,000+"). */
+  reviewCountLabel: "75,000+",
+  /** Numeric review count for JSON-LD aggregateRating.reviewCount. */
+  reviewCount: 75000,
+  /** Number of curated destinations, shown in the floating stat card. */
+  destinations: 250,
+  /** Number of countries covered, shown in the floating stat card. */
+  countries: 40,
+} as const;
+

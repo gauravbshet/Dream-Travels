@@ -1,16 +1,18 @@
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Marquee } from "@/components/ui/Marquee";
+import { Section } from "@/components/ui/Section";
 import { DestinationCard } from "@/components/cards/DestinationCard";
 import { recommendedDestinations } from "@/data/destinations";
 
 export function RecommendedDestinations() {
   return (
-    <section id="destinations" className="py-10 lg:py-16">
+    <Section id="destinations">
       <Container>
         <SectionHeading
           eyebrow="Handpicked"
-          title="Recommended Destinations ❤️"
+          title="Recommended Destinations"
+          emoji="❤️"
           description="Premium destinations our travellers keep coming back to."
         />
       </Container>
@@ -24,6 +26,6 @@ export function RecommendedDestinations() {
           />
         ))}
       </Marquee>
-    </section>
+    </Section>
   );
 }

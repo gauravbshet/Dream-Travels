@@ -6,12 +6,15 @@ import { cn } from "@/lib/utils";
 export function SectionHeading({
   eyebrow,
   title,
+  emoji,
   description,
   align = "left",
   className,
 }: {
   eyebrow?: string;
   title: string;
+  /** Decorative emoji rendered after the title, hidden from screen readers. */
+  emoji?: string;
   description?: string;
   align?: "left" | "center";
   className?: string;
@@ -33,8 +36,13 @@ export function SectionHeading({
           {eyebrow}
         </span>
       )}
-      <h2 className="text-balance mt-1 text-2xl sm:text-3xl lg:text-4xl xl:text-[2.75rem] font-bold text-ink tracking-tight">
+      <h2 className="font-display text-balance mt-1 text-2xl sm:text-3xl lg:text-4xl xl:text-[2.75rem] font-bold text-ink tracking-tight">
         {title}
+        {emoji && (
+          <span aria-hidden="true" className="ml-2">
+            {emoji}
+          </span>
+        )}
       </h2>
       {description && (
         <p className="mt-3 text-ink/60 text-base lg:text-lg max-w-2xl">

@@ -6,21 +6,24 @@ import { CalendarDays, MapPin } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
+import { Section } from "@/components/ui/Section";
+import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
 import { events } from "@/data/events";
 
 export function EventsSection() {
   return (
-    <section className="py-10 lg:py-16">
+    <Section>
       <Container>
         <SectionHeading eyebrow="Don't Miss Out" title="Upcoming Events" />
         <ResponsiveScroller gridClassName="lg:grid-cols-4 xl:grid-cols-5 lg:gap-5">
           {events.map((event, i) => (
             <motion.article
               key={event.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.45, delay: i * 0.06 }}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              transition={fadeUpDelay(i)}
               className="w-[70%] xs:w-[60%] sm:w-[42%] shrink-0 snap-start lg:w-full overflow-hidden rounded-2xl bg-surface shadow-soft border border-black/[0.04]"
             >
               <div className="relative h-32 w-full">
@@ -49,6 +52,6 @@ export function EventsSection() {
           ))}
         </ResponsiveScroller>
       </Container>
-    </section>
+    </Section>
   );
 }

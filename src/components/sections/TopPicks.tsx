@@ -1,16 +1,18 @@
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
+import { Section } from "@/components/ui/Section";
 import { PackageCard } from "@/components/cards/PackageCard";
 import { topPicks } from "@/data/packages";
 
 export function TopPicks() {
   return (
-    <section className="py-10 lg:py-16">
+    <Section>
       <Container>
         <SectionHeading
           eyebrow="Curated by Us"
-          title="Top Picks by Dream Travels ⭐"
+          title="Top Picks by Dream Travels"
+          emoji="⭐"
           description="Our editorial team's favorite journeys this season."
         />
         <ResponsiveScroller gridClassName="lg:grid-cols-4 lg:gap-6">
@@ -23,6 +25,6 @@ export function TopPicks() {
           ))}
         </ResponsiveScroller>
       </Container>
-    </section>
+    </Section>
   );
 }

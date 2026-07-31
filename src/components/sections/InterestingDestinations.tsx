@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Marquee } from "@/components/ui/Marquee";
+import { Section } from "@/components/ui/Section";
 import { formatPrice, cn } from "@/lib/utils";
 import { interestingDestinations } from "@/data/destinations";
 
@@ -40,11 +41,12 @@ function DestTile({ d }: { d: (typeof interestingDestinations)[number] }) {
 
 export function InterestingDestinations() {
   return (
-    <section className="py-10 lg:py-16">
+    <Section>
       <Container>
         <SectionHeading
           eyebrow="Explore More"
-          title="Interesting Destinations 📍"
+          title="Interesting Destinations"
+          emoji="📍"
           description="A curated mosaic of places waiting to be discovered."
         />
       </Container>
@@ -60,6 +62,6 @@ export function InterestingDestinations() {
           ))}
         </Marquee>
       </div>
-    </section>
+    </Section>
   );
 }

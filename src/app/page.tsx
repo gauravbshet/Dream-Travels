@@ -16,10 +16,33 @@ import { PopularExperiences } from "@/components/sections/PopularExperiences";
 import { SeasonalCollections } from "@/components/sections/SeasonalCollections";
 import { BlogSection } from "@/components/sections/BlogSection";
 import { EventsSection } from "@/components/sections/EventsSection";
+import { heroBadge } from "@/data/site";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dreamtravels.com";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TravelAgency",
+  name: "Dream Travels",
+  url: siteUrl,
+  description:
+    "Dream Travels is a premium travel booking platform for curated trips, dream destinations, and unforgettable experiences across the globe.",
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: heroBadge.rating,
+    reviewCount: heroBadge.reviewCount,
+    bestRating: 5,
+    worstRating: 1,
+  },
+};
 
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       <main className="flex-1">
         <Hero />

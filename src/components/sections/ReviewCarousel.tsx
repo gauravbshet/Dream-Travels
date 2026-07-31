@@ -6,11 +6,13 @@ import { Star, Quote } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
+import { Section } from "@/components/ui/Section";
+import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
 import { reviews } from "@/data/reviews";
 
 export function ReviewCarousel() {
   return (
-    <section className="py-10 lg:py-16">
+    <Section>
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeading
@@ -35,10 +37,11 @@ export function ReviewCarousel() {
           {reviews.map((review, i) => (
             <motion.article
               key={review.id}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              transition={fadeUpDelay(i)}
               className="w-[82%] xs:w-[72%] sm:w-[56%] shrink-0 snap-start lg:w-full flex flex-col rounded-3xl bg-surface p-6 shadow-soft border border-black/[0.04]"
             >
               <Quote className="h-7 w-7 text-primary/25" />
@@ -63,6 +66,6 @@ export function ReviewCarousel() {
           ))}
         </ResponsiveScroller>
       </Container>
-    </section>
+    </Section>
   );
 }

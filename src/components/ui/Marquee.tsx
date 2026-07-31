@@ -31,6 +31,10 @@ export function Marquee({
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}
       onTouchEnd={() => setPaused(false)}
+      // Pause when any child card receives keyboard focus so keyboard users
+      // can read content without it scrolling away.
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
     >
       <div
         className={cn("marquee-track flex w-max", gap)}

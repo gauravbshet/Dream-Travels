@@ -20,7 +20,8 @@
   --color-accent: var(--accent);
   --color-surface: var(--surface);
   --color-border: var(--border);
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-geist);
+  --font-display: var(--font-fraunces);
 
   --breakpoint-xs: 400px;
   --breakpoint-sm: 640px;

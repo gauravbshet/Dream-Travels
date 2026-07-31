@@ -1,12 +1,13 @@
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Marquee } from "@/components/ui/Marquee";
+import { Section } from "@/components/ui/Section";
 import { PackageCard } from "@/components/cards/PackageCard";
 import { packages } from "@/data/packages";
 
 export function TrendingTrips() {
   return (
-    <section id="community" className="py-10 lg:py-16">
+    <Section id="community">
       <Container>
         <div className="flex flex-wrap items-center gap-3 mb-1">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
@@ -19,7 +20,8 @@ export function TrendingTrips() {
         </div>
         <SectionHeading
           eyebrow="Community Favorites"
-          title="Trending Community Trips 🔥"
+          title="Trending Community Trips"
+          emoji="🔥"
           description="Real trips booked and loved by fellow travellers right now."
         />
       </Container>
@@ -32,6 +34,6 @@ export function TrendingTrips() {
           />
         ))}
       </Marquee>
-    </section>
+    </Section>
   );
 }

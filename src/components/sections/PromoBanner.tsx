@@ -1,12 +1,16 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { MagneticButton } from "@/components/ui/MagneticButton";
+import { Section } from "@/components/ui/Section";
+import { cn } from "@/lib/utils";
 import { promos } from "@/data/promos";
+
+const MotionLink = motion.create(Link);
 
 function PromoCard({ promo }: { promo: (typeof promos)[number] }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -32,9 +36,17 @@ function PromoCard({ promo }: { promo: (typeof promos)[number] }) {
       <div className="relative z-10 flex h-full flex-col justify-end p-6 lg:p-8">
         <h3 className="text-xl lg:text-2xl font-bold text-white">{promo.title}</h3>
         <p className="mt-1.5 max-w-sm text-sm text-white/80">{promo.description}</p>
-        <MagneticButton variant="secondary" className="mt-4 w-fit !py-2.5">
+        <MotionLink
+          href="#experiences"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }}
+          className={cn(
+            "mt-4 w-fit inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold transition-colors",
+            "bg-white text-ink shadow-soft hover:bg-ink/5"
+          )}
+        >
           Customize Your Trip
-        </MagneticButton>
+        </MotionLink>
       </div>
     </motion.div>
   );
@@ -42,15 +54,15 @@ function PromoCard({ promo }: { promo: (typeof promos)[number] }) {
 
 export function PromoBanner() {
   return (
-    <section id="experiences" className="py-10 lg:py-16">
+    <Section id="experiences">
       <Container>
-        <SectionHeading eyebrow="Just For You" title="New Attractions ✨" />
+        <SectionHeading eyebrow="Just For You" title="New Attractions" emoji="✨" />
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
           {promos.map((promo) => (
             <PromoCard key={promo.id} promo={promo} />
           ))}
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }
