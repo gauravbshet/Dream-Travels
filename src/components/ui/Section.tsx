@@ -17,7 +17,7 @@ export function Section({
     <section
       id={id}
       className={cn(
-        !flush && "py-10 lg:py-16",
+        !flush && "py-14 lg:py-24",
         tone === "dark" && "bg-ink relative overflow-hidden",
         className
       )}

@@ -1,27 +1,51 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FAF7F2;
-  --ink: #1a1a1a;
-  --primary: #568203;
-  --primary-dark: #476417;
-  --secondary: #f5a623;
-  --accent: #00c896;
+  /* Nature / forest design tokens */
+  --forest-900: #163a2b;
+  --forest-800: #1f4a35;
+  --forest-700: #2f633f;
+  --leaf-600: #4f7d57;
+  --leaf-500: #6f965f;
+  --sage-200: #dce8d3;
+  --sage-100: #edf4e8;
+  --sand: #c8a96b;
+  --cream: #f7f7f2;
+
+  --background: #f9faf7;
+  --ink: #171a17;
+  --text-primary: #171a17;
+  --text-secondary: #686d68;
+  --primary: #24543d;
+  --primary-dark: #163a2b;
+  --secondary: var(--sand);
+  --accent: var(--leaf-600);
   --surface: #ffffff;
-  --border: #ececec;
+  --border: #e7e9e4;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-ink: var(--ink);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-secondary: var(--secondary);
   --color-accent: var(--accent);
   --color-surface: var(--surface);
   --color-border: var(--border);
-  --font-sans: var(--font-geist);
-  --font-display: var(--font-fraunces);
+  --color-forest-900: var(--forest-900);
+  --color-forest-800: var(--forest-800);
+  --color-forest-700: var(--forest-700);
+  --color-leaf-600: var(--leaf-600);
+  --color-leaf-500: var(--leaf-500);
+  --color-sage-200: var(--sage-200);
+  --color-sage-100: var(--sage-100);
+  --color-sand: var(--sand);
+  --color-cream: var(--cream);
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-manrope);
 
   --breakpoint-xs: 400px;
   --breakpoint-sm: 640px;
@@ -33,9 +57,9 @@
   --breakpoint-4xl: 1920px;
   --breakpoint-5xl: 2560px;
 
-  --shadow-soft: 0 8px 30px rgba(26, 26, 26, 0.06);
-  --shadow-card: 0 12px 40px rgba(26, 26, 26, 0.08);
-  --shadow-float: 0 20px 60px rgba(255, 122, 0, 0.18);
+  --shadow-soft: 0 8px 24px rgba(20, 40, 25, 0.04);
+  --shadow-card: 0 10px 35px rgba(20, 40, 25, 0.08);
+  --shadow-float: 0 10px 35px rgba(20, 40, 25, 0.08);
 }
 
 html {
@@ -105,8 +129,8 @@ body {
 
 .input {
   width: 100%;
-  border-radius: 1.25rem;
-  border: 1px solid rgba(26, 26, 26, 0.08);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
   background: var(--surface);
   padding: 0.75rem 1rem;
   font-size: 0.875rem;

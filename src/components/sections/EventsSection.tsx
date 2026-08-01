@@ -25,7 +25,7 @@ export function EventsSection({ events = staticEvents }: { events?: TravelEvent[
               whileInView="show"
               viewport={viewportOnce}
               transition={fadeUpDelay(i)}
-              className="w-[70%] xs:w-[60%] sm:w-[42%] shrink-0 snap-start lg:w-full overflow-hidden rounded-2xl bg-surface shadow-soft border border-black/[0.04]"
+              className="w-[70%] xs:w-[60%] sm:w-[42%] shrink-0 snap-start lg:w-full overflow-hidden rounded-[18px] bg-white border border-border"
             >
               <div className="relative h-32 w-full">
                 <Image

@@ -55,9 +55,9 @@ export default async function DashboardPage() {
                 />
 
                 <section className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
-                    <div className="rounded-[32px] border border-black/[0.08] bg-white p-8 shadow-soft">
+                    <div className="rounded-[24px] border border-border bg-white p-8">
                         <h3 className="text-xl font-semibold text-ink">Profile</h3>
-                        <div className="mt-6 space-y-3 text-ink/80">
+                        <div className="mt-6 space-y-3 text-ink/85">
                             <p>
                                 <span className="font-semibold text-ink">Name:</span>{" "}
                                 {user.user_metadata?.full_name ?? "—"}
@@ -73,9 +73,9 @@ export default async function DashboardPage() {
                         </div>
                     </div>
 
-                    <div className="rounded-[32px] border border-black/[0.08] bg-white p-8 shadow-soft">
+                    <div className="rounded-[24px] border border-border bg-white p-8">
                         <h3 className="text-xl font-semibold text-ink">Wishlist</h3>
-                        <p className="mt-2 text-sm text-ink/60">
+                        <p className="mt-2 text-sm text-text-secondary">
                             Review the packages you saved and open the details page to book.
                         </p>
                         <div className="mt-6 space-y-4">
@@ -85,20 +85,20 @@ export default async function DashboardPage() {
                                 wishlist.map((item: any) => (
                                     <div
                                         key={item.id}
-                                        className="rounded-3xl border border-black/[0.05] bg-surface p-4"
+                                        className="rounded-[16px] border border-border bg-sage-100/60 p-4"
                                     >
                                         <div className="flex items-start justify-between gap-4">
                                             <div>
-                                                <p className="text-sm text-ink/50">Saved package</p>
+                                                <p className="text-sm text-text-secondary">Saved package</p>
                                                 <h4 className="mt-1 text-lg font-semibold text-ink">
                                                     {item.packages?.title}
                                                 </h4>
-                                                <p className="mt-1 text-sm text-ink/60">
+                                                <p className="mt-1 text-sm text-text-secondary">
                                                     {item.packages?.duration}
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-sm text-ink/45">Price</p>
+                                                <p className="text-sm text-text-secondary">Price</p>
                                                 <p className="mt-1 text-lg font-semibold text-ink">
                                                     {formatPrice(item.packages?.price ?? 0)}
                                                 </p>
@@ -113,7 +113,7 @@ export default async function DashboardPage() {
                                             </Link>
                                             <button
                                                 type="button"
-                                                className="rounded-full border border-ink/10 bg-white px-4 py-2 text-sm text-ink transition hover:bg-ink/5"
+                                                className="rounded-[10px] border border-border bg-white px-4 py-2 text-sm text-ink transition hover:bg-sage-100"
                                             >
                                                 Remove
                                             </button>

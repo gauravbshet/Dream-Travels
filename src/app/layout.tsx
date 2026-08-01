@@ -1,21 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Geist } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import AuthNavbar from "@/components/layout/AuthNavbar";
 import { FooterGuard } from "@/components/layout/FooterGuard";
 import { BottomNav } from "@/components/layout/BottomNav";
 
-const geist = Geist({
-  variable: "--font-geist",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
   display: "swap",
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  display: "swap",
-  axes: ["opsz"], // optical sizing — sharper, higher-contrast large headlines
 });
 
 export const metadata: Metadata = {
@@ -59,7 +52,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#FAF7F2",
+  themeColor: "#F9FAF7",
 };
 
 export default function RootLayout({
@@ -68,10 +61,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geist.variable} ${fraunces.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${manrope.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-ink">
         <AuthNavbar />
         {children}

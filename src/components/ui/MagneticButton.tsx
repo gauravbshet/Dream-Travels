@@ -40,13 +40,13 @@ export function MagneticButton({
       whileTap={{ scale: 0.96 }}
       onClick={onClick}
       className={cn(
-        "relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors overflow-hidden",
+        "relative inline-flex items-center justify-center gap-2 rounded-[12px] px-5 py-3.5 text-sm font-semibold transition-colors overflow-hidden",
         variant === "primary" &&
-          "bg-primary text-white shadow-float hover:bg-primary-dark",
+          "bg-primary text-white hover:bg-primary-dark",
         variant === "secondary" &&
-          "bg-white text-ink shadow-soft hover:bg-ink/5",
+          "bg-white text-ink border border-border hover:bg-sage-100",
         variant === "ghost" &&
-          "bg-transparent text-ink border border-ink/15 hover:bg-ink/5",
+          "bg-transparent text-ink border border-border hover:bg-ink/5",
         className
       )}
       {...props}

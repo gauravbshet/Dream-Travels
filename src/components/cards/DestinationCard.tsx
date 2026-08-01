@@ -21,30 +21,31 @@ export function DestinationCard({
   return (
     <Link href={href} className={cn("group block", className)}>
       <motion.article
-        initial={{ opacity: 0, y: 24, rotate: tilt }}
-        whileInView={{ opacity: 1, y: 0, rotate: tilt }}
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.5 }}
-        whileHover={{ y: -8, rotate: 0, scale: 1.02 }}
-        className="group relative overflow-hidden rounded-3xl shadow-card"
+        whileHover={{ y: -4 }}
+        className="rounded-[20px] border border-border bg-white overflow-hidden transition-shadow duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
       >
-        <div className="relative h-64 w-full">
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[18px] m-1.5">
           <Image
             src={destination.image}
             alt={destination.name}
             fill
             sizes="(max-width: 768px) 60vw, 22vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
         </div>
-        <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-          <h3 className="text-lg font-bold">{destination.name}</h3>
-          <div className="mt-1 flex items-center justify-between">
-            <span className="text-sm text-white/85">
+        <div className="px-4 pb-4 pt-2.5">
+          <h3 className="text-lg font-semibold text-ink tracking-[-0.01em]">
+            {destination.name}
+          </h3>
+          <div className="mt-1.5 flex items-center justify-between">
+            <span className="text-sm text-text-secondary">
               From {formatPrice(destination.price)}
             </span>
-            <Rating value={destination.rating} light />
+            <Rating value={destination.rating} />
           </div>
         </div>
       </motion.article>

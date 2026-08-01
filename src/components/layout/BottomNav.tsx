@@ -17,7 +17,7 @@ export function BottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 lg:hidden px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-      <div className="mx-auto flex max-w-md items-center justify-between rounded-[28px] bg-white/90 px-2 py-2 shadow-[0_10px_40px_rgba(26,26,26,0.14)] backdrop-blur-xl border border-white/60">
+      <div className="mx-auto flex max-w-md items-center justify-between rounded-[20px] bg-white/95 px-2 py-2 shadow-[0_10px_35px_rgba(20,40,25,0.10)] backdrop-blur-xl border border-border">
         {items.map((item) => {
           const isActive = active === item.id;
           const Icon = item.icon;
@@ -30,7 +30,7 @@ export function BottomNav() {
               {isActive && (
                 <motion.span
                   layoutId="bottom-nav-pill"
-                  className="absolute inset-0 rounded-2xl bg-primary/10"
+                  className="absolute inset-0 rounded-[14px] bg-sage-100"
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}

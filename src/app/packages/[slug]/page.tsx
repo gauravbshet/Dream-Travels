@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { createServerSupabaseClient } from "@/lib/supabase.server";
 import { formatPrice } from "@/lib/utils";
-import { Heart, Clock, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { WishlistButton } from "@/components/ui/WishlistButton";
 
 async function getPackageData(slug: string) {
@@ -52,7 +52,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
 
                 <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
                     <div className="space-y-8">
-                        <div className="overflow-hidden rounded-[32px] bg-white shadow-soft">
+                        <div className="overflow-hidden rounded-[24px] bg-white border border-border">
                             <div className="relative h-[460px] w-full">
                                 <Image
                                     src={data.pkg.image}
@@ -64,14 +64,14 @@ export default async function PackagePage({ params }: { params: { slug: string }
                             </div>
                         </div>
 
-                        <div className="rounded-[32px] border border-black/[0.08] bg-white p-8 shadow-soft">
+                        <div className="rounded-[24px] border border-border bg-white p-8">
                             <div className="grid gap-4 sm:grid-cols-2">
-                                <div className="rounded-3xl bg-surface p-5">
-                                    <p className="text-sm text-ink/50">Duration</p>
+                                <div className="rounded-[16px] bg-sage-100/60 p-5">
+                                    <p className="text-sm text-text-secondary">Duration</p>
                                     <p className="mt-2 text-lg font-semibold text-ink">{data.pkg.duration}</p>
                                 </div>
-                                <div className="rounded-3xl bg-surface p-5">
-                                    <p className="text-sm text-ink/50">Price</p>
+                                <div className="rounded-[16px] bg-sage-100/60 p-5">
+                                    <p className="text-sm text-text-secondary">Price</p>
                                     <p className="mt-2 text-lg font-semibold text-ink">
                                         {formatPrice(data.pkg.price)}
                                     </p>
@@ -80,20 +80,20 @@ export default async function PackagePage({ params }: { params: { slug: string }
 
                             <div className="mt-8">
                                 <h3 className="text-xl font-semibold text-ink">What&apos;s included</h3>
-                                <p className="mt-3 text-sm text-ink/60">A carefully designed trip with all essentials set for your journey.</p>
+                                <p className="mt-3 text-sm text-text-secondary">A carefully designed trip with all essentials set for your journey.</p>
                                 <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-                                    <li className="rounded-3xl border border-black/[0.05] bg-surface p-4 text-sm text-ink/70">Accommodation</li>
-                                    <li className="rounded-3xl border border-black/[0.05] bg-surface p-4 text-sm text-ink/70">Transfers</li>
-                                    <li className="rounded-3xl border border-black/[0.05] bg-surface p-4 text-sm text-ink/70">Guided tours</li>
-                                    <li className="rounded-3xl border border-black/[0.05] bg-surface p-4 text-sm text-ink/70">Meals included</li>
+                                    <li className="rounded-[16px] border border-border bg-white p-4 text-sm text-ink/80">Accommodation</li>
+                                    <li className="rounded-[16px] border border-border bg-white p-4 text-sm text-ink/80">Transfers</li>
+                                    <li className="rounded-[16px] border border-border bg-white p-4 text-sm text-ink/80">Guided tours</li>
+                                    <li className="rounded-[16px] border border-border bg-white p-4 text-sm text-ink/80">Meals included</li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div className="rounded-[32px] border border-black/[0.08] bg-white p-8 shadow-soft">
+                        <div className="rounded-[24px] border border-border bg-white p-8">
                             <div className="flex items-center justify-between gap-4">
                                 <div>
-                                    <p className="text-sm text-ink/50">Trip itinerary</p>
+                                    <p className="text-sm text-text-secondary">Trip itinerary</p>
                                     <h2 className="mt-2 text-2xl font-semibold text-ink">Day-by-day plan</h2>
                                 </div>
                                 <div className="flex items-center gap-2 text-ink/60">
@@ -104,20 +104,20 @@ export default async function PackagePage({ params }: { params: { slug: string }
 
                             <div className="mt-8 space-y-4">
                                 {data.itinerary.length === 0 ? (
-                                    <p className="text-sm text-ink/60">Itinerary details are coming soon.</p>
+                                    <p className="text-sm text-text-secondary">Itinerary details are coming soon.</p>
                                 ) : (
                                     data.itinerary.map((item) => (
-                                        <div key={item.day} className="rounded-3xl border border-black/[0.05] bg-surface p-5">
+                                        <div key={item.day} className="rounded-[16px] border border-border bg-white p-5">
                                             <div className="flex items-center justify-between gap-4">
                                                 <div>
                                                     <p className="text-sm font-semibold text-ink">Day {item.day}</p>
                                                     <h3 className="mt-2 text-lg font-semibold text-ink">{item.title}</h3>
                                                 </div>
-                                                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                                                <span className="rounded-full bg-sage-100 px-3 py-1 text-xs font-semibold text-primary">
                                                     {data.pkg.duration}
                                                 </span>
                                             </div>
-                                            <p className="mt-3 text-sm text-ink/65">{item.description}</p>
+                                            <p className="mt-3 text-sm text-ink/75">{item.description}</p>
                                         </div>
                                     ))
                                 )}
@@ -126,10 +126,10 @@ export default async function PackagePage({ params }: { params: { slug: string }
                     </div>
 
                     <aside className="space-y-6">
-                        <div className="rounded-[32px] border border-black/[0.08] bg-white p-8 shadow-soft">
+                        <div className="rounded-[24px] border border-border bg-white p-8">
                             <div className="flex items-center justify-between gap-4">
                                 <div>
-                                    <p className="text-sm text-ink/50">Booking</p>
+                                    <p className="text-sm text-text-secondary">Booking</p>
                                     <h3 className="mt-2 text-lg font-semibold text-ink">Ready to book?</h3>
                                 </div>
                                 <WishlistButton />
@@ -139,12 +139,12 @@ export default async function PackagePage({ params }: { params: { slug: string }
                                 href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ""}?text=${encodeURIComponent(
                                     `Hello! I would like to inquire about booking *${data.pkg.title}* (${data.pkg.duration}). Price: $${data.pkg.price}. Please share availability.`
                                 )}`}
-                                className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
+                                className="mt-8 inline-flex w-full items-center justify-center rounded-[12px] bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
                             >
                                 Contact on WhatsApp
                             </a>
 
-                            <div className="mt-6 rounded-3xl bg-surface p-5 text-sm text-ink/70">
+                            <div className="mt-6 rounded-[16px] bg-sage-100/60 p-5 text-sm text-ink/70">
                                 <p>
                                     <strong>Pickup:</strong> {data.pkg.pickup}
                                 </p>
@@ -154,10 +154,10 @@ export default async function PackagePage({ params }: { params: { slug: string }
                             </div>
                         </div>
 
-                        <div className="rounded-[32px] border border-black/[0.08] bg-surface p-8 shadow-soft">
+                        <div className="rounded-[24px] border border-border bg-white p-8">
                             <h3 className="text-lg font-semibold text-ink">Related packages</h3>
                             <div className="mt-5 space-y-4">
-                                <Link href="/packages" className="block rounded-3xl border border-black/[0.05] bg-white p-4 text-sm text-primary transition hover:bg-primary/5">
+                                <Link href="/packages" className="block rounded-[16px] border border-border bg-white p-4 text-sm text-primary transition hover:bg-sage-100">
                                     View all packages
                                 </Link>
                             </div>

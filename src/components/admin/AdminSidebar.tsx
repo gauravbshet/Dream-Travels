@@ -52,16 +52,16 @@ export function AdminSidebar({
   const initial = userEmail?.[0]?.toUpperCase() ?? "A";
 
   return (
-    <aside className="flex w-full shrink-0 flex-col justify-between border-black/[0.06] bg-white px-4 py-6 lg:h-full lg:w-64 lg:overflow-y-auto lg:border-r">
+    <aside className="flex w-full shrink-0 flex-col justify-between border-border bg-white px-4 py-6 lg:h-full lg:w-64 lg:overflow-y-auto lg:border-r">
       <div>
         <div className="flex items-center gap-2 px-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white font-bold text-lg">
+          <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary text-white font-semibold text-base">
             D
           </span>
-          <span className="font-bold text-lg tracking-tight text-ink">
+          <span className="font-semibold text-lg tracking-[-0.01em] text-ink">
             Dream<span className="text-primary">Travels</span>
           </span>
-          <span className="ml-1 rounded-full bg-ink/5 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-ink/50">
+          <span className="ml-1 rounded-full bg-sage-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-text-secondary">
             Admin
           </span>
         </div>
@@ -76,10 +76,10 @@ export function AdminSidebar({
                 type="button"
                 onClick={() => onChange(item.id)}
                 className={cn(
-                  "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-colors",
+                  "flex items-center gap-3 rounded-[12px] px-4 py-3 text-sm font-semibold transition-colors",
                   isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-ink/60 hover:bg-ink/5 hover:text-ink"
+                    ? "bg-sage-100 text-primary"
+                    : "text-text-secondary hover:bg-sage-100/60 hover:text-ink"
                 )}
               >
                 <Icon className="h-[18px] w-[18px]" />
@@ -90,8 +90,8 @@ export function AdminSidebar({
         </nav>
       </div>
 
-      <div className="mt-8 flex items-center gap-3 border-t border-black/[0.06] px-2 pt-6">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary">
+      <div className="mt-8 flex items-center gap-3 border-t border-border px-2 pt-6">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage-100 text-sm font-semibold text-primary">
           {initial}
         </span>
         <div className="min-w-0 flex-1">
@@ -99,7 +99,7 @@ export function AdminSidebar({
           <button
             type="button"
             onClick={handleLogout}
-            className="flex items-center gap-1.5 text-xs font-medium text-ink/50 hover:text-red-600"
+            className="flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-red-600"
           >
             <LogOut className="h-3.5 w-3.5" /> Log out
           </button>

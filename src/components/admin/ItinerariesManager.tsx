@@ -147,7 +147,7 @@ export function ItinerariesManager() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-xl font-semibold text-ink">Itineraries</h3>
-          <p className="mt-1 text-sm text-ink/60">
+          <p className="mt-1 text-sm text-text-secondary">
             Add day-by-day itinerary entries linked to a package.
           </p>
         </div>
@@ -167,7 +167,7 @@ export function ItinerariesManager() {
           <button
             type="button"
             onClick={openCreateForm}
-            className="flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
+            className="flex items-center gap-2 rounded-[12px] bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
           >
             <Plus className="h-4 w-4" /> New day
           </button>
@@ -177,7 +177,7 @@ export function ItinerariesManager() {
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="mt-6 rounded-3xl border border-black/[0.08] bg-surface p-6"
+          className="mt-6 rounded-[18px] border border-border bg-white p-6"
         >
           <div className="flex items-center justify-between">
             <h4 className="font-semibold text-ink">
@@ -186,7 +186,7 @@ export function ItinerariesManager() {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="text-ink/50 hover:text-ink"
+              className="text-text-secondary hover:text-ink"
               aria-label="Close form"
             >
               <X className="h-5 w-5" />
@@ -236,17 +236,17 @@ export function ItinerariesManager() {
           <button
             type="submit"
             disabled={saving}
-            className="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
+            className="mt-6 rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
           >
             {saving ? "Saving..." : editingId ? "Save changes" : "Create itinerary item"}
           </button>
         </form>
       )}
 
-      <div className="mt-6 overflow-x-auto rounded-3xl border border-black/[0.06] bg-white">
+      <div className="mt-6 overflow-x-auto rounded-[18px] border border-border bg-white">
         <table className="w-full min-w-[640px] text-left text-sm">
           <thead>
-            <tr className="border-b border-black/[0.06] text-xs font-semibold uppercase tracking-wide text-ink/40">
+            <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-text-secondary">
               <th className="px-5 py-4">Day</th>
               <th className="px-5 py-4">Title</th>
               <th className="px-5 py-4">Package</th>
@@ -256,28 +256,28 @@ export function ItinerariesManager() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={4} className="px-5 py-6 text-ink/60">
+                <td colSpan={4} className="px-5 py-6 text-text-secondary">
                   Loading itineraries...
                 </td>
               </tr>
             ) : visibleItineraries.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-5 py-6 text-ink/60">
+                <td colSpan={4} className="px-5 py-6 text-text-secondary">
                   No itinerary items yet.
                 </td>
               </tr>
             ) : (
               visibleItineraries.map((item) => (
-                <tr key={item.id} className="border-b border-black/[0.04] last:border-0">
+                <tr key={item.id} className="border-b border-border last:border-0">
                   <td className="px-5 py-4 font-semibold text-primary">Day {item.day}</td>
                   <td className="px-5 py-4 font-semibold text-ink">{item.title}</td>
-                  <td className="px-5 py-4 text-ink/60">{packageTitle(item.package_id)}</td>
+                  <td className="px-5 py-4 text-ink/80">{packageTitle(item.package_id)}</td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         type="button"
                         onClick={() => openEditForm(item)}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-ink/5 text-ink hover:bg-ink/10"
+                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-sage-100 text-ink hover:bg-sage-200"
                         aria-label="Edit"
                       >
                         <Pencil className="h-4 w-4" />
@@ -285,7 +285,7 @@ export function ItinerariesManager() {
                       <button
                         type="button"
                         onClick={() => handleDelete(item.id)}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-red-50 text-red-600 hover:bg-red-100"
+                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-red-50 text-red-600 hover:bg-red-100"
                         aria-label="Delete"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -312,7 +312,7 @@ function Field({
   full?: boolean;
 }) {
   return (
-    <label className={`space-y-2 text-sm text-ink/70 ${full ? "sm:col-span-2" : ""}`}>
+    <label className={`space-y-2 text-sm text-ink/80 ${full ? "sm:col-span-2" : ""}`}>
       <span>{label}</span>
       {children}
     </label>

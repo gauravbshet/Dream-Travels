@@ -144,12 +144,12 @@ export function GenericManager({
       <div className="flex items-center justify-between gap-4">
         <div>
           <h3 className="text-xl font-semibold text-ink">{title}</h3>
-          <p className="mt-1 text-sm text-ink/60">{description}</p>
+          <p className="mt-1 text-sm text-text-secondary">{description}</p>
         </div>
         <button
           type="button"
           onClick={openCreateForm}
-          className="flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
+          className="flex items-center gap-2 rounded-[12px] bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
         >
           <Plus className="h-4 w-4" /> {createLabel ?? `New ${title.slice(0, -1).toLowerCase()}`}
         </button>
@@ -158,7 +158,7 @@ export function GenericManager({
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="mt-6 rounded-3xl border border-black/[0.08] bg-surface p-6"
+          className="mt-6 rounded-[18px] border border-border bg-white p-6"
         >
           <div className="flex items-center justify-between">
             <h4 className="font-semibold text-ink">
@@ -167,7 +167,7 @@ export function GenericManager({
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="text-ink/50 hover:text-ink"
+              className="text-text-secondary hover:text-ink"
               aria-label="Close form"
             >
               <X className="h-5 w-5" />
@@ -178,7 +178,7 @@ export function GenericManager({
             {fields.map((field) => (
               <label
                 key={field.key}
-                className={`space-y-2 text-sm text-ink/70 ${field.full ? "sm:col-span-2" : ""}`}
+                className={`space-y-2 text-sm text-ink/80 ${field.full ? "sm:col-span-2" : ""}`}
               >
                 <span>{field.label}</span>
                 {field.type === "textarea" ? (
@@ -207,17 +207,17 @@ export function GenericManager({
           <button
             type="submit"
             disabled={saving}
-            className="mt-6 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
+            className="mt-6 rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
           >
             {saving ? "Saving..." : editingId ? "Save changes" : "Create"}
           </button>
         </form>
       )}
 
-      <div className="mt-6 overflow-x-auto rounded-3xl border border-black/[0.06] bg-white">
+      <div className="mt-6 overflow-x-auto rounded-[18px] border border-border bg-white">
         <table className="w-full min-w-[560px] text-left text-sm">
           <thead>
-            <tr className="border-b border-black/[0.06] text-xs font-semibold uppercase tracking-wide text-ink/40">
+            <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-text-secondary">
               {columns.map((col) => (
                 <th key={col.key} className="px-5 py-4">
                   {col.label}
@@ -229,21 +229,21 @@ export function GenericManager({
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={columns.length + 1} className="px-5 py-6 text-ink/60">
+                <td colSpan={columns.length + 1} className="px-5 py-6 text-text-secondary">
                   Loading...
                 </td>
               </tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={columns.length + 1} className="px-5 py-6 text-ink/60">
+                <td colSpan={columns.length + 1} className="px-5 py-6 text-text-secondary">
                   Nothing here yet.
                 </td>
               </tr>
             ) : (
               rows.map((row) => (
-                <tr key={row.id} className="border-b border-black/[0.04] last:border-0">
+                <tr key={row.id} className="border-b border-border last:border-0">
                   {columns.map((col) => (
-                    <td key={col.key} className="px-5 py-4 text-ink/70">
+                    <td key={col.key} className="px-5 py-4 text-ink/80">
                       {col.render ? col.render(row) : String(row[col.key] ?? "—")}
                     </td>
                   ))}
@@ -252,7 +252,7 @@ export function GenericManager({
                       <button
                         type="button"
                         onClick={() => openEditForm(row)}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-ink/5 text-ink hover:bg-ink/10"
+                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-sage-100 text-ink hover:bg-sage-200"
                         aria-label="Edit"
                       >
                         <Pencil className="h-4 w-4" />
@@ -260,7 +260,7 @@ export function GenericManager({
                       <button
                         type="button"
                         onClick={() => handleDelete(row.id)}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-red-50 text-red-600 hover:bg-red-100"
+                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-red-50 text-red-600 hover:bg-red-100"
                         aria-label="Delete"
                       >
                         <Trash2 className="h-4 w-4" />

@@ -41,10 +41,10 @@ export function CategorySlider() {
               >
                 <span
                   className={cn(
-                    "flex h-16 w-16 lg:h-14 lg:w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl transition-all duration-300",
+                    "flex h-16 w-16 lg:h-14 lg:w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl border transition-all duration-300",
                     isActive
-                      ? "bg-primary text-white shadow-float scale-105"
-                      : "bg-white text-ink/60 shadow-soft hover:text-primary"
+                      ? "bg-primary border-primary text-white scale-105"
+                      : "bg-white border-border text-text-secondary hover:border-primary/40 hover:text-primary"
                   )}
                 >
                   <Icon className="h-6 w-6 lg:h-5 lg:w-5 xl:h-6 xl:w-6" />
@@ -52,7 +52,7 @@ export function CategorySlider() {
                 <span
                   className={cn(
                     "text-xs lg:text-[13px] font-medium transition-colors whitespace-nowrap",
-                    isActive ? "text-primary" : "text-ink/60"
+                    isActive ? "text-primary" : "text-text-secondary"
                   )}
                 >
                   {cat.label}

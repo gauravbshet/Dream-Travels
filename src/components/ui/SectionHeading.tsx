@@ -32,11 +32,11 @@ export function SectionHeading({
       )}
     >
       {eyebrow && (
-        <span className="text-primary font-semibold text-sm tracking-wide uppercase">
+        <span className="text-primary font-medium text-xs tracking-[0.14em] uppercase">
           {eyebrow}
         </span>
       )}
-      <h2 className="font-display text-balance mt-1 text-2xl sm:text-3xl lg:text-4xl xl:text-[2.75rem] font-bold text-ink tracking-tight">
+      <h2 className="font-display text-balance mt-2 text-3xl sm:text-4xl lg:text-[2.75rem] font-semibold text-ink tracking-[-0.025em] leading-[1.1]">
         {title}
         {emoji && (
           <span aria-hidden="true" className="ml-2">
@@ -45,7 +45,7 @@ export function SectionHeading({
         )}
       </h2>
       {description && (
-        <p className="mt-3 text-ink/60 text-base lg:text-lg max-w-2xl">
+        <p className="mt-3 text-text-secondary text-base lg:text-lg max-w-2xl leading-relaxed">
           {description}
         </p>
       )}

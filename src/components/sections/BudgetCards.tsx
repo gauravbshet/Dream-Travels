@@ -33,14 +33,14 @@ export function BudgetCards({ tiers = staticBudgetTiers }: { tiers?: BudgetTier[
               viewport={viewportOnce}
               transition={fadeUpDelay(i)}
               whileHover={{ y: -4 }}
-              className="group flex items-center gap-4 rounded-2xl bg-surface p-5 shadow-soft border border-black/[0.04] text-left transition-shadow hover:shadow-card"
+              className="group flex items-center gap-4 rounded-[18px] bg-white p-5 border border-border text-left transition-colors hover:border-primary/30"
             >
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-3xl">
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-sage-100 text-3xl">
                 {tier.emoji}
               </span>
               <div className="flex-1">
-                <h3 className="font-bold text-ink">{tier.title}</h3>
-                <p className="text-sm text-ink/55">
+                <h3 className="font-semibold text-ink">{tier.title}</h3>
+                <p className="text-sm text-text-secondary">
                   {tier.count} verified destinations
                 </p>
               </div>

@@ -10,7 +10,7 @@ import { stats } from "@/data/site";
 export function Statistics() {
   return (
     <Section tone="dark">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,122,0,0.18),transparent_45%),radial-gradient(circle_at_80%_80%,rgba(0,200,150,0.15),transparent_45%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,125,87,0.18),transparent_45%),radial-gradient(circle_at_80%_80%,rgba(47,99,63,0.18),transparent_45%)]" />
       <Container className="relative">
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 lg:gap-6">
           {stats.map((stat, i) => (

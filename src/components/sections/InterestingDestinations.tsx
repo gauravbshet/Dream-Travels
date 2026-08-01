@@ -13,7 +13,7 @@ function DestTile({ d }: { d: MasonryDestination }) {
   return (
     <div
       className={cn(
-        "group relative w-52 sm:w-60 shrink-0 overflow-hidden rounded-2xl shadow-card",
+        "group relative w-52 sm:w-60 shrink-0 overflow-hidden rounded-[20px] border border-border",
         d.span === "tall" ? "h-72 sm:h-80" : "h-52 sm:h-56"
       )}
     >

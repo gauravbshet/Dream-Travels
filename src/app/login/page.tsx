@@ -144,7 +144,7 @@ export default function LoginPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="grid w-full max-w-5xl overflow-hidden rounded-[32px] bg-white shadow-card lg:grid-cols-2"
+                className="grid w-full max-w-5xl overflow-hidden rounded-[24px] bg-white border border-border lg:grid-cols-2"
             >
                 {/* Left: image collage */}
                 <div className="relative hidden min-h-[600px] flex-col justify-end overflow-hidden bg-ink p-10 lg:flex">
@@ -162,7 +162,7 @@ export default function LoginPage() {
                         initial={{ opacity: 0, x: -30, y: 20 }}
                         animate={{ opacity: 1, x: 0, y: 0 }}
                         transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        className="relative hidden w-48 overflow-hidden rounded-2xl border-4 border-white/90 shadow-float sm:block lg:absolute lg:right-8 lg:top-24"
+                        className="relative hidden w-48 overflow-hidden rounded-[16px] border-4 border-white/90 sm:block lg:absolute lg:right-8 lg:top-24"
                     >
                         <img src={unsplash(IMG.goa, 500)} alt="" className="h-32 w-full object-cover" />
                     </motion.div>
@@ -353,7 +353,7 @@ export default function LoginPage() {
                                         whileTap={{ scale: 0.98 }}
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-primary/70"
+                                        className="w-full rounded-[12px] bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-primary/70"
                                     >
                                         {loading
                                             ? mode === "signIn"
@@ -376,7 +376,7 @@ export default function LoginPage() {
                                     type="button"
                                     onClick={handleGoogleSignIn}
                                     disabled={googleLoading}
-                                    className="flex w-full items-center justify-center gap-3 rounded-full border border-ink/[0.08] bg-white px-6 py-3.5 text-sm font-semibold text-ink transition hover:bg-ink/5 disabled:opacity-60"
+                                    className="flex w-full items-center justify-center gap-3 rounded-[12px] border border-border bg-white px-6 py-3.5 text-sm font-semibold text-ink transition hover:bg-sage-100 disabled:opacity-60"
                                 >
                                     <GoogleIcon className="h-4 w-4" />
                                     {googleLoading ? "Redirecting..." : "Continue with Google"}
@@ -446,7 +446,7 @@ function InputField({
     trailing?: React.ReactNode;
 }) {
     return (
-        <div className="flex items-center gap-3 rounded-2xl border border-ink/[0.08] bg-surface px-4 py-3 transition focus-within:border-primary">
+        <div className="flex items-center gap-3 rounded-[12px] border border-border bg-white px-4 py-3 transition focus-within:border-primary">
             <span className="text-ink/40">{icon}</span>
             <input
                 type={type}

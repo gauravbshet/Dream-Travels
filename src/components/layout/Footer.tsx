@@ -55,15 +55,21 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer id="contact" className="mt-10 bg-ink pb-28 pt-14 lg:pb-14 lg:pt-20 text-white/70">
-      <Container>
-        <div className="flex flex-col gap-10 lg:flex-row lg:gap-8">
+    <footer id="contact" className="relative mt-10 overflow-hidden bg-cream border-t border-border pb-28 pt-16 lg:pb-16 lg:pt-24 text-text-secondary">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9rem] lg:text-[13rem] font-semibold tracking-tight text-ink/[0.03] select-none"
+      >
+        DREAM TRAVELS
+      </span>
+      <Container className="relative">
+        <div className="flex flex-col gap-12 lg:flex-row lg:gap-8">
           <div className="lg:w-1/4">
             <Link href="/" className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white font-bold text-lg">
+              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary text-white font-semibold text-base">
                 D
               </span>
-              <span className="text-lg font-bold text-white">Dream Travels</span>
+              <span className="text-lg font-semibold text-ink">Dream Travels</span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed max-w-xs">
               Premium, curated travel experiences designed for the modern
@@ -75,7 +81,7 @@ export function Footer() {
                   key={s.label}
                   href="#"
                   aria-label={s.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-primary"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-text-secondary transition-colors hover:bg-primary hover:border-primary hover:text-white"
                 >
                   <SocialGlyph path={s.path} />
                 </a>
@@ -87,7 +93,7 @@ export function Footer() {
           <div className="hidden lg:grid lg:flex-1 lg:grid-cols-4 lg:gap-6">
             {footerGroups.map((group) => (
               <div key={group.title}>
-                <h4 className="font-semibold text-white">{group.title}</h4>
+                <h4 className="font-semibold text-ink">{group.title}</h4>
                 <ul className="mt-4 space-y-2.5">
                   {group.links.map((link) => (
                     <li key={link}>
@@ -109,7 +115,7 @@ export function Footer() {
           </div>
 
           <div className="lg:w-1/5">
-            <h4 className="font-semibold text-white">Newsletter</h4>
+            <h4 className="font-semibold text-ink">Newsletter</h4>
             <p className="mt-3 text-sm">
               Get exclusive deals and travel inspiration in your inbox.
             </p>
@@ -117,12 +123,12 @@ export function Footer() {
               <input
                 type="email"
                 placeholder="Your email"
-                className="w-full rounded-full bg-white/10 px-4 py-2.5 text-sm text-white placeholder:text-white/40 outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-[12px] border border-border bg-white px-4 py-2.5 text-sm text-ink placeholder:text-text-secondary outline-none focus:ring-2 focus:ring-primary"
               />
               <button
                 type="submit"
                 aria-label="Subscribe"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white transition-transform hover:scale-105"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-primary text-white transition-colors hover:bg-primary-dark"
               >
                 <Send className="h-4 w-4" />
               </button>
@@ -130,7 +136,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs sm:flex-row">
           <p>© 2026 Dream Travels. All rights reserved.</p>
           <p>Designed for explorers, by explorers.</p>
         </div>
@@ -143,10 +149,10 @@ function FooterAccordion({ title, links }: { title: string; links: string[] }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-white/10">
+    <div className="border-b border-border">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between py-4 text-left font-semibold text-white"
+        className="flex w-full items-center justify-between py-4 text-left font-semibold text-ink"
       >
         {title}
         <ChevronDown

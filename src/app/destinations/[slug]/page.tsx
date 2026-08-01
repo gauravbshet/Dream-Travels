@@ -46,7 +46,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                 />
 
                 <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
-                    <div className="overflow-hidden rounded-[32px] bg-white shadow-soft">
+                    <div className="overflow-hidden rounded-[24px] bg-white border border-border">
                         <div className="relative h-[420px] w-full">
                             <Image
                                 src={data.destination.cover_image ?? data.destination.image}
@@ -58,10 +58,10 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                         </div>
                     </div>
 
-                    <div className="rounded-[32px] border border-black/[0.08] bg-surface p-8 shadow-soft">
+                    <div className="rounded-[24px] border border-border bg-white p-8">
                         <div className="space-y-4">
-                            <p className="text-sm text-ink/60">Location overview</p>
-                            <div className="flex items-center gap-3 text-ink/70">
+                            <p className="text-sm text-text-secondary">Location overview</p>
+                            <div className="flex items-center gap-3 text-ink/80">
                                 <MapPin className="h-4 w-4" />
                                 <span>{data.destination.name}</span>
                             </div>
@@ -77,8 +77,8 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                 <Section className="mt-14">
                     <div className="grid gap-6 lg:grid-cols-3">
                         {data.packages.map((pkg) => (
-                            <div key={pkg.id} className="rounded-3xl border border-black/[0.05] bg-white p-5 shadow-soft">
-                                <div className="relative h-44 w-full overflow-hidden rounded-3xl">
+                            <div key={pkg.id} className="rounded-[20px] border border-border bg-white p-5">
+                                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[16px]">
                                     <Image
                                         src={pkg.image}
                                         alt={pkg.title}
@@ -88,14 +88,14 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                                     />
                                 </div>
                                 <div className="mt-4">
-                                    <p className="text-sm text-ink/55">{pkg.category}</p>
-                                    <h3 className="mt-2 text-lg font-semibold text-ink">{pkg.title}</h3>
-                                    <p className="mt-2 text-sm text-ink/60">{pkg.duration}</p>
+                                    <p className="text-sm text-text-secondary">{pkg.category}</p>
+                                    <h3 className="mt-2 text-lg font-semibold text-ink tracking-[-0.01em]">{pkg.title}</h3>
+                                    <p className="mt-2 text-sm text-text-secondary">{pkg.duration}</p>
                                     <p className="mt-3 font-semibold text-ink">{formatPrice(pkg.price)}</p>
                                 </div>
                                 <a
                                     href={`/packages/${pkg.slug}`}
-                                    className="mt-5 inline-flex items-center justify-center rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
+                                    className="mt-5 inline-flex items-center justify-center rounded-[12px] bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
                                 >
                                     View package
                                 </a>

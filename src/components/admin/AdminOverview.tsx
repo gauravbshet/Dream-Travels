@@ -88,15 +88,15 @@ export function AdminOverview() {
     <div>
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-ink">Dashboard</h2>
-          <p className="mt-1 text-sm text-ink/60">
+          <h2 className="text-2xl font-semibold text-ink tracking-[-0.01em]">Dashboard</h2>
+          <p className="mt-1 text-sm text-text-secondary">
             Overview of every content type powering the site.
           </p>
         </div>
         <button
           type="button"
           onClick={loadCounts}
-          className="flex items-center gap-2 rounded-full border border-black/[0.08] bg-white px-4 py-2.5 text-sm font-semibold text-ink/70 transition hover:bg-ink/5"
+          className="flex items-center gap-2 rounded-[10px] border border-border bg-white px-4 py-2.5 text-sm font-semibold text-ink/80 transition hover:bg-sage-100"
         >
           <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} /> Refresh
         </button>
@@ -108,13 +108,13 @@ export function AdminOverview() {
           return (
             <div
               key={card.label}
-              className="rounded-3xl border border-black/[0.06] bg-white p-6 shadow-soft"
+              className="rounded-[18px] border border-border bg-white p-6"
             >
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ink/40">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
                 <Icon className="h-4 w-4" />
                 {card.label}
               </div>
-              <p className="mt-3 text-3xl font-bold text-ink">
+              <p className="mt-3 text-3xl font-semibold text-ink">
                 {loading ? "—" : card.value}
               </p>
             </div>

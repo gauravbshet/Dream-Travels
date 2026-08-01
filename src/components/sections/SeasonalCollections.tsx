@@ -29,7 +29,7 @@ export function SeasonalCollections({
               viewport={viewportOnce}
               transition={fadeUpDelay(i % 6)}
               whileHover={{ y: -4 }}
-              className="group relative h-36 sm:h-44 lg:h-48 overflow-hidden rounded-2xl shadow-soft"
+              className="group relative h-36 sm:h-44 lg:h-48 overflow-hidden rounded-[18px] border border-border"
             >
               <Image
                 src={c.image}

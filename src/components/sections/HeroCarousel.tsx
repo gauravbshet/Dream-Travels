@@ -49,7 +49,7 @@ export function HeroCarousel({ className }: { className?: string }) {
             className="object-cover"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e12]/75 via-[#0a1e12]/15 to-[#0a1e12]/35" />
         </motion.div>
       </AnimatePresence>
 
@@ -62,7 +62,7 @@ export function HeroCarousel({ className }: { className?: string }) {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.5, delay: 0.15 }}
           >
-            <h1 className="text-balance text-3xl xs:text-4xl font-bold text-white leading-tight">
+            <h1 className="font-display text-balance text-3xl xs:text-4xl font-semibold text-white leading-tight tracking-[-0.02em]">
               {banner.title}
             </h1>
             <p className="mt-2 text-white/85 text-sm xs:text-base">

@@ -28,7 +28,7 @@ export function PopularExperiences({
               whileInView="show"
               viewport={viewportOnce}
               transition={fadeUpDelay(i)}
-              className="group relative h-40 w-[42%] xs:w-[36%] sm:w-[26%] shrink-0 snap-start overflow-hidden rounded-2xl shadow-soft lg:w-full"
+              className="group relative h-40 w-[42%] xs:w-[36%] sm:w-[26%] shrink-0 snap-start overflow-hidden rounded-[18px] border border-border lg:w-full"
             >
               <Image
                 src={exp.image}
