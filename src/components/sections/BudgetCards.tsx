@@ -7,11 +7,12 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
 import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
-import { budgetTiers } from "@/data/destinations";
+import { budgetTiers as staticBudgetTiers } from "@/data/destinations";
+import type { BudgetTier } from "@/data/destinations";
 
 const MotionLink = motion.create(Link);
 
-export function BudgetCards() {
+export function BudgetCards({ tiers = staticBudgetTiers }: { tiers?: BudgetTier[] }) {
   return (
     <Section id="packages">
       <Container>
@@ -21,7 +22,7 @@ export function BudgetCards() {
           emoji="💰"
         />
         <div className="flex flex-col gap-4 lg:grid lg:grid-cols-3 xl:grid-cols-4 lg:gap-6">
-          {budgetTiers.map((tier, i) => (
+          {tiers.map((tier, i) => (
             <MotionLink
               key={tier.id}
               href="#packages"

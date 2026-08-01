@@ -7,15 +7,20 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
 import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
-import { seasonalCollections } from "@/data/destinations";
+import { seasonalCollections as staticCollections } from "@/data/destinations";
+import type { SeasonalCollection } from "@/data/destinations";
 
-export function SeasonalCollections() {
+export function SeasonalCollections({
+  collections = staticCollections,
+}: {
+  collections?: SeasonalCollection[];
+}) {
   return (
     <Section>
       <Container>
         <SectionHeading eyebrow="Curated Collections" title="Seasonal Collections" />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
-          {seasonalCollections.map((c, i) => (
+          {collections.map((c, i) => (
             <motion.div
               key={c.id}
               variants={fadeUp}

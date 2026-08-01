@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Geist } from "next/font/google";
 import "./globals.css";
+import AuthNavbar from "@/components/layout/AuthNavbar";
+import { FooterGuard } from "@/components/layout/FooterGuard";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -56,7 +59,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#FAFAFA",
+  themeColor: "#FAF7F2",
 };
 
 export default function RootLayout({
@@ -70,7 +73,10 @@ export default function RootLayout({
       className={`${geist.variable} ${fraunces.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-ink">
+        <AuthNavbar />
         {children}
+        <FooterGuard />
+        <BottomNav />
       </body>
     </html>
   );

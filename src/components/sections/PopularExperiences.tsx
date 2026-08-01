@@ -7,15 +7,20 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
 import { Section } from "@/components/ui/Section";
 import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
-import { popularExperiences } from "@/data/destinations";
+import { popularExperiences as staticExperiences } from "@/data/destinations";
+import type { PopularExperience } from "@/data/destinations";
 
-export function PopularExperiences() {
+export function PopularExperiences({
+  experiences = staticExperiences,
+}: {
+  experiences?: PopularExperience[];
+}) {
   return (
     <Section>
       <Container>
         <SectionHeading eyebrow="Do More" title="Popular Experiences" />
         <ResponsiveScroller gridClassName="lg:grid-cols-4 xl:grid-cols-8 lg:gap-4">
-          {popularExperiences.map((exp, i) => (
+          {experiences.map((exp, i) => (
             <motion.div
               key={exp.id}
               variants={fadeUp}

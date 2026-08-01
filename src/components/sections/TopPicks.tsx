@@ -3,9 +3,10 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
 import { Section } from "@/components/ui/Section";
 import { PackageCard } from "@/components/cards/PackageCard";
-import { topPicks } from "@/data/packages";
+import { topPicks as staticTopPicks } from "@/data/packages";
+import type { Package } from "@/data/packages";
 
-export function TopPicks() {
+export function TopPicks({ packages = staticTopPicks }: { packages?: Package[] }) {
   return (
     <Section>
       <Container>
@@ -16,7 +17,7 @@ export function TopPicks() {
           description="Our editorial team's favorite journeys this season."
         />
         <ResponsiveScroller gridClassName="lg:grid-cols-4 lg:gap-6">
-          {topPicks.map((pkg) => (
+          {packages.map((pkg) => (
             <PackageCard
               key={pkg.id}
               pkg={pkg}

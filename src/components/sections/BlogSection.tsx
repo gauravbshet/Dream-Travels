@@ -8,9 +8,10 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
 import { Section } from "@/components/ui/Section";
 import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
-import { blogs } from "@/data/blogs";
+import { blogs as staticBlogs } from "@/data/blogs";
+import type { Blog } from "@/data/blogs";
 
-export function BlogSection() {
+export function BlogSection({ blogs = staticBlogs }: { blogs?: Blog[] }) {
   return (
     <Section id="blogs">
       <Container>

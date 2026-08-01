@@ -8,9 +8,10 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
 import { Section } from "@/components/ui/Section";
 import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
-import { events } from "@/data/events";
+import { events as staticEvents } from "@/data/events";
+import type { TravelEvent } from "@/data/events";
 
-export function EventsSection() {
+export function EventsSection({ events = staticEvents }: { events?: TravelEvent[] }) {
   return (
     <Section>
       <Container>

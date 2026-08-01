@@ -2,10 +2,13 @@ import { unsplash, IMG } from "./images";
 
 export type Destination = {
   id: string;
+  slug?: string;
   name: string;
   image: string;
+  cover_image?: string;
   price: number;
   rating: number;
+  description?: string;
 };
 
 export const recommendedDestinations: Destination[] = [

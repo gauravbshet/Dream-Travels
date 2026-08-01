@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Heart, Bell, User, Menu, X, MapPin } from "lucide-react";
@@ -8,10 +8,20 @@ import { Container } from "@/components/ui/Container";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { navLinks } from "@/data/site";
 import { cn } from "@/lib/utils";
+import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [session, setSession] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+
+  const [supabase, setSupabase] = useState<ReturnType<typeof createBrowserSupabaseClient> | null>(null);
+
+  useEffect(() => {
+    setSupabase(createBrowserSupabaseClient());
+  }, []);
 
   useEffect(() => {
     function onScroll() {
@@ -28,6 +38,71 @@ export function Navbar() {
       document.body.style.overflow = "";
     };
   }, [menuOpen]);
+
+  useEffect(() => {
+    if (!supabase) return;
+
+    let mounted = true;
+
+    async function loadSession() {
+      if (!supabase) return;
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!mounted) return;
+      setSession(session);
+
+      if (session?.user?.id) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
+
+        if (!mounted) return;
+        setUserRole(profile?.role ?? null);
+      }
+
+      setAuthReady(true);
+    }
+
+    loadSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (_event, newSession) => {
+        setSession(newSession);
+
+        if (!supabase) return;
+
+        if (newSession?.user?.id) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", newSession.user.id)
+            .single();
+          setUserRole(profile?.role ?? null);
+        } else {
+          setUserRole(null);
+        }
+      }
+    );
+
+    return () => {
+      mounted = false;
+      if (authListener && typeof authListener.subscription?.unsubscribe === "function") {
+        authListener.subscription.unsubscribe();
+      }
+    };
+  }, [supabase]);
+
+  async function handleSignOut() {
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    setSession(null);
+    setUserRole(null);
+  }
 
   return (
     <>
@@ -77,22 +152,83 @@ export function Navbar() {
             ))}
           </nav>
 
-          <div className="hidden lg:flex items-center gap-1.5">
+          <div className="hidden lg:flex items-center gap-2">
             <IconButton scrolled={scrolled} label="Search">
               <Search className="h-[18px] w-[18px]" />
             </IconButton>
-            <IconButton scrolled={scrolled} label="Wishlist">
-              <Heart className="h-[18px] w-[18px]" />
-            </IconButton>
-            <IconButton scrolled={scrolled} label="Notifications">
-              <Bell className="h-[18px] w-[18px]" />
-            </IconButton>
-            <IconButton scrolled={scrolled} label="Profile">
-              <User className="h-[18px] w-[18px]" />
-            </IconButton>
-            <MagneticButton className="ml-2 !py-2.5 !px-5 text-[13px]">
-              Book Now
-            </MagneticButton>
+            {session ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className={cn(
+                    "rounded-full px-4 py-2 text-sm font-medium transition",
+                    scrolled
+                      ? "bg-ink/5 text-ink hover:bg-ink/10"
+                      : "bg-white/20 text-white hover:bg-white/30"
+                  )}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/dashboard#wishlist"
+                  className={cn(
+                    "rounded-full px-4 py-2 text-sm font-medium transition",
+                    scrolled
+                      ? "bg-ink/5 text-ink hover:bg-ink/10"
+                      : "bg-white/20 text-white hover:bg-white/30"
+                  )}
+                >
+                  Wishlist
+                </Link>
+                {userRole === "admin" && (
+                  <Link
+                    href="/admin"
+                    className={cn(
+                      "rounded-full px-4 py-2 text-sm font-medium transition",
+                      scrolled
+                        ? "bg-primary text-white hover:bg-primary-dark"
+                        : "bg-white/20 text-white hover:bg-white/30"
+                    )}
+                  >
+                    Admin Portal
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className={cn(
+                    "rounded-full px-4 py-2 text-sm font-medium transition",
+                    scrolled
+                      ? "bg-ink/5 text-ink hover:bg-ink/10"
+                      : "bg-white/20 text-white hover:bg-white/30"
+                  )}
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className={cn(
+                    "rounded-full px-4 py-2 text-sm font-medium transition",
+                    scrolled
+                      ? "bg-ink/5 text-ink hover:bg-ink/10"
+                      : "bg-white/20 text-white hover:bg-white/30"
+                  )}
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/login"
+                  className={cn(
+                    "rounded-full bg-primary px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-dark"
+                  )}
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile: search pill + hamburger */}
@@ -159,9 +295,59 @@ export function Navbar() {
                   </a>
                 ))}
               </nav>
-              <MagneticButton className="mt-auto w-full">
-                Book Now
-              </MagneticButton>
+              <div className="mt-6 flex flex-col gap-3">
+                {session ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      className="rounded-2xl bg-primary px-4 py-3 text-center text-sm font-semibold text-white"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      href="/dashboard#wishlist"
+                      className="rounded-2xl bg-surface px-4 py-3 text-center text-sm font-semibold text-ink"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Wishlist
+                    </Link>
+                    {userRole === "admin" && (
+                      <Link
+                        href="/admin"
+                        className="rounded-2xl bg-surface px-4 py-3 text-center text-sm font-semibold text-ink"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Admin Portal
+                      </Link>
+                    )}
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className="rounded-2xl bg-ink/5 px-4 py-3 text-center text-sm font-semibold text-ink"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="rounded-2xl bg-surface px-4 py-3 text-center text-sm font-semibold text-ink"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/login"
+                      className="rounded-2xl bg-primary px-4 py-3 text-center text-sm font-semibold text-white"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
             </motion.div>
           </motion.div>
         )}

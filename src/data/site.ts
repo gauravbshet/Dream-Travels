@@ -14,12 +14,8 @@ import {
 export type NavLink = { label: string; href: string };
 
 export const navLinks: NavLink[] = [
-  { label: "Home", href: "/" },
-  { label: "Destinations", href: "#destinations" },
-  { label: "Packages", href: "#packages" },
-  { label: "Experiences", href: "#experiences" },
-  { label: "Community", href: "#community" },
-  { label: "Blogs", href: "#blogs" },
+  { label: "Destination", href: "#destinations" },
+  { label: "Package", href: "#packages" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];

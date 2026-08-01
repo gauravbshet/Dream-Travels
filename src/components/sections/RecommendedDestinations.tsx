@@ -4,8 +4,13 @@ import { Marquee } from "@/components/ui/Marquee";
 import { Section } from "@/components/ui/Section";
 import { DestinationCard } from "@/components/cards/DestinationCard";
 import { recommendedDestinations } from "@/data/destinations";
+import type { Destination } from "@/data/destinations";
 
-export function RecommendedDestinations() {
+export function RecommendedDestinations({
+  destinations = recommendedDestinations,
+}: {
+  destinations?: Destination[];
+}) {
   return (
     <Section id="destinations">
       <Container>
@@ -17,7 +22,7 @@ export function RecommendedDestinations() {
         />
       </Container>
       <Marquee duration={48} reverse>
-        {recommendedDestinations.map((d, i) => (
+        {destinations.map((d, i) => (
           <DestinationCard
             key={d.id}
             destination={d}

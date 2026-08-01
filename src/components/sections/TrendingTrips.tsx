@@ -4,8 +4,13 @@ import { Marquee } from "@/components/ui/Marquee";
 import { Section } from "@/components/ui/Section";
 import { PackageCard } from "@/components/cards/PackageCard";
 import { packages } from "@/data/packages";
+import type { Package } from "@/data/packages";
 
-export function TrendingTrips() {
+export function TrendingTrips({
+  packages: featuredPackages = packages,
+}: {
+  packages?: Package[];
+}) {
   return (
     <Section id="community">
       <Container>
@@ -26,7 +31,7 @@ export function TrendingTrips() {
         />
       </Container>
       <Marquee duration={56}>
-        {packages.map((pkg) => (
+        {featuredPackages.map((pkg) => (
           <PackageCard
             key={pkg.id}
             pkg={pkg}

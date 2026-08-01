@@ -6,13 +6,10 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Marquee } from "@/components/ui/Marquee";
 import { Section } from "@/components/ui/Section";
 import { formatPrice, cn } from "@/lib/utils";
-import { interestingDestinations } from "@/data/destinations";
+import { interestingDestinations as staticInterestingDestinations } from "@/data/destinations";
+import type { MasonryDestination } from "@/data/destinations";
 
-const mid = Math.ceil(interestingDestinations.length / 2);
-const rowOne = interestingDestinations.slice(0, mid);
-const rowTwo = interestingDestinations.slice(mid);
-
-function DestTile({ d }: { d: (typeof interestingDestinations)[number] }) {
+function DestTile({ d }: { d: MasonryDestination }) {
   return (
     <div
       className={cn(
@@ -39,7 +36,15 @@ function DestTile({ d }: { d: (typeof interestingDestinations)[number] }) {
   );
 }
 
-export function InterestingDestinations() {
+export function InterestingDestinations({
+  destinations = staticInterestingDestinations,
+}: {
+  destinations?: MasonryDestination[];
+}) {
+  const mid = Math.ceil(destinations.length / 2);
+  const rowOne = destinations.slice(0, mid);
+  const rowTwo = destinations.slice(mid);
+
   return (
     <Section>
       <Container>

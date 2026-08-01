@@ -8,9 +8,10 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
 import { Section } from "@/components/ui/Section";
 import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
-import { reviews } from "@/data/reviews";
+import { reviews as staticReviews } from "@/data/reviews";
+import type { Review } from "@/data/reviews";
 
-export function ReviewCarousel() {
+export function ReviewCarousel({ reviews = staticReviews }: { reviews?: Review[] }) {
   return (
     <Section>
       <Container>

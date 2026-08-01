@@ -2,6 +2,7 @@ import { unsplash, IMG } from "./images";
 
 export type Package = {
   id: string;
+  slug?: string;
   title: string;
   location: string;
   image: string;
@@ -13,6 +14,8 @@ export type Package = {
   reviews: number;
   price: number;
   originalPrice?: number;
+  original_price?: number;
+  destination_id?: string;
 };
 
 export const packages: Package[] = [
