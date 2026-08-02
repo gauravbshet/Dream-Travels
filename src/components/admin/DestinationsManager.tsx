@@ -3,41 +3,46 @@
 import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
+import { createStoragePath } from "@/lib/utils";
 import { useToast } from "./Toast";
+import { Modal } from "./Modal";
+import { ImageUploadField } from "./ImageUploadField";
 
 type Destination = {
   id: string;
-  slug: string;
-  name: string;
-  description: string | null;
-  cover_image: string | null;
-  image: string | null;
-  price: number | null;
-  rating: number | null;
-  is_featured: boolean | null;
+  title: string;
+  country: string | null;
+  categories: string[] | null;
+  photo_url: string | null;
+  created_at: string | null;
 };
 
 type FormState = {
-  slug: string;
-  name: string;
-  description: string;
-  cover_image: string;
-  image: string;
-  price: string;
-  rating: string;
-  is_featured: boolean;
+  title: string;
+  country: string;
+  categories: string;
+  photo_url: string;
+  photo_file: File | null;
 };
 
 const emptyForm: FormState = {
-  slug: "",
-  name: "",
-  description: "",
-  cover_image: "",
-  image: "",
-  price: "",
-  rating: "",
-  is_featured: false,
+  title: "",
+  country: "",
+  categories: "",
+  photo_url: "",
+  photo_file: null,
 };
+
+function normalizeCategories(value: string) {
+  return value
+    .split(",")
+    .map((category) => category.trim())
+    .filter(Boolean);
+}
+
+function formatCategories(categories: string[] | null) {
+  return categories?.join(", ") ?? "";
+}
 
 export function DestinationsManager() {
   const supabase = createBrowserSupabaseClient();
@@ -49,12 +54,13 @@ export function DestinationsManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   async function loadDestinations() {
     setLoading(true);
     const { data, error } = await supabase
       .from("destinations")
-      .select("*")
+      .select("id,title,country,categories,photo_url,created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -78,37 +84,68 @@ export function DestinationsManager() {
   function openEditForm(destination: Destination) {
     setEditingId(destination.id);
     setForm({
-      slug: destination.slug ?? "",
-      name: destination.name ?? "",
-      description: destination.description ?? "",
-      cover_image: destination.cover_image ?? "",
-      image: destination.image ?? "",
-      price: destination.price?.toString() ?? "",
-      rating: destination.rating?.toString() ?? "",
-      is_featured: destination.is_featured ?? false,
+      title: destination.title ?? "",
+      country: destination.country ?? "",
+      categories: formatCategories(destination.categories),
+      photo_url: destination.photo_url ?? "",
+      photo_file: null,
     });
     setShowForm(true);
+  }
+
+  async function uploadPhotoFile(file: File | null) {
+    if (!file) {
+      setForm((f) => ({ ...f, photo_file: null, photo_url: "" }));
+      return;
+    }
+
+    setUploadingImage(true);
+    const filename = createStoragePath("destinations", file);
+    const { data, error } = await supabase.storage.from("images").upload(filename, file, {
+      cacheControl: "3600",
+      upsert: true,
+    });
+
+    if (error || !data?.path) {
+      showToast(`Failed to upload image: ${error?.message ?? "Unknown error"}`, "error");
+      setUploadingImage(false);
+      return;
+    }
+
+    const { data: publicData } = await supabase
+      .storage
+      .from("images")
+      .getPublicUrl(data.path);
+
+    if (!publicData?.publicUrl) {
+      showToast("Failed to generate image URL", "error");
+      setUploadingImage(false);
+      return;
+    }
+
+    setForm((f) => ({
+      ...f,
+      photo_file: file,
+      photo_url: publicData.publicUrl,
+    }));
+    setUploadingImage(false);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!form.name.trim() || !form.slug.trim()) {
-      showToast("Name and slug are required.", "error");
+    if (!form.title.trim()) {
+      showToast("Title is required.", "error");
       return;
     }
 
     setSaving(true);
 
     const payload = {
-      slug: form.slug.trim(),
-      name: form.name.trim(),
-      description: form.description.trim() || null,
-      cover_image: form.cover_image.trim() || null,
-      image: form.image.trim() || null,
-      price: form.price ? Number(form.price) : null,
-      rating: form.rating ? Number(form.rating) : null,
-      is_featured: form.is_featured,
+      title: form.title.trim(),
+      country: form.country.trim() || null,
+      categories: normalizeCategories(form.categories),
+      photo_url: form.photo_url.trim() || null,
     };
 
     const { error } = editingId
@@ -149,7 +186,7 @@ export function DestinationsManager() {
         <div>
           <h3 className="text-xl font-semibold text-ink">Destinations</h3>
           <p className="mt-1 text-sm text-text-secondary">
-            Manage the destinations shown on the home page and detail pages.
+            Manage travel destinations with country, categories, and a hero photo.
           </p>
         </div>
         <button
@@ -157,111 +194,74 @@ export function DestinationsManager() {
           onClick={openCreateForm}
           className="flex items-center gap-2 rounded-[12px] bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
         >
-          <Plus className="h-4 w-4" /> New destination
+          <Plus className="h-4 w-4" /> Add destination
         </button>
       </div>
 
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="mt-6 rounded-[18px] border border-border bg-white p-6"
+        <Modal
+          title={editingId ? "Edit destination" : "Add new destination"}
+          description="Enter destination details, upload a photo, and save changes."
+          onClose={() => setShowForm(false)}
         >
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-ink">
-              {editingId ? "Edit destination" : "New destination"}
-            </h4>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Title">
+                <input
+                  value={form.title}
+                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  className="input"
+                  placeholder="Paris, Bali, Kyoto"
+                />
+              </Field>
+              <Field label="Country">
+                <input
+                  value={form.country}
+                  onChange={(e) => setForm((f) => ({ ...f, country: e.target.value }))}
+                  className="input"
+                  placeholder="France, Indonesia, Japan"
+                />
+              </Field>
+              <Field label="Categories">
+                <input
+                  value={form.categories}
+                  onChange={(e) => setForm((f) => ({ ...f, categories: e.target.value }))}
+                  className="input"
+                  placeholder="Family, Group, Couple"
+                />
+              </Field>
+              <div className="sm:col-span-2">
+                <ImageUploadField
+                  label="Hero image"
+                  imageUrl={form.photo_url}
+                  onImageFileChange={uploadPhotoFile}
+                  onImageUrlChange={(url) => setForm((f) => ({ ...f, photo_url: url }))}
+                />
+                {uploadingImage && (
+                  <p className="mt-2 text-sm text-text-secondary">Uploading image...</p>
+                )}
+              </div>
+            </div>
+
             <button
-              type="button"
-              onClick={() => setShowForm(false)}
-              className="text-text-secondary hover:text-ink"
-              aria-label="Close form"
+              type="submit"
+              disabled={saving}
+              className="rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
             >
-              <X className="h-5 w-5" />
+              {saving ? "Saving..." : editingId ? "Save destination" : "Create destination"}
             </button>
-          </div>
-
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <Field label="Name">
-              <input
-                value={form.name}
-                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Slug">
-              <input
-                value={form.slug}
-                onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Price">
-              <input
-                type="number"
-                value={form.price}
-                onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Rating">
-              <input
-                type="number"
-                step="0.1"
-                value={form.rating}
-                onChange={(e) => setForm((f) => ({ ...f, rating: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Cover image URL">
-              <input
-                value={form.cover_image}
-                onChange={(e) => setForm((f) => ({ ...f, cover_image: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Image URL">
-              <input
-                value={form.image}
-                onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Description" full>
-              <textarea
-                value={form.description}
-                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-                className="input min-h-[100px]"
-              />
-            </Field>
-            <label className="flex items-center gap-2 text-sm text-ink/80 sm:col-span-2">
-              <input
-                type="checkbox"
-                checked={form.is_featured}
-                onChange={(e) => setForm((f) => ({ ...f, is_featured: e.target.checked }))}
-                className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
-              />
-              Featured on home page (Recommended Destinations)
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            disabled={saving}
-            className="mt-6 rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
-          >
-            {saving ? "Saving..." : editingId ? "Save changes" : "Create destination"}
-          </button>
-        </form>
+          </form>
+        </Modal>
       )}
 
       <div className="mt-6 overflow-x-auto rounded-[18px] border border-border bg-white">
-        <table className="w-full min-w-[560px] text-left text-sm">
+        <table className="w-full min-w-[min(100%,720px)] text-left text-sm">
           <thead>
             <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-text-secondary">
-              <th className="px-5 py-4">Name</th>
-              <th className="px-5 py-4">Slug</th>
-              <th className="px-5 py-4">Price</th>
-              <th className="px-5 py-4">Rating</th>
+              <th className="px-5 py-4">Title</th>
+              <th className="px-5 py-4">Country</th>
+              <th className="px-5 py-4">Categories</th>
+              <th className="px-5 py-4">Photo</th>
               <th className="px-5 py-4 text-right">Actions</th>
             </tr>
           </thead>
@@ -281,12 +281,35 @@ export function DestinationsManager() {
             ) : (
               destinations.map((destination) => (
                 <tr key={destination.id} className="border-b border-border last:border-0">
-                  <td className="px-5 py-4 font-semibold text-ink">{destination.name}</td>
-                  <td className="px-5 py-4 text-text-secondary">/{destination.slug}</td>
+                  <td className="px-5 py-4 font-semibold text-ink">{destination.title}</td>
+                  <td className="px-5 py-4 text-ink/80">{destination.country ?? "—"}</td>
                   <td className="px-5 py-4 text-ink/80">
-                    {destination.price != null ? `₹${destination.price}` : "—"}
+                    {destination.categories?.length ? (
+                      <div className="flex flex-wrap gap-2">
+                        {destination.categories.map((category) => (
+                          <span
+                            key={category}
+                            className="rounded-full bg-sage-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-primary"
+                          >
+                            {category}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      "—"
+                    )}
                   </td>
-                  <td className="px-5 py-4 text-ink/80">{destination.rating ?? "—"}</td>
+                  <td className="px-5 py-4">
+                    {destination.photo_url ? (
+                      <img
+                        src={destination.photo_url}
+                        alt={destination.title}
+                        className="h-16 w-24 rounded-[14px] object-cover"
+                      />
+                    ) : (
+                      <span className="text-text-secondary">No photo</span>
+                    )}
+                  </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button

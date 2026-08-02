@@ -1,19 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  LayoutGrid,
-  MapPin,
-  Package,
-  CalendarRange,
-  LogOut,
-  Star,
-  Newspaper,
-  PartyPopper,
-  Compass,
-  Layers,
-  Wallet,
-} from "lucide-react";
+import { LayoutGrid, MapPin, Package, Users, LogOut } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 import { cn } from "@/lib/utils";
 import type { AdminSection } from "./AdminDashboard";
@@ -22,13 +10,7 @@ const navItems: { id: AdminSection; label: string; icon: typeof LayoutGrid }[] =
   { id: "overview", label: "Dashboard", icon: LayoutGrid },
   { id: "destinations", label: "Destinations", icon: MapPin },
   { id: "packages", label: "Packages", icon: Package },
-  { id: "itineraries", label: "Itineraries", icon: CalendarRange },
-  { id: "reviews", label: "Reviews", icon: Star },
-  { id: "blogs", label: "Blogs", icon: Newspaper },
-  { id: "events", label: "Events", icon: PartyPopper },
-  { id: "experiences", label: "Experiences", icon: Compass },
-  { id: "collections", label: "Collections", icon: Layers },
-  { id: "budgetTiers", label: "Budget Tiers", icon: Wallet },
+  { id: "customers", label: "Customers", icon: Users },
 ];
 
 export function AdminSidebar({
@@ -52,7 +34,7 @@ export function AdminSidebar({
   const initial = userEmail?.[0]?.toUpperCase() ?? "A";
 
   return (
-    <aside className="flex w-full shrink-0 flex-col justify-between border-border bg-white px-4 py-6 lg:h-full lg:w-64 lg:overflow-y-auto lg:border-r">
+    <aside className="flex min-h-[auto] w-full shrink-0 flex-col justify-between border-border bg-white px-4 py-6 overflow-y-auto lg:h-screen lg:w-64 lg:border-r">
       <div>
         <div className="flex items-center gap-2 px-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary text-white font-semibold text-base">
@@ -74,7 +56,10 @@ export function AdminSidebar({
               <button
                 key={item.id}
                 type="button"
-                onClick={() => onChange(item.id)}
+                onClick={() => {
+                  onChange(item.id);
+                  router.push(`/admin?section=${item.id}`);
+                }}
                 className={cn(
                   "flex items-center gap-3 rounded-[12px] px-4 py-3 text-sm font-semibold transition-colors",
                   isActive
@@ -90,7 +75,7 @@ export function AdminSidebar({
         </nav>
       </div>
 
-      <div className="mt-8 flex items-center gap-3 border-t border-border px-2 pt-6">
+      <div className="mt-8 flex items-center gap-3 border-t border-border px-2 pt-4">
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage-100 text-sm font-semibold text-primary">
           {initial}
         </span>

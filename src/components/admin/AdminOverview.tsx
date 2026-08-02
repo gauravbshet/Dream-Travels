@@ -1,39 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  MapPin,
-  Package,
-  CalendarRange,
-  Star,
-  Newspaper,
-  PartyPopper,
-  Compass,
-  Layers,
-  RefreshCw,
-} from "lucide-react";
+import { MapPin, Package, Users, RefreshCw } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 
 type Counts = {
   destinations: number;
   packages: number;
-  itineraries: number;
-  reviews: number;
-  blogs: number;
-  events: number;
-  experiences: number;
-  collections: number;
+  customers: number;
 };
 
 const emptyCounts: Counts = {
   destinations: 0,
   packages: 0,
-  itineraries: 0,
-  reviews: 0,
-  blogs: 0,
-  events: 0,
-  experiences: 0,
-  collections: 0,
+  customers: 0,
 };
 
 export function AdminOverview() {
@@ -46,12 +26,7 @@ export function AdminOverview() {
     const tables: { key: keyof Counts; table: string }[] = [
       { key: "destinations", table: "destinations" },
       { key: "packages", table: "packages" },
-      { key: "itineraries", table: "itineraries" },
-      { key: "reviews", table: "reviews" },
-      { key: "blogs", table: "blogs" },
-      { key: "events", table: "events" },
-      { key: "experiences", table: "popular_experiences" },
-      { key: "collections", table: "seasonal_collections" },
+      { key: "customers", table: "profiles" },
     ];
 
     const results = await Promise.all(
@@ -76,12 +51,7 @@ export function AdminOverview() {
   const cards = [
     { label: "Destinations", value: counts.destinations, icon: MapPin },
     { label: "Packages", value: counts.packages, icon: Package },
-    { label: "Itinerary Days", value: counts.itineraries, icon: CalendarRange },
-    { label: "Reviews", value: counts.reviews, icon: Star },
-    { label: "Blog Posts", value: counts.blogs, icon: Newspaper },
-    { label: "Events", value: counts.events, icon: PartyPopper },
-    { label: "Experiences", value: counts.experiences, icon: Compass },
-    { label: "Collections", value: counts.collections, icon: Layers },
+    { label: "Customers", value: counts.customers, icon: Users },
   ];
 
   return (
@@ -90,7 +60,7 @@ export function AdminOverview() {
         <div>
           <h2 className="text-2xl font-semibold text-ink tracking-[-0.01em]">Dashboard</h2>
           <p className="mt-1 text-sm text-text-secondary">
-            Overview of every content type powering the site.
+            Quick summary of your travel inventory and customer base.
           </p>
         </div>
         <button
@@ -102,7 +72,7 @@ export function AdminOverview() {
         </button>
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((card) => {
           const Icon = card.icon;
           return (

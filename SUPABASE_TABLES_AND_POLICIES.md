@@ -1,66 +1,77 @@
-# Supabase Tables and RLS Policies for Dream Travels
+# Supabase Setup for Dream Travels
 
-This document describes the Supabase tables and row-level security (RLS) policies the project needs based on the current frontend usage.
+This document describes the Supabase database schema, storage setup, and security policies that match the current Dream Travels app.
 
-The app uses Supabase Auth for both:
+## 0. Required Supabase configuration
+
+In your `.env` file, set:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SITE_URL` (optional for Open Graph and schema metadata)
+
+The app uses Supabase Auth for:
 - email/password sign in and sign up
-- Google OAuth sign in and sign up
+- social login providers through Supabase Auth
 
-Supabase Auth handles the core user credentials, while this schema stores profile metadata, wishlist state, destinations, packages, and itineraries.
+The browser client is created in `src/lib/supabase.client.ts`.
 
-## 1. Tables to create
+## 1. Tables and expected columns
 
 ### 1.1 `profiles`
-Used to store user metadata and roles.
+Stores user metadata and role information.
 
 Columns:
-- `id uuid` (primary key, references `auth.users.id`, default to auth user id)
+- `id uuid` primary key references `auth.users.id`
 - `role text` (e.g. `user`, `admin`)
 - `full_name text`
 - `created_at timestamp with time zone` default `now()`
-- any other profile metadata you want to store
 
-Purpose:
-- `Navbar` and `Admin` pages query this table to determine user role.
-- `Admin` page checks if the authenticated user has `role = 'admin'`.
+Used by:
+- `src/components/layout/Navbar.tsx` for role-based admin link display
+- `src/app/admin/page.tsx` to verify admin access
+- `src/components/admin/CustomersManager.tsx` to load customer profiles
 
 ### 1.2 `wishlists`
-Stores packages saved by users.
+Stores user-specific saved package rows.
 
 Columns:
-- `id uuid` (primary key)
-- `user_id uuid` (references `profiles.id` or `auth.users.id`)
-- `package_id uuid` (references `packages.id`)
+- `id uuid` primary key
+- `user_id uuid` references `profiles.id` or `auth.users.id`
+- `package_id uuid` references `packages.id`
 - `created_at timestamp with time zone` default `now()`
 
-Purpose:
-- `Dashboard` page selects wishlist rows by `user_id`.
-- Should only allow a user to read their own wishlist rows.
+Used by:
+- `src/app/dashboard/page.tsx`
+- `src/components/admin/CustomersManager.tsx`
 
 ### 1.3 `destinations`
-Stores travel destination data displayed on public pages.
+Public travel destination content.
 
 Columns:
-- `id uuid` (primary key)
-- `slug text` (unique)
+- `id uuid` primary key
+- `slug text` unique
 - `name text`
 - `description text`
 - `cover_image text`
 - `image text`
 - `price numeric`
 - `rating numeric`
+- `is_featured boolean` default `false`
 - `created_at timestamp with time zone` default `now()`
-- any additional destination fields needed
+- `updated_at timestamp with time zone` default `now()`
 
-Purpose:
-- `Home` and destination detail pages read this table publicly.
+Used by:
+- `src/app/page.tsx`
+- `src/app/destinations/[slug]/page.tsx`
+- `src/components/admin/DestinationsManager.tsx`
 
 ### 1.4 `packages`
-Stores package details that are shown publicly.
+Public package listing data.
 
 Columns:
-- `id uuid` (primary key)
-- `slug text` (unique)
+- `id uuid` primary key
+- `slug text` unique
 - `title text`
 - `location text`
 - `image text`
@@ -68,170 +79,327 @@ Columns:
 - `duration text`
 - `pickup text`
 - `dates text`
+- `rating numeric`
+- `reviews int`
 - `price numeric`
 - `original_price numeric`
 - `overview text`
-- `destination_id uuid` (references `destinations.id`)
-- `is_top_pick boolean` default `false` — flags a package for the home page "Top Picks by Dream Travels" section
+- `destination_id uuid` references `destinations.id`
+- `is_top_pick boolean` default `false`
 - `created_at timestamp with time zone` default `now()`
+- `updated_at timestamp with time zone` default `now()`
 
-Purpose:
-- `Home`, destination pages, and package detail pages read this table publicly.
+Used by:
+- `src/app/page.tsx`
+- `src/app/packages/[slug]/page.tsx`
+- `src/components/admin/PackagesManager.tsx`
 
 ### 1.5 `itineraries`
-Stores day-by-day itinerary entries for each package.
+Package itinerary details.
 
 Columns:
-- `id uuid` (primary key)
-- `package_id uuid` (references `packages.id`)
+- `id uuid` primary key
+- `package_id uuid` references `packages.id`
 - `day int`
 - `title text`
 - `description text`
 - `created_at timestamp with time zone` default `now()`
 
-Purpose:
-- `Package` detail page reads itinerary items by `package_id`.
+Used by:
+- `src/app/packages/[slug]/page.tsx`
+- `src/components/admin/ItinerariesManager.tsx`
 
 ### 1.6 `reviews`
-Stores traveller testimonials shown on the home page.
+Public reviews data shown on the home page.
 
 Columns:
-- `id uuid` (primary key)
+- `id uuid` primary key
 - `name text`
 - `avatar text`
-- `rating int` (1-5)
+- `rating int`
 - `review text`
-- `date text` (free-form label, e.g. "2 weeks ago")
+- `date text`
 - `created_at timestamp with time zone` default `now()`
 
+Used by:
+- `src/app/page.tsx`
+
 ### 1.7 `blogs`
-Stores travel story cards shown on the home page.
+Travel blog cards for the homepage.
 
 Columns:
-- `id uuid` (primary key)
+- `id uuid` primary key
 - `title text`
 - `category text`
 - `image text`
 - `read_time text`
 - `author text`
-- `date text` (free-form label, e.g. "Jul 12, 2026")
+- `date text`
 - `excerpt text`
 - `created_at timestamp with time zone` default `now()`
 
+Used by:
+- `src/app/page.tsx`
+
 ### 1.8 `events`
-Stores upcoming events shown on the home page.
+Public event listings.
 
 Columns:
-- `id uuid` (primary key)
+- `id uuid` primary key
 - `title text`
 - `image text`
-- `date text` (free-form label)
+- `date text`
 - `location text`
 - `created_at timestamp with time zone` default `now()`
 
+Used by:
+- `src/app/page.tsx`
+
 ### 1.9 `popular_experiences`
-Stores the "Popular Experiences" tiles shown on the home page.
+Public experience tiles.
 
 Columns:
-- `id uuid` (primary key)
+- `id uuid` primary key
 - `title text`
 - `image text`
 - `created_at timestamp with time zone` default `now()`
+
+Used by:
+- `src/app/page.tsx`
 
 ### 1.10 `seasonal_collections`
-Stores the "Seasonal Collections" tiles shown on the home page.
+Seasonal collection tiles.
 
 Columns:
-- `id uuid` (primary key)
+- `id uuid` primary key
 - `title text`
 - `image text`
 - `created_at timestamp with time zone` default `now()`
 
+Used by:
+- `src/app/page.tsx`
+
 ### 1.11 `budget_tiers`
-Stores the price bands shown in the "Budget Friendly" section. The displayed count of destinations under each limit is computed live from the `destinations.price` column — it is not stored.
+Budget tier entries used for the home page filters.
 
 Columns:
-- `id uuid` (primary key)
-- `title text` (e.g. "Below ₹5,000")
+- `id uuid` primary key
+- `title text`
 - `emoji text`
 - `price_limit numeric`
 - `created_at timestamp with time zone` default `now()`
 
+Used by:
+- `src/app/page.tsx`
+
+### 1.12 Storage bucket: `images`
+Used by admin uploads for destination and package images.
+
+Bucket settings:
+- Bucket name: `images`
+- Public access: yes (the app calls `getPublicUrl`)
+- `cacheControl`: 3600 in upload code
+
+The upload flow in admin components:
+- `src/components/admin/DestinationsManager.tsx`
+- `src/components/admin/PackagesManager.tsx`
+
+Those components upload to `storage.from("images")` and then call `.getPublicUrl(data.path)`.
+
+## 1.13 Admin helper function for RLS checks
+
+To avoid recursive policy lookups and RLS recursion, define a helper function that checks admin status while bypassing RLS.
+
+```sql
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+stable
+as $$
+  select exists (
+    select 1
+    from public.profiles
+    where id = auth.uid()
+      and role = 'admin'
+  );
+$$;
+
+grant execute on function public.is_admin() to authenticated;
+```
+
+This function should be used by policy definitions instead of nested `select` checks against `profiles`.
+
 ## 2. Recommended RLS policies
 
-### 2.1 Enable RLS on all tables
-For each table in Supabase, enable row-level security. Then add policies as needed.
+### 2.1 Enable RLS on all database tables
+Turn on row-level security for each table, then add policies for public reads and auth-protected writes.
 
 ### 2.2 `profiles`
-- `SELECT`: allow if `auth.uid() = id`
-- `INSERT`: allow if `auth.uid() = id`
-- `UPDATE`: allow if `auth.uid() = id`
-- `DELETE`: usually disable or restrict to admin only
-
-Example policies:
 - `SELECT`: `auth.uid() = id`
+- `INSERT`: `auth.uid() = id`
 - `UPDATE`: `auth.uid() = id`
+- `DELETE`: restrict to admin only
+
+Example policy:
+```sql
+create policy "Users can manage their profile" on profiles
+for all
+using (auth.uid() = id)
+with check (auth.uid() = id);
+```
 
 ### 2.3 `wishlists`
-- `SELECT`: allow if `auth.uid() = user_id`
-- `INSERT`: allow if `auth.uid() = user_id`
-- `UPDATE`: allow if `auth.uid() = user_id` (if you plan to update wishlist records)
-- `DELETE`: allow if `auth.uid() = user_id`
-
-Example policies:
 - `SELECT`: `auth.uid() = user_id`
 - `INSERT`: `auth.uid() = user_id`
 - `DELETE`: `auth.uid() = user_id`
 
-### 2.4 `destinations`
-- `SELECT`: allow all rows publicly
-- `INSERT`, `UPDATE`, `DELETE`: restrict to admin/service role only
-
 Example policy:
-- `SELECT`: `true`
+```sql
+create policy "Users can manage own wishlist" on wishlists
+for all
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+```
 
-### 2.5 `packages`
-- `SELECT`: allow all rows publicly
-- `INSERT`, `UPDATE`, `DELETE`: restrict to admin/service role only
+### 2.4 Public content tables
+For these tables, allow public reads and restrict writes to admins:
+- `destinations`
+- `packages`
+- `itineraries`
+- `reviews`
+- `blogs`
+- `events`
+- `popular_experiences`
+- `seasonal_collections`
+- `budget_tiers`
 
-Example policy:
-- `SELECT`: `true`
+Public SELECT policy:
+```sql
+create policy "Public read" on <table_name>
+for select
+using (true);
+```
 
-### 2.6 `itineraries`
-- `SELECT`: allow all rows publicly
-- `INSERT`, `UPDATE`, `DELETE`: restrict to admin/service role only
-
-Example policy:
-- `SELECT`: `true`
-
-### 2.7 `reviews`, `blogs`, `events`, `popular_experiences`, `seasonal_collections`, `budget_tiers`
-Same pattern as `destinations`/`packages`: content is public to read, writes are admin-only.
-
-- `SELECT`: allow all rows publicly (`true`)
-- `INSERT`, `UPDATE`, `DELETE`: restrict to admin/service role only
-
-A common way to restrict writes to admins across all of these tables:
-
+Admin-only write policy (reuse for each table):
 ```sql
 create policy "Admins can write" on <table_name>
 for all
-using (exists (select 1 from profiles where profiles.id = auth.uid() and profiles.role = 'admin'))
-with check (exists (select 1 from profiles where profiles.id = auth.uid() and profiles.role = 'admin'));
+using (
+  exists (
+    select 1
+    from profiles
+    where profiles.id = auth.uid()
+      and profiles.role = 'admin'
+  )
+)
+with check (
+  exists (
+    select 1
+    from profiles
+    where profiles.id = auth.uid()
+      and profiles.role = 'admin'
+  )
+);
 ```
 
-## 3. Notes for current app behavior
+## 3. Supabase schema SQL reference
 
-- The app currently uses Supabase auth on login and queries `profiles`, `wishlists`, `destinations`, `packages`, `itineraries`, `reviews`, `blogs`, `events`, `popular_experiences`, `seasonal_collections`, and `budget_tiers`.
-- `destinations`, `packages`, `itineraries`, `reviews`, `blogs`, `events`, `popular_experiences`, `seasonal_collections`, and `budget_tiers` are read by public pages, so their select policy must allow unauthenticated reads.
-- `profiles` and `wishlists` are user-specific and must be protected with auth-based policies.
-- The app reads `role` from `profiles` to decide if a user can access admin UI.
-- The home page (`src/app/page.tsx`) falls back to the static data in `src/data/*.ts` for any table that is empty or errors, so the site still renders before you've populated Supabase.
-- The admin dashboard (`/admin`) has a manager for every one of these tables, including create/edit/delete with toast notifications.
+Example SQL for `profiles`:
+```sql
+create table profiles (
+  id uuid primary key references auth.users(id),
+  role text not null default 'user',
+  full_name text,
+  created_at timestamp with time zone default now()
+);
+```
 
-## 4. Optional admin behavior
+Example SQL for `wishlists`:
+```sql
+create table wishlists (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references profiles(id),
+  package_id uuid not null references packages(id),
+  created_at timestamp with time zone default now()
+);
+```
 
-If you later add admin create/edit/delete pages, use the Supabase service role key or a server-side admin-only endpoint. Do not expose the service role key to the browser.
+Example SQL for `destinations`:
+```sql
+create table destinations (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  name text not null,
+  description text,
+  cover_image text,
+  image text,
+  price numeric,
+  rating numeric,
+  is_featured boolean default false,
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now()
+);
+```
+
+Example SQL for `packages`:
+```sql
+create table packages (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  title text not null,
+  location text,
+  image text,
+  category text,
+  duration text,
+  pickup text,
+  dates text,
+  rating numeric,
+  reviews int,
+  price numeric,
+  original_price numeric,
+  overview text,
+  destination_id uuid references destinations(id),
+  is_top_pick boolean default false,
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now()
+);
+```
+
+Example SQL for `itineraries`:
+```sql
+create table itineraries (
+  id uuid primary key default gen_random_uuid(),
+  package_id uuid not null references packages(id),
+  day int,
+  title text,
+  description text,
+  created_at timestamp with time zone default now()
+);
+```
+
+## 4. Notes for current app behavior
+
+- The home page falls back to static data in `src/data/*` if Supabase queries return no rows or fail.
+- The admin dashboard is protected server-side in `src/app/admin/page.tsx` by reading `profiles.role`.
+- Admin upload code uses the public storage bucket `images` and then generates a public URL.
+- Do not expose the Supabase service role key in frontend code.
+
+## 5. Storage bucket setup
+
+Create a bucket named `images` with public access if you want direct image preview URLs.
+If you want private uploads, use signed URLs instead and update the code accordingly.
+
+## 6. Recommended policy checklist
+
+- [ ] Enable RLS on all tables
+- [ ] Add `profiles` policies for user-specific access
+- [ ] Add `wishlists` policies for user-specific access
+- [ ] Add public `SELECT` policies for read-only content tables
+- [ ] Add admin write policies for content tables
+- [ ] Create and configure storage bucket `images`
+- [ ] Verify `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 ---
 
-This file is meant as a Supabase setup checklist for the current Dream Travels project.
+This file is a current Supabase setup reference for Dream Travels.

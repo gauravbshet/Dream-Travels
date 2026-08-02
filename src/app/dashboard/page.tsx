@@ -9,16 +9,11 @@ import Link from "next/link";
 
 async function getUserData() {
     const supabase = createServerSupabaseClient();
-    const {
-        data: { session },
-        error: sessionError,
-    } = await supabase.auth.getSession();
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (sessionError || !session?.user) {
+    if (error || !user) {
         redirect("/login");
     }
-
-    const user = session.user;
 
     const { data: profileData } = await supabase
         .from("profiles")
@@ -54,8 +49,8 @@ export default async function DashboardPage() {
                     description="Your profile, saved packages, and wishlist are waiting for you."
                 />
 
-                <section className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
-                    <div className="rounded-[24px] border border-border bg-white p-8">
+                <section className="grid gap-8 lg:grid-cols-2">
+                    <div className="rounded-[24px] border border-border bg-white p-8 sm:p-10">
                         <h3 className="text-xl font-semibold text-ink">Profile</h3>
                         <div className="mt-6 space-y-3 text-ink/85">
                             <p>

@@ -6,33 +6,30 @@ import { AdminDashboard } from "@/components/admin/AdminDashboard";
 
 async function requireAdmin() {
     const supabase = createServerSupabaseClient();
-    const {
-        data: { session },
-        error: sessionError,
-    } = await supabase.auth.getSession();
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (sessionError || !session?.user) {
+    if (error || !user) {
         redirect("/login");
     }
 
     const { data: profileData } = await supabase
         .from("profiles")
         .select("role")
-        .eq("id", session.user.id)
+        .eq("id", user.id)
         .single();
 
     if (profileData?.role !== "admin") {
         redirect("/dashboard");
     }
 
-    return session.user;
+    return user;
 }
 
 export default async function AdminPage() {
     const user = await requireAdmin();
 
     return (
-        <main className="flex-1 bg-surface pt-16 lg:pt-20">
+        <main className="flex-1 bg-surface">
             <AdminDashboard userEmail={user.email} />
         </main>
     );

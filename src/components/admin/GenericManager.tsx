@@ -215,7 +215,7 @@ export function GenericManager({
       )}
 
       <div className="mt-6 overflow-x-auto rounded-[18px] border border-border bg-white">
-        <table className="w-full min-w-[560px] text-left text-sm">
+        <table className="w-full min-w-[min(100%,560px)] text-left text-sm">
           <thead>
             <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-text-secondary">
               {columns.map((col) => (

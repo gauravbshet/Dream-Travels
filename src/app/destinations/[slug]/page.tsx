@@ -45,9 +45,9 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                     description={data.destination.description ?? "Explore one of our featured destinations."}
                 />
 
-                <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
+                <div className="grid gap-8 lg:grid-cols-2">
                     <div className="overflow-hidden rounded-[24px] bg-white border border-border">
-                        <div className="relative h-[420px] w-full">
+                        <div className="relative h-[320px] sm:h-[420px] w-full">
                             <Image
                                 src={data.destination.cover_image ?? data.destination.image}
                                 alt={data.destination.name}

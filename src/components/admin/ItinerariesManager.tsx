@@ -244,7 +244,7 @@ export function ItinerariesManager() {
       )}
 
       <div className="mt-6 overflow-x-auto rounded-[18px] border border-border bg-white">
-        <table className="w-full min-w-[640px] text-left text-sm">
+        <table className="w-full min-w-[min(100%,640px)] text-left text-sm">
           <thead>
             <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-text-secondary">
               <th className="px-5 py-4">Day</th>

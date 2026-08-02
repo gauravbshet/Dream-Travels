@@ -1,51 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { ToastProvider } from "./Toast";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminOverview } from "./AdminOverview";
 import { DestinationsManager } from "./DestinationsManager";
 import { PackagesManager } from "./PackagesManager";
-import { ItinerariesManager } from "./ItinerariesManager";
-import { ReviewsManager } from "./ReviewsManager";
-import { BlogsManager } from "./BlogsManager";
-import { EventsManager } from "./EventsManager";
-import { ExperiencesManager } from "./ExperiencesManager";
-import { CollectionsManager } from "./CollectionsManager";
-import { BudgetTiersManager } from "./BudgetTiersManager";
+import { CustomersManager } from "./CustomersManager";
 
-export type AdminSection =
-  | "overview"
-  | "destinations"
-  | "packages"
-  | "itineraries"
-  | "reviews"
-  | "blogs"
-  | "events"
-  | "experiences"
-  | "collections"
-  | "budgetTiers";
+export type AdminSection = "overview" | "destinations" | "packages" | "customers";
 
 export function AdminDashboard({ userEmail }: { userEmail?: string | null }) {
   const [activeSection, setActiveSection] = useState<AdminSection>("overview");
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const section = searchParams.get("section");
+    if (
+      section === "overview" ||
+      section === "destinations" ||
+      section === "packages" ||
+      section === "customers"
+    ) {
+      setActiveSection(section);
+    }
+  }, [searchParams]);
 
   return (
     <ToastProvider>
-      <div className="flex min-h-[calc(100vh-6rem)] flex-col lg:flex-row">
+      <div className="flex min-h-screen w-full flex-col lg:flex-row">
         <AdminSidebar active={activeSection} onChange={setActiveSection} userEmail={userEmail} />
 
-        <div className="flex-1 px-4 py-8 sm:px-8 lg:px-10">
+        <main className="flex-1 overflow-y-auto bg-surface px-4 py-8 sm:px-8 lg:px-10">
           {activeSection === "overview" && <AdminOverview />}
           {activeSection === "destinations" && <DestinationsManager />}
           {activeSection === "packages" && <PackagesManager />}
-          {activeSection === "itineraries" && <ItinerariesManager />}
-          {activeSection === "reviews" && <ReviewsManager />}
-          {activeSection === "blogs" && <BlogsManager />}
-          {activeSection === "events" && <EventsManager />}
-          {activeSection === "experiences" && <ExperiencesManager />}
-          {activeSection === "collections" && <CollectionsManager />}
-          {activeSection === "budgetTiers" && <BudgetTiersManager />}
-        </div>
+          {activeSection === "customers" && <CustomersManager />}
+        </main>
       </div>
     </ToastProvider>
   );

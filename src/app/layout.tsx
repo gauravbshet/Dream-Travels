@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
-import AuthNavbar from "@/components/layout/AuthNavbar";
+import { RouteAwareNavbar, RouteAwareBottomNav } from "@/components/layout/RouteAwareNavigation";
 import { FooterGuard } from "@/components/layout/FooterGuard";
-import { BottomNav } from "@/components/layout/BottomNav";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -63,10 +62,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${manrope.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-ink">
-        <AuthNavbar />
+        <RouteAwareNavbar />
         {children}
         <FooterGuard />
-        <BottomNav />
+        <RouteAwareBottomNav />
       </body>
     </html>
   );

@@ -39,17 +39,17 @@ export function Navbar() {
       if (!supabase) return;
 
       const {
-        data: { session },
-      } = await supabase.auth.getSession();
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (!mounted) return;
-      setSession(session);
+      setSession(user);
 
-      if (session?.user?.id) {
+      if (user?.id) {
         const { data: profile } = await supabase
           .from("profiles")
           .select("role")
-          .eq("id", session.user.id)
+          .eq("id", user.id)
           .single();
 
         if (!mounted) return;
@@ -62,16 +62,20 @@ export function Navbar() {
     loadSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (_event, newSession) => {
-        setSession(newSession);
+      async () => {
+        const {
+          data: { user: currentUser },
+        } = await supabase.auth.getUser();
+
+        setSession(currentUser ?? null);
 
         if (!supabase) return;
 
-        if (newSession?.user?.id) {
+        if (currentUser?.id) {
           const { data: profile } = await supabase
             .from("profiles")
             .select("role")
-            .eq("id", newSession.user.id)
+            .eq("id", currentUser.id)
             .single();
           setUserRole(profile?.role ?? null);
         } else {

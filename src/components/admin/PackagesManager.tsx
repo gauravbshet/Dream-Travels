@@ -3,57 +3,44 @@
 import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
+import { createStoragePath } from "@/lib/utils";
 import { useToast } from "./Toast";
+import { Modal } from "./Modal";
+import { ImageUploadField } from "./ImageUploadField";
 
 type PackageRow = {
   id: string;
-  slug: string;
   title: string;
-  location: string | null;
-  image: string | null;
-  category: string | null;
-  duration: string | null;
-  pickup: string | null;
-  dates: string | null;
-  price: number | null;
-  original_price: number | null;
-  overview: string | null;
   destination_id: string | null;
-  is_top_pick: boolean | null;
+  duration: string | null;
+  price: number | null;
+  overview: string | null;
+  image: string | null;
+  additional_images: string[] | null;
 };
 
 type DestinationOption = { id: string; name: string };
 
 type FormState = {
-  slug: string;
   title: string;
-  location: string;
-  image: string;
-  category: string;
-  duration: string;
-  pickup: string;
-  dates: string;
-  price: string;
-  original_price: string;
-  overview: string;
   destination_id: string;
-  is_top_pick: boolean;
+  duration: string;
+  price: string;
+  overview: string;
+  image: string;
+  image_file: File | null;
+  additional_images: string;
 };
 
 const emptyForm: FormState = {
-  slug: "",
   title: "",
-  location: "",
-  image: "",
-  category: "",
-  duration: "",
-  pickup: "",
-  dates: "",
-  price: "",
-  original_price: "",
-  overview: "",
   destination_id: "",
-  is_top_pick: false,
+  duration: "",
+  price: "",
+  overview: "",
+  image: "",
+  image_file: null,
+  additional_images: "",
 };
 
 export function PackagesManager() {
@@ -67,11 +54,15 @@ export function PackagesManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   async function loadData() {
     setLoading(true);
     const [packagesRes, destinationsRes] = await Promise.all([
-      supabase.from("packages").select("*").order("created_at", { ascending: false }),
+      supabase
+        .from("packages")
+        .select("id,title,duration,price,overview,image,additional_images,destination_id")
+        .order("created_at", { ascending: false }),
       supabase.from("destinations").select("id,name").order("name"),
     ]);
 
@@ -103,47 +94,77 @@ export function PackagesManager() {
   function openEditForm(pkg: PackageRow) {
     setEditingId(pkg.id);
     setForm({
-      slug: pkg.slug ?? "",
       title: pkg.title ?? "",
-      location: pkg.location ?? "",
-      image: pkg.image ?? "",
-      category: pkg.category ?? "",
-      duration: pkg.duration ?? "",
-      pickup: pkg.pickup ?? "",
-      dates: pkg.dates ?? "",
-      price: pkg.price?.toString() ?? "",
-      original_price: pkg.original_price?.toString() ?? "",
-      overview: pkg.overview ?? "",
       destination_id: pkg.destination_id ?? "",
-      is_top_pick: pkg.is_top_pick ?? false,
+      duration: pkg.duration ?? "",
+      price: pkg.price?.toString() ?? "",
+      overview: pkg.overview ?? "",
+      image: pkg.image ?? "",
+      image_file: null,
+      additional_images: pkg.additional_images?.join(", ") ?? "",
     });
     setShowForm(true);
+  }
+
+  async function uploadPackageImage(file: File | null) {
+    if (!file) {
+      setForm((f) => ({ ...f, image_file: null, image: "" }));
+      return;
+    }
+
+    setUploadingImage(true);
+    const filename = createStoragePath("packages", file);
+    const { data, error } = await supabase.storage.from("images").upload(filename, file, {
+      cacheControl: "3600",
+      upsert: true,
+    });
+
+    if (error || !data?.path) {
+      showToast(`Failed to upload image: ${error?.message ?? "Unknown error"}`, "error");
+      setUploadingImage(false);
+      return;
+    }
+
+    const { data: publicData } = await supabase
+      .storage
+      .from("images")
+      .getPublicUrl(data.path);
+
+    if (!publicData?.publicUrl) {
+      showToast("Failed to generate image URL", "error");
+      setUploadingImage(false);
+      return;
+    }
+
+    setForm((f) => ({
+      ...f,
+      image_file: file,
+      image: publicData.publicUrl,
+    }));
+    setUploadingImage(false);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!form.title.trim() || !form.slug.trim()) {
-      showToast("Title and slug are required.", "error");
+    if (!form.title.trim()) {
+      showToast("Package title is required.", "error");
       return;
     }
 
     setSaving(true);
 
     const payload = {
-      slug: form.slug.trim(),
       title: form.title.trim(),
-      location: form.location.trim() || null,
-      image: form.image.trim() || null,
-      category: form.category.trim() || null,
-      duration: form.duration.trim() || null,
-      pickup: form.pickup.trim() || null,
-      dates: form.dates.trim() || null,
-      price: form.price ? Number(form.price) : null,
-      original_price: form.original_price ? Number(form.original_price) : null,
-      overview: form.overview.trim() || null,
       destination_id: form.destination_id || null,
-      is_top_pick: form.is_top_pick,
+      duration: form.duration.trim() || null,
+      price: form.price ? Number(form.price) : null,
+      overview: form.overview.trim() || null,
+      image: form.image.trim() || null,
+      additional_images: form.additional_images
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean),
     };
 
     const { error } = editingId
@@ -197,147 +218,99 @@ export function PackagesManager() {
       </div>
 
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="mt-6 rounded-[18px] border border-border bg-white p-6"
+        <Modal
+          title={editingId ? "Edit package" : "New package"}
+          description="Add or update a package listing with pricing, destination mapping, and images."
+          onClose={() => setShowForm(false)}
         >
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-ink">
-              {editingId ? "Edit package" : "New package"}
-            </h4>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Destination Mapping">
+                <select
+                  value={form.destination_id}
+                  onChange={(e) => setForm((f) => ({ ...f, destination_id: e.target.value }))}
+                  className="input"
+                >
+                  <option value="">Select a destination</option>
+                  {destinations.map((destination) => (
+                    <option key={destination.id} value={destination.id}>
+                      {destination.name}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label="Package Title">
+                <input
+                  value={form.title}
+                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  className="input"
+                  placeholder="5-Day Paris Romantic Getaway"
+                />
+              </Field>
+              <Field label="Duration">
+                <input
+                  value={form.duration}
+                  onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))}
+                  className="input"
+                  placeholder="e.g. 5D / 4N"
+                />
+              </Field>
+              <Field label="Price">
+                <input
+                  type="number"
+                  value={form.price}
+                  onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
+                  className="input"
+                  placeholder="e.g. 35000"
+                />
+              </Field>
+              <div className="sm:col-span-2">
+                <ImageUploadField
+                  label="Main image"
+                  imageUrl={form.image}
+                  onImageFileChange={uploadPackageImage}
+                  onImageUrlChange={(url) => setForm((f) => ({ ...f, image: url }))}
+                />
+                {uploadingImage && (
+                  <p className="mt-2 text-sm text-text-secondary">Uploading image...</p>
+                )}
+              </div>
+              <Field label="Additional Images" full>
+                <input
+                  value={form.additional_images}
+                  onChange={(e) => setForm((f) => ({ ...f, additional_images: e.target.value }))}
+                  className="input"
+                  placeholder="Comma-separated URLs"
+                />
+              </Field>
+              <Field label="Details / Description" full>
+                <textarea
+                  value={form.overview}
+                  onChange={(e) => setForm((f) => ({ ...f, overview: e.target.value }))}
+                  className="input min-h-[100px]"
+                  placeholder="Itinerary highlights, inclusions, and pricing details"
+                />
+              </Field>
+            </div>
+
             <button
-              type="button"
-              onClick={() => setShowForm(false)}
-              className="text-text-secondary hover:text-ink"
-              aria-label="Close form"
+              type="submit"
+              disabled={saving}
+              className="rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
             >
-              <X className="h-5 w-5" />
+              {saving ? "Saving..." : editingId ? "Save changes" : "Create package"}
             </button>
-          </div>
-
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <Field label="Title">
-              <input
-                value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Slug">
-              <input
-                value={form.slug}
-                onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Destination">
-              <select
-                value={form.destination_id}
-                onChange={(e) => setForm((f) => ({ ...f, destination_id: e.target.value }))}
-                className="input"
-              >
-                <option value="">— None —</option>
-                {destinations.map((destination) => (
-                  <option key={destination.id} value={destination.id}>
-                    {destination.name}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Location">
-              <input
-                value={form.location}
-                onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Category">
-              <input
-                value={form.category}
-                onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Duration">
-              <input
-                value={form.duration}
-                onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))}
-                className="input"
-                placeholder="e.g. 5D / 4N"
-              />
-            </Field>
-            <Field label="Pickup">
-              <input
-                value={form.pickup}
-                onChange={(e) => setForm((f) => ({ ...f, pickup: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Dates">
-              <input
-                value={form.dates}
-                onChange={(e) => setForm((f) => ({ ...f, dates: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Price">
-              <input
-                type="number"
-                value={form.price}
-                onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Original price">
-              <input
-                type="number"
-                value={form.original_price}
-                onChange={(e) => setForm((f) => ({ ...f, original_price: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Image URL" full>
-              <input
-                value={form.image}
-                onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Overview" full>
-              <textarea
-                value={form.overview}
-                onChange={(e) => setForm((f) => ({ ...f, overview: e.target.value }))}
-                className="input min-h-[100px]"
-              />
-            </Field>
-            <label className="flex items-center gap-2 text-sm text-ink/80 sm:col-span-2">
-              <input
-                type="checkbox"
-                checked={form.is_top_pick}
-                onChange={(e) => setForm((f) => ({ ...f, is_top_pick: e.target.checked }))}
-                className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
-              />
-              Top pick (Top Picks by Dream Travels)
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            disabled={saving}
-            className="mt-6 rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
-          >
-            {saving ? "Saving..." : editingId ? "Save changes" : "Create package"}
-          </button>
-        </form>
+          </form>
+        </Modal>
       )}
 
       <div className="mt-6 overflow-x-auto rounded-[18px] border border-border bg-white">
-        <table className="w-full min-w-[720px] text-left text-sm">
+        <table className="w-full min-w-[min(100%,720px)] text-left text-sm">
           <thead>
             <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-text-secondary">
               <th className="px-5 py-4">Title</th>
               <th className="px-5 py-4">Destination</th>
-              <th className="px-5 py-4">Location</th>
+              <th className="px-5 py-4">Duration</th>
               <th className="px-5 py-4">Price</th>
               <th className="px-5 py-4 text-right">Actions</th>
             </tr>
@@ -358,14 +331,11 @@ export function PackagesManager() {
             ) : (
               packages.map((pkg) => (
                 <tr key={pkg.id} className="border-b border-border last:border-0">
-                  <td className="px-5 py-4">
-                    <p className="font-semibold text-ink">{pkg.title}</p>
-                    <p className="text-xs text-ink/40">/{pkg.slug}</p>
-                  </td>
+                  <td className="px-5 py-4 font-semibold text-ink">{pkg.title}</td>
                   <td className="px-5 py-4 text-ink/80">
                     {destinations.find((d) => d.id === pkg.destination_id)?.name ?? "—"}
                   </td>
-                  <td className="px-5 py-4 text-ink/80">{pkg.location ?? "—"}</td>
+                  <td className="px-5 py-4 text-ink/80">{pkg.duration ?? "—"}</td>
                   <td className="px-5 py-4 text-ink/80">
                     {pkg.price != null ? `₹${pkg.price}` : "—"}
                   </td>

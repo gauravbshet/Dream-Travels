@@ -50,10 +50,10 @@ export default async function PackagePage({ params }: { params: { slug: string }
                     description={data.pkg.overview ?? "Explore the itinerary and book with confidence."}
                 />
 
-                <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
+                <div className="grid gap-8 lg:grid-cols-2">
                     <div className="space-y-8">
                         <div className="overflow-hidden rounded-[24px] bg-white border border-border">
-                            <div className="relative h-[460px] w-full">
+                            <div className="relative h-[320px] sm:h-[460px] w-full">
                                 <Image
                                     src={data.pkg.image}
                                     alt={data.pkg.title}

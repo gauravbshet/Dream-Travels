@@ -63,8 +63,8 @@ export function Footer() {
         DREAM TRAVELS
       </span>
       <Container className="relative">
-        <div className="flex flex-col gap-12 lg:flex-row lg:gap-8">
-          <div className="lg:w-1/4">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1fr_1fr_1fr] lg:gap-8">
+          <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2">
               <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary text-white font-semibold text-base">
                 D

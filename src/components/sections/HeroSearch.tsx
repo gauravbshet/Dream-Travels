@@ -16,8 +16,8 @@ export function HeroSearch({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "bg-white rounded-[20px] border border-border shadow-[0_10px_35px_rgba(20,40,25,0.08)] p-3 xl:p-2.5",
-        "flex flex-col xl:flex-row xl:items-center gap-2",
+        "bg-white rounded-[20px] border border-border shadow-[0_10px_35px_rgba(20,40,25,0.08)] p-3 md:p-4",
+        "flex flex-col md:flex-row md:items-center gap-2",
         className
       )}
     >
