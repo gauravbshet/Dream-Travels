@@ -29,6 +29,7 @@ export function Hero() {
               alt="Misty forest mountains"
               fill
               priority
+              sizes="1500px"
               className="object-cover"
             />
           </motion.div>

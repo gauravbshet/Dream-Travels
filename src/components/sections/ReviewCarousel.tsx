@@ -55,7 +55,7 @@ export function ReviewCarousel({ reviews = staticReviews }: { reviews?: Review[]
               </p>
               <div className="mt-5 flex items-center gap-3 border-t border-border pt-4">
                 <div className="relative h-11 w-11 overflow-hidden rounded-full">
-                  <Image src={review.avatar} alt={review.name} fill className="object-cover" />
+                  <Image src={review.avatar} alt={review.name} fill sizes="44px" className="object-cover" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-ink">{review.name}</p>

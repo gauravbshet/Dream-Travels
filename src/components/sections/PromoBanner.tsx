@@ -30,7 +30,13 @@ function PromoCard({ promo }: { promo: (typeof promos)[number] }) {
       className="relative h-72 lg:h-80 overflow-hidden rounded-[24px]"
     >
       <motion.div style={{ y }} className="absolute inset-0 -top-8 -bottom-8">
-        <Image src={promo.image} alt={promo.title} fill className="object-cover" />
+        <Image
+          src={promo.image}
+          alt={promo.title}
+          fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          className="object-cover"
+        />
       </motion.div>
       <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e12]/75 via-[#0a1e12]/20 to-transparent" />
       <div className="relative z-10 flex h-full flex-col justify-end p-6 lg:p-8">
