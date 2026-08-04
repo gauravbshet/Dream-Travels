@@ -39,9 +39,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
         <main className="flex-1 py-20">
             <Container>
                 <SectionHeading
-                    eyebrow="Destination"
                     title={data.destination.name}
-                    emoji="📍"
                     description={data.destination.description ?? "Explore one of our featured destinations."}
                 />
 

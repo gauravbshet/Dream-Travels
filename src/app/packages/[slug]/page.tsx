@@ -44,9 +44,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
         <main className="flex-1 py-20">
             <Container>
                 <SectionHeading
-                    eyebrow="Package Details"
                     title={data.pkg.title}
-                    emoji="✈️"
                     description={data.pkg.overview ?? "Explore the itinerary and book with confidence."}
                 />
 

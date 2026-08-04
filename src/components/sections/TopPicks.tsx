@@ -11,9 +11,7 @@ export function TopPicks({ packages = staticTopPicks }: { packages?: Package[] }
     <Section>
       <Container>
         <SectionHeading
-          eyebrow="Curated by Us"
           title="Top Picks by Dream Travels"
-          emoji="⭐"
           description="Our editorial team's favorite journeys this season."
         />
         <ResponsiveScroller gridClassName="lg:grid-cols-4 lg:gap-6">

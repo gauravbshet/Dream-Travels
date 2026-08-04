@@ -1,11 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { Archivo, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { RouteAwareNavbar, RouteAwareBottomNav } from "@/components/layout/RouteAwareNavigation";
 import { FooterGuard } from "@/components/layout/FooterGuard";
+import { AtmosphereField } from "@/components/ui/AtmosphereField";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+const archivo = Archivo({
+  variable: "--font-archivo",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
   display: "swap",
 });
@@ -51,7 +58,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#F9FAF7",
+  themeColor: "#0d1a14",
 };
 
 export default function RootLayout({
@@ -60,12 +67,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${manrope.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${archivo.variable} ${bricolage.variable} h-full antialiased`}
+    >
       <body className="min-h-full flex flex-col bg-background text-ink">
-        <RouteAwareNavbar />
-        {children}
-        <FooterGuard />
-        <RouteAwareBottomNav />
+        <AtmosphereField />
+        <div className="relative flex min-h-full flex-1 flex-col" style={{ zIndex: 1 }}>
+          <RouteAwareNavbar />
+          {children}
+          <FooterGuard />
+          <RouteAwareBottomNav />
+        </div>
       </body>
     </html>
   );

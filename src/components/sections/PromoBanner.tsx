@@ -22,11 +22,7 @@ function PromoCard({ promo }: { promo: (typeof promos)[number] }) {
 
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6 }}
+      ref={ref}      transition={{ duration: 0.6 }}
       className="relative h-72 lg:h-80 overflow-hidden rounded-[24px]"
     >
       <motion.div style={{ y }} className="absolute inset-0 -top-8 -bottom-8">
@@ -48,7 +44,7 @@ function PromoCard({ promo }: { promo: (typeof promos)[number] }) {
           whileTap={{ scale: 0.97 }}
           className={cn(
             "mt-4 w-fit inline-flex items-center justify-center gap-2 rounded-[12px] px-6 py-3 text-sm font-semibold transition-colors",
-            "bg-white/90 backdrop-blur-md text-ink hover:bg-white"
+            "bg-[oklch(0.19_0.024_158/0.82)] backdrop-blur-md text-ink hover:bg-surface"
           )}
         >
           Customize Your Trip
@@ -62,7 +58,7 @@ export function PromoBanner() {
   return (
     <Section id="experiences">
       <Container>
-        <SectionHeading eyebrow="Just For You" title="New Attractions" emoji="✨" />
+        <SectionHeading title="New Attractions" />
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
           {promos.map((promo) => (
             <PromoCard key={promo.id} promo={promo} />

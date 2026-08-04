@@ -6,7 +6,6 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
 import { Section } from "@/components/ui/Section";
-import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
 import { popularExperiences as staticExperiences } from "@/data/destinations";
 import type { PopularExperience } from "@/data/destinations";
 
@@ -18,17 +17,11 @@ export function PopularExperiences({
   return (
     <Section>
       <Container>
-        <SectionHeading eyebrow="Do More" title="Popular Experiences" />
+        <SectionHeading title="Popular Experiences" />
         <ResponsiveScroller gridClassName="lg:grid-cols-4 xl:grid-cols-8 lg:gap-4">
-          {experiences.map((exp, i) => (
+          {experiences.map((exp) => (
             <motion.div
-              key={exp.id}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={viewportOnce}
-              transition={fadeUpDelay(i)}
-              className="group relative h-40 w-[42%] xs:w-[36%] sm:w-[26%] shrink-0 snap-start overflow-hidden rounded-[18px] border border-border lg:w-full"
+              key={exp.id}              className="group relative h-40 w-[42%] xs:w-[36%] sm:w-[26%] shrink-0 snap-start overflow-hidden rounded-[14px] border border-border lg:w-full"
             >
               <Image
                 src={exp.image}

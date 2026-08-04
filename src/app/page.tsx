@@ -1,6 +1,9 @@
 import { Hero } from "@/components/sections/Hero";
 import { CategorySlider } from "@/components/sections/CategorySlider";
 import { TrendingTrips } from "@/components/sections/TrendingTrips";
+import { TrendingDestinations } from "@/components/sections/TrendingDestinations";
+import { TopRatedPackages } from "@/components/sections/TopRatedPackages";
+import { ExploreByMap } from "@/components/sections/ExploreByMap";
 import { RecommendedDestinations } from "@/components/sections/RecommendedDestinations";
 import { PromoBanner } from "@/components/sections/PromoBanner";
 import { InterestingDestinations } from "@/components/sections/InterestingDestinations";
@@ -218,12 +221,15 @@ export default async function Home() {
         <Hero />
         <CategorySlider />
         <TrendingTrips packages={featuredPackages} />
+        <TrendingDestinations />
         <RecommendedDestinations destinations={featuredDestinations} />
         <PromoBanner />
         <InterestingDestinations destinations={interestingDestinations} />
+        <TopRatedPackages packages={featuredPackages} />
         <TopPicks packages={topPicks} />
         <BudgetCards tiers={budgetTiers} />
         <Statistics />
+        <ExploreByMap />
         <ReviewCarousel reviews={reviews} />
         <WhyChooseUs />
         <PopularExperiences experiences={experiences} />

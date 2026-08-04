@@ -7,7 +7,6 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
 import { Section } from "@/components/ui/Section";
-import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
 import { reviews as staticReviews } from "@/data/reviews";
 import type { Review } from "@/data/reviews";
 
@@ -17,33 +16,26 @@ export function ReviewCarousel({ reviews = staticReviews }: { reviews?: Review[]
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeading
-            eyebrow="Testimonials"
             title="Our Travellers' Experiences"
             className="mb-4 lg:mb-8"
           />
-          <div className="mb-6 lg:mb-10 flex items-center gap-2 rounded-[16px] bg-white px-4 py-3 border border-border">
+          <div className="mb-6 lg:mb-10 flex items-center gap-2 rounded-[14px] bg-surface px-4 py-3 border border-border">
             <span className="text-2xl font-semibold text-ink">4.9</span>
             <div>
               <div className="flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-3.5 w-3.5 fill-secondary text-secondary" />
+                  <Star key={i} className="h-3.5 w-3.5 fill-amber text-amber" />
                 ))}
               </div>
-              <p className="text-xs text-text-secondary">Google Rating</p>
+              <p className="text-xs text-ink-muted">Google Rating</p>
             </div>
           </div>
         </div>
 
         <ResponsiveScroller gridClassName="lg:grid-cols-3 lg:gap-6">
-          {reviews.map((review, i) => (
+          {reviews.map((review) => (
             <motion.article
-              key={review.id}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={viewportOnce}
-              transition={fadeUpDelay(i)}
-              className="w-[82%] xs:w-[72%] sm:w-[56%] shrink-0 snap-start lg:w-full flex flex-col rounded-[20px] bg-white p-6 border border-border"
+              key={review.id}              className="w-[82%] xs:w-[72%] sm:w-[56%] shrink-0 snap-start lg:w-full flex flex-col rounded-[14px] bg-surface p-6 border border-border"
             >
               <div className="flex gap-0.5">
                 {Array.from({ length: review.rating }).map((_, idx) => (
@@ -59,7 +51,7 @@ export function ReviewCarousel({ reviews = staticReviews }: { reviews?: Review[]
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-ink">{review.name}</p>
-                  <p className="text-xs text-text-secondary">{review.date}</p>
+                  <p className="text-xs text-ink-muted">{review.date}</p>
                 </div>
               </div>
             </motion.article>

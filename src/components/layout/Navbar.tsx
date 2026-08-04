@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Menu, X, MapPin } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { navLinks } from "@/data/site";
 import { cn } from "@/lib/utils";
@@ -17,10 +17,21 @@ export function Navbar() {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [authReady, setAuthReady] = useState(false);
 
+  const [scrolled, setScrolled] = useState(false);
+
   const [supabase, setSupabase] = useState<ReturnType<typeof createBrowserSupabaseClient> | null>(null);
 
   useEffect(() => {
     setSupabase(createBrowserSupabaseClient());
+  }, []);
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 24);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -101,10 +112,17 @@ export function Navbar() {
 
   return (
     <>
-      <header className="sticky inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#ECEDE9]">
+      <header
+        className={cn(
+          "sticky inset-x-0 top-0 z-[200] transition-[background-color,border-color,backdrop-filter] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)]",
+          scrolled
+            ? "border-b border-border bg-[oklch(0.16_0.022_158/0.86)] backdrop-blur-xl"
+            : "border-b border-transparent bg-transparent"
+        )}
+      >
         <Container className="flex h-[76px] lg:h-[84px] items-center justify-between gap-4 lg:gap-8">
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary text-white font-semibold text-base">
+          <Link href="/" className="flex min-h-11 items-center gap-2.5 shrink-0">
+            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-bg-deep font-semibold text-base">
               D
             </span>
             <span className="font-semibold text-[17px] tracking-[-0.01em] text-ink hidden xs:inline">
@@ -122,12 +140,12 @@ export function Navbar() {
                   href={link.href}
                   className={cn(
                     "relative px-3.5 py-2 text-[14.5px] font-medium transition-colors",
-                    active ? "text-primary" : "text-text-secondary hover:text-ink"
+                    active ? "text-primary" : "text-ink-muted hover:text-ink"
                   )}
                 >
                   {link.label}
                   {active && (
-                    <span className="absolute left-3.5 right-3.5 -bottom-[1px] h-[2px] rounded-full bg-primary" />
+                    <span className="absolute left-3.5 right-3.5 -bottom-[1px] h-[2px] rounded-full bg-canopy" />
                   )}
                 </a>
               );
@@ -155,7 +173,7 @@ export function Navbar() {
                 {userRole === "admin" && (
                   <Link
                     href="/admin"
-                    className="rounded-[10px] px-4 py-2 text-sm font-medium bg-primary text-white hover:bg-primary-dark transition-colors"
+                    className="rounded-[10px] px-4 py-2 text-sm font-medium bg-canopy text-bg-deep hover:bg-[oklch(0.82_0.16_148)] transition-colors"
                   >
                     Admin Portal
                   </Link>
@@ -178,7 +196,7 @@ export function Navbar() {
                 </Link>
                 <Link
                   href="/login"
-                  className="rounded-[10px] bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
+                  className="rounded-[10px] bg-canopy px-5 py-2.5 text-sm font-semibold text-bg-deep transition-colors hover:bg-[oklch(0.82_0.16_148)]"
                 >
                   Sign Up
                 </Link>
@@ -186,16 +204,24 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile: search pill + hamburger */}
-          <div className="flex lg:hidden items-center gap-2 flex-1 justify-end">
-            <button className="flex flex-1 max-w-[220px] xs:max-w-[260px] items-center gap-2 rounded-[10px] border border-border px-4 py-2.5 text-sm text-text-secondary transition-colors">
-              <MapPin className="h-4 w-4 shrink-0" />
-              <span className="truncate">Search your destination</span>
+          {/* Mobile: the hero owns search, so the bar stays minimal */}
+          <div className="flex lg:hidden items-center gap-2 justify-end">
+            <button
+              aria-label="Search destinations"
+              className={cn(
+                "flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] text-ink transition-colors",
+                scrolled ? "border border-border" : "border border-white/15 bg-white/[0.08] backdrop-blur-md"
+              )}
+            >
+              <Search className="h-[18px] w-[18px]" />
             </button>
             <button
               aria-label="Open menu"
               onClick={() => setMenuOpen(true)}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-border text-ink transition-colors"
+              className={cn(
+                "flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] text-ink transition-colors",
+                scrolled ? "border border-border" : "border border-white/15 bg-white/[0.08] backdrop-blur-md"
+              )}
             >
               <Menu className="h-5 w-5" />
             </button>
@@ -209,7 +235,7 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-ink/40 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-[300] bg-[oklch(0.1_0.016_158/0.72)] backdrop-blur-sm lg:hidden"
             onClick={() => setMenuOpen(false)}
           >
             <motion.div
@@ -217,7 +243,7 @@ export function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 260 }}
-              className="absolute right-0 top-0 h-full w-[82%] max-w-sm bg-white shadow-2xl p-6 flex flex-col"
+              className="absolute right-0 top-0 flex h-full w-[84%] max-w-sm flex-col border-l border-border bg-bg-deep p-6"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-8">
@@ -247,7 +273,7 @@ export function Navbar() {
                   <>
                     <Link
                       href="/dashboard"
-                      className="rounded-[12px] bg-primary px-4 py-3 text-center text-sm font-semibold text-white"
+                      className="rounded-[12px] bg-canopy px-4 py-3 text-center text-sm font-semibold text-bg-deep"
                       onClick={() => setMenuOpen(false)}
                     >
                       Dashboard
@@ -287,7 +313,7 @@ export function Navbar() {
                     </Link>
                     <Link
                       href="/login"
-                      className="rounded-[12px] bg-primary px-4 py-3 text-center text-sm font-semibold text-white"
+                      className="rounded-[12px] bg-canopy px-4 py-3 text-center text-sm font-semibold text-bg-deep"
                       onClick={() => setMenuOpen(false)}
                     >
                       Sign Up

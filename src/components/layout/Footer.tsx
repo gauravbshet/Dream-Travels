@@ -55,7 +55,7 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer id="contact" className="relative mt-10 overflow-hidden bg-cream border-t border-border pb-28 pt-16 lg:pb-16 lg:pt-24 text-text-secondary">
+    <footer id="contact" className="relative mt-10 overflow-hidden bg-cream border-t border-border pb-28 pt-16 lg:pb-16 lg:pt-24 text-ink-muted">
       <span
         aria-hidden
         className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9rem] lg:text-[13rem] font-semibold tracking-tight text-ink/[0.03] select-none"
@@ -66,7 +66,7 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1fr_1fr_1fr_1fr] lg:gap-8">
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary text-white font-semibold text-base">
+              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-bg-deep font-semibold text-base">
                 D
               </span>
               <span className="text-lg font-semibold text-ink">Dream Travels</span>
@@ -81,7 +81,7 @@ export function Footer() {
                   key={s.label}
                   href="#"
                   aria-label={s.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-text-secondary transition-colors hover:bg-primary hover:border-primary hover:text-white"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-ink-muted transition-colors hover:bg-canopy hover:border-primary hover:text-bg-deep"
                 >
                   <SocialGlyph path={s.path} />
                 </a>
@@ -123,12 +123,12 @@ export function Footer() {
               <input
                 type="email"
                 placeholder="Your email"
-                className="w-full rounded-[12px] border border-border bg-white px-4 py-2.5 text-sm text-ink placeholder:text-text-secondary outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-[12px] border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted outline-none focus:ring-2 focus:ring-primary"
               />
               <button
                 type="submit"
                 aria-label="Subscribe"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-primary text-white transition-colors hover:bg-primary-dark"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[11px] bg-canopy text-bg-deep transition-colors hover:bg-[oklch(0.82_0.16_148)]"
               >
                 <Send className="h-4 w-4" />
               </button>

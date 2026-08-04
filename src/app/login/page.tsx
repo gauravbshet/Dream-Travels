@@ -139,123 +139,77 @@ export default function LoginPage() {
     }
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5 px-4 py-24 lg:py-28">
+        <main className="relative flex min-h-screen items-center justify-center px-4 py-24">
+            {/* Terrain backdrop: the place is present even on a utility screen. */}
+            <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+                <img
+                    src={unsplash(IMG.manali, 2000)}
+                    alt=""
+                    className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-[oklch(0.14_0.02_158/0.82)]" />
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        background:
+                            "radial-gradient(70% 55% at 50% 45%, transparent 0%, oklch(0.14 0.02 158 / 0.85) 100%)",
+                    }}
+                />
+            </div>
+
             <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="grid w-full max-w-5xl overflow-hidden rounded-[24px] bg-white border border-border lg:grid-cols-2"
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="relative w-full max-w-[440px]"
             >
-                {/* Left: image collage */}
-                <div className="relative hidden min-h-[600px] flex-col justify-end overflow-hidden bg-ink p-10 lg:flex">
-                    <motion.img
-                        initial={{ scale: 1.15, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-                        src={unsplash(IMG.manali, 1200)}
-                        alt=""
-                        className="absolute inset-0 h-full w-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/20 to-ink/10" />
+                <Link
+                    href="/"
+                    className="mb-7 flex items-center justify-center gap-2.5 text-ink"
+                >
+                    <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-bg-deep">
+                        <Plane className="h-4 w-4" />
+                    </span>
+                    <span className="font-display text-[19px] tracking-[-0.02em]">
+                        Dream Travels
+                    </span>
+                </Link>
 
-                    <motion.div
-                        initial={{ opacity: 0, x: -30, y: 20 }}
-                        animate={{ opacity: 1, x: 0, y: 0 }}
-                        transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        className="relative hidden w-48 overflow-hidden rounded-[16px] border-4 border-white/90 sm:block lg:absolute lg:right-8 lg:top-24"
-                    >
-                        <img src={unsplash(IMG.goa, 500)} alt="" className="h-32 w-full object-cover" />
-                    </motion.div>
+                <div className="rounded-[16px] border border-border bg-[oklch(0.19_0.024_158/0.86)] p-7 backdrop-blur-2xl sm:p-9">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={mode}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -8 }}
+                            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                        >
+                            <h1 className="font-display text-[30px] leading-tight text-ink">
+                                {mode === "signIn" ? "Welcome back" : "Create your account"}
+                            </h1>
+                            <p className="mt-2 text-[15px] text-ink-muted">
+                                {mode === "signIn"
+                                    ? "Sign in to reach your bookings and saved trips."
+                                    : "Start planning your next escape with Dream Travels."}
+                            </p>
 
-                    <motion.div
-                        initial={{ opacity: 0, x: 30, y: -20 }}
-                        animate={{ opacity: 1, x: 0, y: 0 }}
-                        transition={{ duration: 0.7, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                        className="relative z-10 mb-2 flex items-center gap-2 text-white"
-                    >
-                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white">
-                            <Plane className="h-4 w-4" />
-                        </span>
-                        <span className="font-bold text-lg tracking-tight">Dream Travels</span>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.7, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                        className="relative z-10"
-                    >
-                        <h2 className="font-sans text-3xl font-bold text-white text-balance">
-                            Secure Your Next Adventure
-                        </h2>
-                        <p className="mt-3 max-w-sm text-sm text-white/80">
-                            Discover curated escapes, manage your bookings, and plan your dream vacation — all in one place.
-                        </p>
-                    </motion.div>
-                </div>
-
-                {/* Right: form */}
-                <div className="flex flex-col justify-center px-6 py-10 sm:px-12 lg:px-14">
-                    <div className="mx-auto w-full max-w-sm">
-                        <div className="mb-8 flex gap-2 rounded-full bg-surface p-1.5">
                             <button
                                 type="button"
-                                onClick={() => {
-                                    setMode("signIn");
-                                    setError(null);
-                                    setMessage(null);
-                                }}
-                                className={`relative flex-1 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors ${mode === "signIn" ? "text-white" : "text-ink/50 hover:text-ink"
-                                    }`}
+                                onClick={handleGoogleSignIn}
+                                disabled={googleLoading}
+                                className="mt-7 flex w-full items-center justify-center gap-3 rounded-[11px] border border-border bg-surface px-6 py-3.5 text-sm font-semibold text-ink transition-colors duration-[180ms] hover:border-border-lit hover:bg-surface-2 disabled:opacity-60"
                             >
-                                {mode === "signIn" && (
-                                    <motion.span
-                                        layoutId="auth-tab-pill"
-                                        className="absolute inset-0 rounded-full bg-primary"
-                                        transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
-                                    />
-                                )}
-                                <span className="relative">Sign In</span>
+                                <GoogleIcon className="h-4 w-4" />
+                                {googleLoading ? "Redirecting..." : "Continue with Google"}
                             </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setMode("signUp");
-                                    setError(null);
-                                    setMessage(null);
-                                }}
-                                className={`relative flex-1 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors ${mode === "signUp" ? "text-white" : "text-ink/50 hover:text-ink"
-                                    }`}
-                            >
-                                {mode === "signUp" && (
-                                    <motion.span
-                                        layoutId="auth-tab-pill"
-                                        className="absolute inset-0 rounded-full bg-primary"
-                                        transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
-                                    />
-                                )}
-                                <span className="relative">Sign Up</span>
-                            </button>
-                        </div>
 
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={mode}
-                                initial={{ opacity: 0, x: mode === "signIn" ? -16 : 16 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: mode === "signIn" ? 16 : -16 }}
-                                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                            >
-                                <h1 className="font-sans text-2xl font-bold text-ink">
-                                    {mode === "signIn" ? "Welcome back" : "Create your account"}
-                                </h1>
-                                <p className="mt-2 text-sm text-ink/60">
-                                    {mode === "signIn"
-                                        ? "Sign in to access your bookings, wishlist, and saved trips."
-                                        : "Join Dream Travels to start planning your next escape."}
-                                </p>
+                            <div className="my-6 flex items-center gap-4 text-xs text-ink-muted">
+                                <span className="h-px flex-1 bg-border" />
+                                or
+                                <span className="h-px flex-1 bg-border" />
+                            </div>
 
-                                <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
+                            <form className="space-y-3.5" onSubmit={handleSubmit}>
                                     {mode === "signUp" && (
                                         <div className="grid gap-4 sm:grid-cols-2">
                                             <InputField
@@ -293,7 +247,7 @@ export default function LoginPage() {
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPassword((s) => !s)}
-                                                className="text-ink/40 hover:text-ink/70"
+                                                className="text-ink-muted transition-colors hover:text-ink"
                                                 aria-label={showPassword ? "Hide password" : "Show password"}
                                             >
                                                 {showPassword ? (
@@ -319,7 +273,7 @@ export default function LoginPage() {
                                         <div className="text-right">
                                             <button
                                                 type="button"
-                                                className="text-xs font-semibold text-primary hover:underline"
+                                                className="text-xs font-semibold text-canopy hover:underline"
                                             >
                                                 Forgot password?
                                             </button>
@@ -329,20 +283,22 @@ export default function LoginPage() {
                                     <AnimatePresence>
                                         {error && (
                                             <motion.p
+                                                role="alert"
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: "auto" }}
                                                 exit={{ opacity: 0, height: 0 }}
-                                                className="overflow-hidden rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700"
+                                                className="overflow-hidden rounded-[11px] border border-[oklch(0.5_0.16_25)] bg-[oklch(0.3_0.09_25/0.5)] px-4 py-3 text-sm text-[oklch(0.86_0.09_25)]"
                                             >
                                                 {error}
                                             </motion.p>
                                         )}
                                         {message && (
                                             <motion.p
+                                                role="status"
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: "auto" }}
                                                 exit={{ opacity: 0, height: 0 }}
-                                                className="overflow-hidden rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
+                                                className="overflow-hidden rounded-[11px] border border-canopy-deep bg-[oklch(0.3_0.07_150/0.5)] px-4 py-3 text-sm text-[oklch(0.88_0.09_150)]"
                                             >
                                                 {message}
                                             </motion.p>
@@ -353,36 +309,19 @@ export default function LoginPage() {
                                         whileTap={{ scale: 0.98 }}
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full rounded-[12px] bg-primary px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-primary/70"
+                                        className="w-full rounded-[11px] bg-canopy px-6 py-4 text-sm font-semibold text-bg-deep transition-colors duration-[180ms] hover:bg-[oklch(0.82_0.16_148)] disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         {loading
                                             ? mode === "signIn"
                                                 ? "Signing in..."
                                                 : "Creating account..."
                                             : mode === "signIn"
-                                                ? "Sign In"
-                                                : "Sign Up"}
+                                                ? "Sign in"
+                                                : "Create account"}
                                     </motion.button>
                                 </form>
 
-                                <div className="my-6 flex items-center gap-3 text-xs font-medium uppercase tracking-wide text-ink/40">
-                                    <span className="h-px flex-1 bg-ink/10" />
-                                    or continue with
-                                    <span className="h-px flex-1 bg-ink/10" />
-                                </div>
-
-                                <motion.button
-                                    whileTap={{ scale: 0.98 }}
-                                    type="button"
-                                    onClick={handleGoogleSignIn}
-                                    disabled={googleLoading}
-                                    className="flex w-full items-center justify-center gap-3 rounded-[12px] border border-border bg-white px-6 py-3.5 text-sm font-semibold text-ink transition hover:bg-sage-100 disabled:opacity-60"
-                                >
-                                    <GoogleIcon className="h-4 w-4" />
-                                    {googleLoading ? "Redirecting..." : "Continue with Google"}
-                                </motion.button>
-
-                                <p className="mt-8 text-center text-sm text-ink/60">
+                                <p className="mt-7 text-center text-sm text-ink-muted">
                                     {mode === "signIn" ? (
                                         <>
                                             New to Dream Travels?{" "}
@@ -393,7 +332,7 @@ export default function LoginPage() {
                                                     setError(null);
                                                     setMessage(null);
                                                 }}
-                                                className="font-semibold text-primary"
+                                                className="font-semibold text-canopy hover:underline"
                                             >
                                                 Create an account
                                             </button>
@@ -408,23 +347,22 @@ export default function LoginPage() {
                                                     setError(null);
                                                     setMessage(null);
                                                 }}
-                                                className="font-semibold text-primary"
+                                                className="font-semibold text-canopy hover:underline"
                                             >
                                                 Sign in instead
                                             </button>
                                         </>
                                     )}
                                 </p>
-
-                                <p className="mt-4 text-center text-xs text-ink/40">
-                                    <Link href="/" className="hover:text-ink/60">
-                                        &larr; Back to home
-                                    </Link>
-                                </p>
-                            </motion.div>
-                        </AnimatePresence>
-                    </div>
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
+
+                <p className="mt-6 text-center text-xs text-ink-muted">
+                    <Link href="/" className="transition-colors hover:text-ink-2">
+                        &larr; Back to home
+                    </Link>
+                </p>
             </motion.div>
         </main>
     );
@@ -446,14 +384,14 @@ function InputField({
     trailing?: React.ReactNode;
 }) {
     return (
-        <div className="flex items-center gap-3 rounded-[12px] border border-border bg-white px-4 py-3 transition focus-within:border-primary">
-            <span className="text-ink/40">{icon}</span>
+        <div className="flex items-center gap-3 rounded-[11px] border border-border bg-surface px-4 py-3.5 transition-colors duration-[180ms] focus-within:border-canopy">
+            <span className="text-ink-muted">{icon}</span>
             <input
                 type={type}
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
                 placeholder={placeholder}
-                className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-ink/40"
+                className="w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-ink-muted"
             />
             {trailing}
         </div>

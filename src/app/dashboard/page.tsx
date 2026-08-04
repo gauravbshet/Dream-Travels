@@ -43,9 +43,7 @@ export default async function DashboardPage() {
         <main className="flex-1 py-20">
             <Container>
                 <SectionHeading
-                    eyebrow="Welcome back"
                     title={`Hi, ${user.user_metadata?.full_name ?? user.email ?? "Traveller"}`}
-                    emoji="👋"
                     description="Your profile, saved packages, and wishlist are waiting for you."
                 />
 

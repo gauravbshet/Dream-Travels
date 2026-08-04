@@ -2,6 +2,7 @@
 
 import { MapPin, CalendarDays, Users, Wallet, Sparkles, Search } from "lucide-react";
 import { MagneticButton } from "@/components/ui/MagneticButton";
+import { useSpotlight } from "@/lib/useSpotlight";
 import { cn } from "@/lib/utils";
 
 const fields = [
@@ -12,33 +13,78 @@ const fields = [
   { id: "style", label: "Travel Style", placeholder: "Any style", icon: Sparkles },
 ] as const;
 
-export function HeroSearch({ className }: { className?: string }) {
+/**
+ * Compact single-row search for small screens, where the five-field desktop
+ * bar would stack into an unusable wall of controls.
+ */
+export function HeroSearchCompact({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "bg-white rounded-[20px] border border-border shadow-[0_10px_35px_rgba(20,40,25,0.08)] p-3 md:p-4",
-        "flex flex-col md:flex-row md:items-center gap-2",
+        "flex items-center gap-2 rounded-[14px] border border-border bg-[oklch(0.215_0.026_158/0.94)] p-2 backdrop-blur-xl",
+        className
+      )}
+    >
+      <button
+        type="button"
+        className="flex min-h-[48px] flex-1 items-center gap-3 rounded-[10px] px-3 text-left"
+      >
+        <MapPin className="h-[18px] w-[18px] shrink-0 text-canopy" />
+        <span className="min-w-0">
+          <span className="block text-[11px] font-medium text-ink-muted">
+            Destination
+          </span>
+          <span className="block truncate text-[15px] text-ink-2">
+            Where to next?
+          </span>
+        </span>
+      </button>
+      <button
+        type="button"
+        aria-label="Search trips"
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] bg-canopy text-bg-deep active:scale-95"
+      >
+        <Search className="h-[18px] w-[18px]" />
+      </button>
+    </div>
+  );
+}
+
+export function HeroSearch({ className }: { className?: string }) {
+  const { ref, onPointerMove } = useSpotlight<HTMLDivElement>();
+
+  return (
+    <div
+      ref={ref}
+      onPointerMove={onPointerMove}
+      className={cn(
+        "spotlight rounded-[14px] border border-border bg-[oklch(0.215_0.026_158/0.92)] p-2.5 backdrop-blur-xl",
+        "flex flex-col gap-1 md:flex-row md:items-center",
         className
       )}
     >
       {fields.map((field, i) => (
-        <div
+        <button
           key={field.id}
+          type="button"
           className={cn(
-            "flex items-center gap-3 px-4 py-3 xl:px-5 rounded-[14px] xl:rounded-none transition-colors hover:bg-sage-100",
-            i < fields.length - 1 && "xl:border-r xl:border-border"
+            "group relative z-[3] flex flex-1 items-center gap-3 rounded-[11px] px-4 py-3 text-left transition-colors duration-[180ms] hover:bg-surface-2",
+            i < fields.length - 1 && "xl:rounded-none xl:border-r xl:border-border"
           )}
         >
-          <field.icon className="h-[18px] w-[18px] text-primary shrink-0" />
-          <div className="text-left">
-            <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wide">
+          <field.icon className="h-[18px] w-[18px] shrink-0 text-canopy" />
+          <span className="min-w-0">
+            <span className="block text-[11px] font-medium text-ink-muted">
               {field.label}
-            </p>
-            <p className="text-sm text-ink/70">{field.placeholder}</p>
-          </div>
-        </div>
+            </span>
+            <span className="block truncate text-[15px] text-ink-2">
+              {field.placeholder}
+            </span>
+          </span>
+        </button>
       ))}
-      <MagneticButton className="w-full xl:w-auto xl:ml-2 justify-center shrink-0">
+
+      <MagneticButton className="relative z-[3] w-full shrink-0 justify-center xl:ml-2 xl:w-auto">
         <Search className="h-4 w-4" />
         Search
       </MagneticButton>

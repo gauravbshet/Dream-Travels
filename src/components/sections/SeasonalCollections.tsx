@@ -6,7 +6,6 @@ import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
-import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
 import { seasonalCollections as staticCollections } from "@/data/destinations";
 import type { SeasonalCollection } from "@/data/destinations";
 
@@ -18,18 +17,12 @@ export function SeasonalCollections({
   return (
     <Section>
       <Container>
-        <SectionHeading eyebrow="Curated Collections" title="Seasonal Collections" />
+        <SectionHeading title="Seasonal Collections" />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
-          {collections.map((c, i) => (
+          {collections.map((c) => (
             <motion.div
-              key={c.id}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={viewportOnce}
-              transition={fadeUpDelay(i % 6)}
-              whileHover={{ y: -4 }}
-              className="group relative h-36 sm:h-44 lg:h-48 overflow-hidden rounded-[18px] border border-border"
+              key={c.id}              whileHover={{ y: -4 }}
+              className="group relative h-36 sm:h-44 lg:h-48 overflow-hidden rounded-[14px] border border-border"
             >
               <Image
                 src={c.image}

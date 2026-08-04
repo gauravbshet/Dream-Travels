@@ -20,7 +20,7 @@ export function WishlistButton({ className }: { className?: string }) {
       aria-label="Toggle wishlist"
       aria-pressed={active}
       className={cn(
-        "flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-soft backdrop-blur transition-transform hover:scale-105 active:scale-95",
+        "flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-[oklch(0.16_0.022_158/0.7)] backdrop-blur-md transition-transform hover:scale-105 active:scale-95",
         className
       )}
     >
@@ -31,7 +31,7 @@ export function WishlistButton({ className }: { className?: string }) {
         <Heart
           className={cn(
             "h-4.5 w-4.5 transition-colors",
-            active ? "fill-primary text-primary" : "text-ink/60"
+            active ? "fill-canopy text-canopy" : "text-ink-2"
           )}
         />
       </motion.span>

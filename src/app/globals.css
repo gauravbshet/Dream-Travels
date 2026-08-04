@@ -1,51 +1,104 @@
 @import "tailwindcss";
 
-:root {
-  /* Nature / forest design tokens */
-  --forest-900: #163a2b;
-  --forest-800: #1f4a35;
-  --forest-700: #2f633f;
-  --leaf-600: #4f7d57;
-  --leaf-500: #6f965f;
-  --sage-200: #dce8d3;
-  --sage-100: #edf4e8;
-  --sand: #c8a96b;
-  --cream: #f7f7f2;
+/* ==========================================================================
+   Dream Travels — drenched deep-forest night
+   Lane: expedition field-instrument. See DESIGN.md.
+   ========================================================================== */
 
-  --background: #f9faf7;
-  --ink: #171a17;
-  --text-primary: #171a17;
-  --text-secondary: #686d68;
-  --primary: #24543d;
-  --primary-dark: #163a2b;
-  --secondary: var(--sand);
-  --accent: var(--leaf-600);
-  --surface: #ffffff;
-  --border: #e7e9e4;
+:root {
+  /* Ground */
+  --bg: oklch(0.16 0.022 158);
+  --bg-deep: oklch(0.12 0.018 158);
+  --surface: oklch(0.215 0.026 158);
+  --surface-2: oklch(0.265 0.028 158);
+
+  /* Edges */
+  --border: oklch(0.31 0.022 158);
+  --border-lit: oklch(0.44 0.035 155);
+
+  /* Type */
+  --ink: oklch(0.97 0.008 150);
+  --ink-2: oklch(0.87 0.012 150);
+  --ink-muted: oklch(0.75 0.016 150);
+
+  /* Brand */
+  --canopy: oklch(0.76 0.155 148);
+  --canopy-deep: oklch(0.5 0.105 152);
+  --amber: oklch(0.8 0.13 72);
+
+  /* Legacy semantic names, remapped onto the dark system so existing
+     components inherit the theme rather than fighting it. */
+  --background: var(--bg);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-muted);
+  --primary: var(--canopy);
+  --primary-dark: var(--canopy-deep);
+  --secondary: var(--amber);
+  --accent: var(--canopy);
+  --forest-900: var(--bg-deep);
+  --forest-800: var(--bg);
+  --forest-700: var(--surface);
+  --leaf-600: var(--canopy);
+  --leaf-500: var(--canopy-deep);
+  --sage-200: var(--surface-2);
+  --sage-100: var(--surface);
+  --sand: var(--amber);
+  --cream: var(--bg-deep);
+
+  /* Motion */
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-micro: 180ms;
+  --dur-component: 320ms;
+  --dur-scene: 720ms;
+
+  /* Layering */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-backdrop: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+
+  /* Pointer position, written by AuroraField. Neutral centre default so the
+     field is composed even before/without JS. */
+  --mx: 50%;
+  --my: 32%;
 }
 
 @theme inline {
-  --color-background: var(--background);
+  --color-background: var(--bg);
+  --color-bg-deep: var(--bg-deep);
   --color-ink: var(--ink);
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-primary: var(--primary);
-  --color-primary-dark: var(--primary-dark);
-  --color-secondary: var(--secondary);
-  --color-accent: var(--accent);
+  --color-ink-2: var(--ink-2);
+  --color-ink-muted: var(--ink-muted);
+  --color-text-primary: var(--ink);
+  --color-text-secondary: var(--ink-muted);
+  --color-primary: var(--canopy);
+  --color-primary-dark: var(--canopy-deep);
+  --color-secondary: var(--amber);
+  --color-accent: var(--canopy);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-border: var(--border);
-  --color-forest-900: var(--forest-900);
-  --color-forest-800: var(--forest-800);
-  --color-forest-700: var(--forest-700);
-  --color-leaf-600: var(--leaf-600);
-  --color-leaf-500: var(--leaf-500);
-  --color-sage-200: var(--sage-200);
-  --color-sage-100: var(--sage-100);
-  --color-sand: var(--sand);
-  --color-cream: var(--cream);
-  --font-sans: var(--font-manrope);
-  --font-display: var(--font-manrope);
+  --color-border-lit: var(--border-lit);
+  --color-canopy: var(--canopy);
+  --color-canopy-deep: var(--canopy-deep);
+  --color-amber: var(--amber);
+  --color-forest-900: var(--bg-deep);
+  --color-forest-800: var(--bg);
+  --color-forest-700: var(--surface);
+  --color-leaf-600: var(--canopy);
+  --color-leaf-500: var(--canopy-deep);
+  --color-sage-200: var(--surface-2);
+  --color-sage-100: var(--surface);
+  --color-sand: var(--amber);
+  --color-cream: var(--bg-deep);
+
+  --font-sans: var(--font-archivo);
+  --font-display: var(--font-bricolage);
 
   --breakpoint-xs: 400px;
   --breakpoint-sm: 640px;
@@ -57,40 +110,83 @@
   --breakpoint-4xl: 1920px;
   --breakpoint-5xl: 2560px;
 
-  --shadow-soft: 0 8px 24px rgba(20, 40, 25, 0.04);
-  --shadow-card: 0 10px 35px rgba(20, 40, 25, 0.08);
-  --shadow-float: 0 10px 35px rgba(20, 40, 25, 0.08);
+  --ease-quart: var(--ease-out-quart);
+  --ease-expo: var(--ease-out-expo);
 }
 
 html {
   scroll-behavior: smooth;
+  background: var(--bg);
 }
 
 body {
-  background: var(--background);
+  background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   overflow-x: hidden;
+  /* Light type on dark reads lighter than its nominal weight. */
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
 }
 
 * {
   -webkit-tap-highlight-color: transparent;
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+::selection {
+  background: color-mix(in oklch, var(--canopy) 32%, transparent);
+  color: var(--ink);
 }
 
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+:focus-visible {
+  outline: 2px solid var(--canopy);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
+
+/* --------------------------------------------------------------------------
+   Typography
+   -------------------------------------------------------------------------- */
+
+.font-display {
+  font-family: var(--font-bricolage), var(--font-archivo), sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+
+.display-hero {
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: clamp(2.75rem, 6vw, 5.25rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.display-section {
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: clamp(2rem, 3.4vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.prose-measure {
+  max-width: 68ch;
+  text-wrap: pretty;
+}
+
+/* --------------------------------------------------------------------------
+   Layout primitives
+   -------------------------------------------------------------------------- */
 
 .container-app {
   width: 100%;
   max-width: 1440px;
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: 1.25rem;
 }
 
 @media (min-width: 640px) {
@@ -111,43 +207,173 @@ body {
   }
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .text-balance {
   text-wrap: balance;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+/* --------------------------------------------------------------------------
+   Interactive background: aurora field
+   Cursor-reactive headlamp light. Decorative only — no information lives here.
+   -------------------------------------------------------------------------- */
+
+.aurora-field {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-base);
+  pointer-events: none;
+  background:
+    radial-gradient(
+      42rem 32rem at var(--mx) var(--my),
+      color-mix(in oklch, var(--canopy) 20%, transparent) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      28rem 24rem at calc(100% - var(--mx)) calc(var(--my) + 22%),
+      color-mix(in oklch, var(--amber) 11%, transparent) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      60rem 40rem at 50% 0%,
+      color-mix(in oklch, var(--canopy) 9%, transparent) 0%,
+      transparent 72%
+    );
+  transition: background-position var(--dur-component) linear;
 }
 
-.glass-dark {
-  background: rgba(26, 26, 26, 0.55);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+/* Slow autonomous drift so the field breathes when the pointer is idle
+   and on touch devices, where it is never driven at all. */
+.aurora-drift {
+  position: fixed;
+  inset: -20%;
+  z-index: var(--z-base);
+  pointer-events: none;
+  opacity: 0.5;
+  background: radial-gradient(
+    38rem 30rem at 30% 40%,
+    color-mix(in oklch, var(--canopy) 14%, transparent) 0%,
+    transparent 70%
+  );
+  animation: aurora-drift 34s var(--ease-out-quart) infinite alternate;
 }
+
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(-6%, -3%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(8%, 5%, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-2%, 8%, 0) scale(1.04);
+  }
+}
+
+.contour-field {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-base);
+  pointer-events: none;
+  opacity: 0.5;
+  mask-image: radial-gradient(120% 80% at 50% 20%, black 20%, transparent 78%);
+}
+
+.contour-drift {
+  animation: contour-drift 48s linear infinite;
+}
+
+@keyframes contour-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-80px, -40px, 0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Spotlight hover — pointer-tracked highlight on cards
+   -------------------------------------------------------------------------- */
+
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-component) var(--ease-out-quart);
+  background: radial-gradient(
+    18rem 18rem at var(--sx, 50%) var(--sy, 50%),
+    color-mix(in oklch, var(--canopy) 22%, transparent) 0%,
+    transparent 62%
+  );
+}
+
+.spotlight:hover::before,
+.spotlight:focus-within::before {
+  opacity: 1;
+}
+
+.lit-edge {
+  transition:
+    border-color var(--dur-component) var(--ease-out-quart),
+    transform var(--dur-component) var(--ease-out-quart),
+    box-shadow var(--dur-component) var(--ease-out-quart);
+}
+
+.lit-edge:hover,
+.lit-edge:focus-within {
+  border-color: var(--border-lit);
+  transform: translateY(-4px);
+}
+
+/* --------------------------------------------------------------------------
+   Forms
+   -------------------------------------------------------------------------- */
 
 .input {
   width: 100%;
-  border-radius: 0.75rem;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--surface);
   padding: 0.75rem 1rem;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   color: var(--ink);
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color var(--dur-micro) var(--ease-out-quart);
+}
+
+.input::placeholder {
+  color: var(--ink-muted);
 }
 
 .input:focus {
-  border-color: var(--primary);
+  border-color: var(--canopy);
 }
+
+/* --------------------------------------------------------------------------
+   Marquee
+   -------------------------------------------------------------------------- */
 
 @keyframes marquee-scroll {
   from {
     transform: translateX(0);
   }
-
   to {
     transform: translateX(-50%);
   }
@@ -158,8 +384,39 @@ body {
   animation-duration: var(--marquee-duration, 42s);
 }
 
+/* --------------------------------------------------------------------------
+   Reduced motion — every effect above degrades to a static state
+   -------------------------------------------------------------------------- */
+
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee-track,
+  .aurora-drift,
+  .contour-drift {
     animation: none;
+  }
+
+  .aurora-field {
+    /* Freeze to the neutral composed position; stop tracking the pointer. */
+    --mx: 50%;
+    --my: 32%;
+    transition: none;
+  }
+
+  .lit-edge:hover,
+  .lit-edge:focus-within {
+    transform: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

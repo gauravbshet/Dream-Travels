@@ -6,7 +6,6 @@ import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
-import { fadeUp, viewportOnce, fadeUpDelay } from "@/lib/motion";
 import { budgetTiers as staticBudgetTiers } from "@/data/destinations";
 import type { BudgetTier } from "@/data/destinations";
 
@@ -17,30 +16,22 @@ export function BudgetCards({ tiers = staticBudgetTiers }: { tiers?: BudgetTier[
     <Section id="packages">
       <Container>
         <SectionHeading
-          eyebrow="Plan Smart"
           title="Budget Friendly"
-          emoji="💰"
         />
         <div className="flex flex-col gap-4 lg:grid lg:grid-cols-3 xl:grid-cols-4 lg:gap-6">
-          {tiers.map((tier, i) => (
+          {tiers.map((tier) => (
             <MotionLink
               key={tier.id}
               href="#packages"
-              aria-label={`Browse ${tier.title} destinations`}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={viewportOnce}
-              transition={fadeUpDelay(i)}
-              whileHover={{ y: -4 }}
-              className="group flex items-center gap-4 rounded-[18px] bg-white p-5 border border-border text-left transition-colors hover:border-primary/30"
+              aria-label={`Browse ${tier.title} destinations`}              whileHover={{ y: -4 }}
+              className="group flex items-center gap-4 rounded-[14px] bg-surface p-5 border border-border text-left transition-colors hover:border-primary/30"
             >
               <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-sage-100 text-3xl">
                 {tier.emoji}
               </span>
               <div className="flex-1">
                 <h3 className="font-semibold text-ink">{tier.title}</h3>
-                <p className="text-sm text-text-secondary">
+                <p className="text-sm text-ink-muted">
                   {tier.count} verified destinations
                 </p>
               </div>
