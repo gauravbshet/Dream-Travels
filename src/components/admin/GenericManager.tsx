@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 import { useToast } from "./Toast";
+import { AdminButton, AdminCard, AdminField, AdminIconButton, AdminPageHeader, AdminTableState } from "./ui";
 
 export type FieldConfig = {
   key: string;
@@ -141,83 +142,70 @@ export function GenericManager({
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h3 className="text-xl font-semibold text-ink">{title}</h3>
-          <p className="mt-1 text-sm text-text-secondary">{description}</p>
-        </div>
-        <button
-          type="button"
-          onClick={openCreateForm}
-          className="flex items-center gap-2 rounded-[12px] bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
-        >
-          <Plus className="h-4 w-4" /> {createLabel ?? `New ${title.slice(0, -1).toLowerCase()}`}
-        </button>
-      </div>
+      <AdminPageHeader
+        title={title}
+        description={description}
+        action={
+          <AdminButton onClick={openCreateForm}>
+            <Plus className="h-4 w-4" /> {createLabel ?? `New ${title.slice(0, -1).toLowerCase()}`}
+          </AdminButton>
+        }
+      />
 
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="mt-6 rounded-[18px] border border-border bg-white p-6"
-        >
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-ink">
-              {editingId ? "Edit item" : "New item"}
-            </h4>
-            <button
-              type="button"
-              onClick={() => setShowForm(false)}
-              className="text-text-secondary hover:text-ink"
-              aria-label="Close form"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {fields.map((field) => (
-              <label
-                key={field.key}
-                className={`space-y-2 text-sm text-ink/80 ${field.full ? "sm:col-span-2" : ""}`}
+        <AdminCard className="mt-6" padded={false}>
+          <form onSubmit={handleSubmit} className="p-6">
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-admin-ink">
+                {editingId ? "Edit item" : "New item"}
+              </h4>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="text-admin-ink-muted hover:text-admin-ink"
+                aria-label="Close form"
               >
-                <span>{field.label}</span>
-                {field.type === "textarea" ? (
-                  <textarea
-                    value={form[field.key] ?? ""}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, [field.key]: e.target.value }))
-                    }
-                    className="input min-h-[100px]"
-                  />
-                ) : (
-                  <input
-                    type={field.type === "number" ? "number" : "text"}
-                    step={field.type === "number" ? "any" : undefined}
-                    value={form[field.key] ?? ""}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, [field.key]: e.target.value }))
-                    }
-                    className="input"
-                  />
-                )}
-              </label>
-            ))}
-          </div>
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-          <button
-            type="submit"
-            disabled={saving}
-            className="mt-6 rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
-          >
-            {saving ? "Saving..." : editingId ? "Save changes" : "Create"}
-          </button>
-        </form>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              {fields.map((field) => (
+                <AdminField key={field.key} label={field.label} full={field.full}>
+                  {field.type === "textarea" ? (
+                    <textarea
+                      value={form[field.key] ?? ""}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, [field.key]: e.target.value }))
+                      }
+                      className="admin-input min-h-[100px]"
+                    />
+                  ) : (
+                    <input
+                      type={field.type === "number" ? "number" : "text"}
+                      step={field.type === "number" ? "any" : undefined}
+                      value={form[field.key] ?? ""}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, [field.key]: e.target.value }))
+                      }
+                      className="admin-input"
+                    />
+                  )}
+                </AdminField>
+              ))}
+            </div>
+
+            <AdminButton type="submit" disabled={saving} className="mt-6">
+              {saving ? "Saving..." : editingId ? "Save changes" : "Create"}
+            </AdminButton>
+          </form>
+        </AdminCard>
       )}
 
-      <div className="mt-6 overflow-x-auto rounded-[18px] border border-border bg-white">
+      <AdminCard className="mt-6 overflow-x-auto" padded={false}>
         <table className="w-full min-w-[min(100%,560px)] text-left text-sm">
           <thead>
-            <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-text-secondary">
+            <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
               {columns.map((col) => (
                 <th key={col.key} className="px-5 py-4">
                   {col.label}
@@ -228,43 +216,29 @@ export function GenericManager({
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan={columns.length + 1} className="px-5 py-6 text-text-secondary">
-                  Loading...
-                </td>
-              </tr>
+              <AdminTableState colSpan={columns.length + 1}>Loading...</AdminTableState>
             ) : rows.length === 0 ? (
-              <tr>
-                <td colSpan={columns.length + 1} className="px-5 py-6 text-text-secondary">
-                  Nothing here yet.
-                </td>
-              </tr>
+              <AdminTableState colSpan={columns.length + 1}>Nothing here yet.</AdminTableState>
             ) : (
               rows.map((row) => (
-                <tr key={row.id} className="border-b border-border last:border-0">
+                <tr key={row.id} className="border-b border-admin-border last:border-0">
                   {columns.map((col) => (
-                    <td key={col.key} className="px-5 py-4 text-ink/80">
+                    <td key={col.key} className="px-5 py-4 text-admin-ink-2">
                       {col.render ? col.render(row) : String(row[col.key] ?? "—")}
                     </td>
                   ))}
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEditForm(row)}
-                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-sage-100 text-ink hover:bg-sage-200"
-                        aria-label="Edit"
-                      >
+                      <AdminIconButton onClick={() => openEditForm(row)} aria-label="Edit">
                         <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
+                      </AdminIconButton>
+                      <AdminIconButton
+                        variant="danger"
                         onClick={() => handleDelete(row.id)}
-                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-red-50 text-red-600 hover:bg-red-100"
                         aria-label="Delete"
                       >
                         <Trash2 className="h-4 w-4" />
-                      </button>
+                      </AdminIconButton>
                     </div>
                   </td>
                 </tr>
@@ -272,7 +246,7 @@ export function GenericManager({
             )}
           </tbody>
         </table>
-      </div>
+      </AdminCard>
     </div>
   );
 }

@@ -29,7 +29,7 @@ export default async function AdminPage() {
     const user = await requireAdmin();
 
     return (
-        <main className="flex-1 bg-surface">
+        <main className="flex-1 bg-admin-bg">
             <AdminDashboard userEmail={user.email} />
         </main>
     );

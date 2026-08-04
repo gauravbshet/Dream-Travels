@@ -50,7 +50,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
 
                 <div className="grid gap-8 lg:grid-cols-2">
                     <div className="space-y-8">
-                        <div className="overflow-hidden rounded-[24px] bg-white border border-border">
+                        <div className="overflow-hidden rounded-[24px] bg-surface border border-border">
                             <div className="relative h-[320px] sm:h-[460px] w-full">
                                 <Image
                                     src={data.pkg.image}
@@ -62,7 +62,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
                             </div>
                         </div>
 
-                        <div className="rounded-[24px] border border-border bg-white p-8">
+                        <div className="rounded-[24px] border border-border bg-surface p-8">
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="rounded-[16px] bg-sage-100/60 p-5">
                                     <p className="text-sm text-text-secondary">Duration</p>
@@ -80,15 +80,15 @@ export default async function PackagePage({ params }: { params: { slug: string }
                                 <h3 className="text-xl font-semibold text-ink">What&apos;s included</h3>
                                 <p className="mt-3 text-sm text-text-secondary">A carefully designed trip with all essentials set for your journey.</p>
                                 <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-                                    <li className="rounded-[16px] border border-border bg-white p-4 text-sm text-ink/80">Accommodation</li>
-                                    <li className="rounded-[16px] border border-border bg-white p-4 text-sm text-ink/80">Transfers</li>
-                                    <li className="rounded-[16px] border border-border bg-white p-4 text-sm text-ink/80">Guided tours</li>
-                                    <li className="rounded-[16px] border border-border bg-white p-4 text-sm text-ink/80">Meals included</li>
+                                    <li className="rounded-[16px] border border-border bg-surface p-4 text-sm text-ink/80">Accommodation</li>
+                                    <li className="rounded-[16px] border border-border bg-surface p-4 text-sm text-ink/80">Transfers</li>
+                                    <li className="rounded-[16px] border border-border bg-surface p-4 text-sm text-ink/80">Guided tours</li>
+                                    <li className="rounded-[16px] border border-border bg-surface p-4 text-sm text-ink/80">Meals included</li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div className="rounded-[24px] border border-border bg-white p-8">
+                        <div className="rounded-[24px] border border-border bg-surface p-8">
                             <div className="flex items-center justify-between gap-4">
                                 <div>
                                     <p className="text-sm text-text-secondary">Trip itinerary</p>
@@ -105,7 +105,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
                                     <p className="text-sm text-text-secondary">Itinerary details are coming soon.</p>
                                 ) : (
                                     data.itinerary.map((item) => (
-                                        <div key={item.day} className="rounded-[16px] border border-border bg-white p-5">
+                                        <div key={item.day} className="rounded-[16px] border border-border bg-surface p-5">
                                             <div className="flex items-center justify-between gap-4">
                                                 <div>
                                                     <p className="text-sm font-semibold text-ink">Day {item.day}</p>
@@ -124,7 +124,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
                     </div>
 
                     <aside className="space-y-6">
-                        <div className="rounded-[24px] border border-border bg-white p-8">
+                        <div className="rounded-[24px] border border-border bg-surface p-8">
                             <div className="flex items-center justify-between gap-4">
                                 <div>
                                     <p className="text-sm text-text-secondary">Booking</p>
@@ -152,10 +152,10 @@ export default async function PackagePage({ params }: { params: { slug: string }
                             </div>
                         </div>
 
-                        <div className="rounded-[24px] border border-border bg-white p-8">
+                        <div className="rounded-[24px] border border-border bg-surface p-8">
                             <h3 className="text-lg font-semibold text-ink">Related packages</h3>
                             <div className="mt-5 space-y-4">
-                                <Link href="/packages" className="block rounded-[16px] border border-border bg-white p-4 text-sm text-primary transition hover:bg-sage-100">
+                                <Link href="/packages" className="block rounded-[16px] border border-border bg-surface p-4 text-sm text-primary transition hover:bg-sage-100">
                                     View all packages
                                 </Link>
                             </div>

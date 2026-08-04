@@ -48,7 +48,7 @@ export default async function DashboardPage() {
                 />
 
                 <section className="grid gap-8 lg:grid-cols-2">
-                    <div className="rounded-[24px] border border-border bg-white p-8 sm:p-10">
+                    <div className="rounded-[24px] border border-border bg-surface p-8 sm:p-10">
                         <h3 className="text-xl font-semibold text-ink">Profile</h3>
                         <div className="mt-6 space-y-3 text-ink/85">
                             <p>
@@ -66,7 +66,7 @@ export default async function DashboardPage() {
                         </div>
                     </div>
 
-                    <div className="rounded-[24px] border border-border bg-white p-8">
+                    <div className="rounded-[24px] border border-border bg-surface p-8">
                         <h3 className="text-xl font-semibold text-ink">Wishlist</h3>
                         <p className="mt-2 text-sm text-text-secondary">
                             Review the packages you saved and open the details page to book.
@@ -106,7 +106,7 @@ export default async function DashboardPage() {
                                             </Link>
                                             <button
                                                 type="button"
-                                                className="rounded-[10px] border border-border bg-white px-4 py-2 text-sm text-ink transition hover:bg-sage-100"
+                                                className="rounded-[10px] border border-border bg-surface px-4 py-2 text-sm text-ink transition hover:bg-surface-2"
                                             >
                                                 Remove
                                             </button>

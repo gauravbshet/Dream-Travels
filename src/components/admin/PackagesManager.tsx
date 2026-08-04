@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Pencil, Plus, Trash2, X } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 import { createStoragePath } from "@/lib/utils";
 import { useToast } from "./Toast";
 import { Modal } from "./Modal";
 import { ImageUploadField } from "./ImageUploadField";
+import { AdminButton, AdminCard, AdminField, AdminIconButton, AdminPageHeader, AdminTableState } from "./ui";
 
 type PackageRow = {
   id: string;
@@ -201,21 +202,15 @@ export function PackagesManager() {
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h3 className="text-xl font-semibold text-ink">Packages</h3>
-          <p className="mt-1 text-sm text-text-secondary">
-            Manage package listings, pricing, and their linked destination.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={openCreateForm}
-          className="flex items-center gap-2 rounded-[12px] bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
-        >
-          <Plus className="h-4 w-4" /> New package
-        </button>
-      </div>
+      <AdminPageHeader
+        title="Packages"
+        description="Manage package listings, pricing, and their linked destination."
+        action={
+          <AdminButton onClick={openCreateForm}>
+            <Plus className="h-4 w-4" /> New package
+          </AdminButton>
+        }
+      />
 
       {showForm && (
         <Modal
@@ -225,11 +220,11 @@ export function PackagesManager() {
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Destination Mapping">
+              <AdminField label="Destination Mapping">
                 <select
                   value={form.destination_id}
                   onChange={(e) => setForm((f) => ({ ...f, destination_id: e.target.value }))}
-                  className="input"
+                  className="admin-input"
                 >
                   <option value="">Select a destination</option>
                   {destinations.map((destination) => (
@@ -238,32 +233,32 @@ export function PackagesManager() {
                     </option>
                   ))}
                 </select>
-              </Field>
-              <Field label="Package Title">
+              </AdminField>
+              <AdminField label="Package Title">
                 <input
                   value={form.title}
                   onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                  className="input"
+                  className="admin-input"
                   placeholder="5-Day Paris Romantic Getaway"
                 />
-              </Field>
-              <Field label="Duration">
+              </AdminField>
+              <AdminField label="Duration">
                 <input
                   value={form.duration}
                   onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))}
-                  className="input"
+                  className="admin-input"
                   placeholder="e.g. 5D / 4N"
                 />
-              </Field>
-              <Field label="Price">
+              </AdminField>
+              <AdminField label="Price">
                 <input
                   type="number"
                   value={form.price}
                   onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
-                  className="input"
+                  className="admin-input"
                   placeholder="e.g. 35000"
                 />
-              </Field>
+              </AdminField>
               <div className="sm:col-span-2">
                 <ImageUploadField
                   label="Main image"
@@ -272,42 +267,38 @@ export function PackagesManager() {
                   onImageUrlChange={(url) => setForm((f) => ({ ...f, image: url }))}
                 />
                 {uploadingImage && (
-                  <p className="mt-2 text-sm text-text-secondary">Uploading image...</p>
+                  <p className="mt-2 text-sm text-admin-ink-muted">Uploading image...</p>
                 )}
               </div>
-              <Field label="Additional Images" full>
+              <AdminField label="Additional Images" full>
                 <input
                   value={form.additional_images}
                   onChange={(e) => setForm((f) => ({ ...f, additional_images: e.target.value }))}
-                  className="input"
+                  className="admin-input"
                   placeholder="Comma-separated URLs"
                 />
-              </Field>
-              <Field label="Details / Description" full>
+              </AdminField>
+              <AdminField label="Details / Description" full>
                 <textarea
                   value={form.overview}
                   onChange={(e) => setForm((f) => ({ ...f, overview: e.target.value }))}
-                  className="input min-h-[100px]"
+                  className="admin-input min-h-[100px]"
                   placeholder="Itinerary highlights, inclusions, and pricing details"
                 />
-              </Field>
+              </AdminField>
             </div>
 
-            <button
-              type="submit"
-              disabled={saving}
-              className="rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
-            >
+            <AdminButton type="submit" disabled={saving}>
               {saving ? "Saving..." : editingId ? "Save changes" : "Create package"}
-            </button>
+            </AdminButton>
           </form>
         </Modal>
       )}
 
-      <div className="mt-6 overflow-x-auto rounded-[18px] border border-border bg-white">
+      <AdminCard className="mt-6 overflow-x-auto" padded={false}>
         <table className="w-full min-w-[min(100%,720px)] text-left text-sm">
           <thead>
-            <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-text-secondary">
+            <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
               <th className="px-5 py-4">Title</th>
               <th className="px-5 py-4">Destination</th>
               <th className="px-5 py-4">Duration</th>
@@ -317,46 +308,32 @@ export function PackagesManager() {
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan={5} className="px-5 py-6 text-text-secondary">
-                  Loading packages...
-                </td>
-              </tr>
+              <AdminTableState colSpan={5}>Loading packages...</AdminTableState>
             ) : packages.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-5 py-6 text-text-secondary">
-                  No packages yet.
-                </td>
-              </tr>
+              <AdminTableState colSpan={5}>No packages yet.</AdminTableState>
             ) : (
               packages.map((pkg) => (
-                <tr key={pkg.id} className="border-b border-border last:border-0">
-                  <td className="px-5 py-4 font-semibold text-ink">{pkg.title}</td>
-                  <td className="px-5 py-4 text-ink/80">
+                <tr key={pkg.id} className="border-b border-admin-border last:border-0">
+                  <td className="px-5 py-4 font-semibold text-admin-ink">{pkg.title}</td>
+                  <td className="px-5 py-4 text-admin-ink-2">
                     {destinations.find((d) => d.id === pkg.destination_id)?.name ?? "—"}
                   </td>
-                  <td className="px-5 py-4 text-ink/80">{pkg.duration ?? "—"}</td>
-                  <td className="px-5 py-4 text-ink/80">
+                  <td className="px-5 py-4 text-admin-ink-2">{pkg.duration ?? "—"}</td>
+                  <td className="px-5 py-4 text-admin-ink-2">
                     {pkg.price != null ? `₹${pkg.price}` : "—"}
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEditForm(pkg)}
-                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-sage-100 text-ink hover:bg-sage-200"
-                        aria-label="Edit"
-                      >
+                      <AdminIconButton onClick={() => openEditForm(pkg)} aria-label="Edit">
                         <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
+                      </AdminIconButton>
+                      <AdminIconButton
+                        variant="danger"
                         onClick={() => handleDelete(pkg.id)}
-                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-red-50 text-red-600 hover:bg-red-100"
                         aria-label="Delete"
                       >
                         <Trash2 className="h-4 w-4" />
-                      </button>
+                      </AdminIconButton>
                     </div>
                   </td>
                 </tr>
@@ -364,24 +341,7 @@ export function PackagesManager() {
             )}
           </tbody>
         </table>
-      </div>
+      </AdminCard>
     </div>
-  );
-}
-
-function Field({
-  label,
-  children,
-  full,
-}: {
-  label: string;
-  children: React.ReactNode;
-  full?: boolean;
-}) {
-  return (
-    <label className={`space-y-2 text-sm text-ink/80 ${full ? "sm:col-span-2" : ""}`}>
-      <span>{label}</span>
-      {children}
-    </label>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 import { useToast } from "./Toast";
+import { AdminButton, AdminCard, AdminField, AdminIconButton, AdminTableState } from "./ui";
 
 type ItineraryRow = {
   id: string;
@@ -146,8 +147,8 @@ export function ItinerariesManager() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h3 className="text-xl font-semibold text-ink">Itineraries</h3>
-          <p className="mt-1 text-sm text-text-secondary">
+          <h3 className="text-xl font-semibold text-admin-ink">Itineraries</h3>
+          <p className="mt-1 text-sm text-admin-ink-muted">
             Add day-by-day itinerary entries linked to a package.
           </p>
         </div>
@@ -155,7 +156,7 @@ export function ItinerariesManager() {
           <select
             value={selectedPackageId}
             onChange={(e) => setSelectedPackageId(e.target.value)}
-            className="input w-auto"
+            className="admin-input w-auto"
           >
             <option value="">All packages</option>
             {packages.map((pkg) => (
@@ -164,89 +165,80 @@ export function ItinerariesManager() {
               </option>
             ))}
           </select>
-          <button
-            type="button"
-            onClick={openCreateForm}
-            className="flex items-center gap-2 rounded-[12px] bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
-          >
+          <AdminButton onClick={openCreateForm}>
             <Plus className="h-4 w-4" /> New day
-          </button>
+          </AdminButton>
         </div>
       </div>
 
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className="mt-6 rounded-[18px] border border-border bg-white p-6"
-        >
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-ink">
-              {editingId ? "Edit itinerary item" : "New itinerary item"}
-            </h4>
-            <button
-              type="button"
-              onClick={() => setShowForm(false)}
-              className="text-text-secondary hover:text-ink"
-              aria-label="Close form"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <Field label="Package">
-              <select
-                value={form.package_id}
-                onChange={(e) => setForm((f) => ({ ...f, package_id: e.target.value }))}
-                className="input"
+        <AdminCard className="mt-6" padded={false}>
+          <form onSubmit={handleSubmit} className="p-6">
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-admin-ink">
+                {editingId ? "Edit itinerary item" : "New itinerary item"}
+              </h4>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="text-admin-ink-muted hover:text-admin-ink"
+                aria-label="Close form"
               >
-                <option value="">Select a package</option>
-                {packages.map((pkg) => (
-                  <option key={pkg.id} value={pkg.id}>
-                    {pkg.title}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Day">
-              <input
-                type="number"
-                min={1}
-                value={form.day}
-                onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Title" full>
-              <input
-                value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                className="input"
-              />
-            </Field>
-            <Field label="Description" full>
-              <textarea
-                value={form.description}
-                onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-                className="input min-h-[100px]"
-              />
-            </Field>
-          </div>
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-          <button
-            type="submit"
-            disabled={saving}
-            className="mt-6 rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
-          >
-            {saving ? "Saving..." : editingId ? "Save changes" : "Create itinerary item"}
-          </button>
-        </form>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <AdminField label="Package">
+                <select
+                  value={form.package_id}
+                  onChange={(e) => setForm((f) => ({ ...f, package_id: e.target.value }))}
+                  className="admin-input"
+                >
+                  <option value="">Select a package</option>
+                  {packages.map((pkg) => (
+                    <option key={pkg.id} value={pkg.id}>
+                      {pkg.title}
+                    </option>
+                  ))}
+                </select>
+              </AdminField>
+              <AdminField label="Day">
+                <input
+                  type="number"
+                  min={1}
+                  value={form.day}
+                  onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}
+                  className="admin-input"
+                />
+              </AdminField>
+              <AdminField label="Title" full>
+                <input
+                  value={form.title}
+                  onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                  className="admin-input"
+                />
+              </AdminField>
+              <AdminField label="Description" full>
+                <textarea
+                  value={form.description}
+                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  className="admin-input min-h-[100px]"
+                />
+              </AdminField>
+            </div>
+
+            <AdminButton type="submit" disabled={saving} className="mt-6">
+              {saving ? "Saving..." : editingId ? "Save changes" : "Create itinerary item"}
+            </AdminButton>
+          </form>
+        </AdminCard>
       )}
 
-      <div className="mt-6 overflow-x-auto rounded-[18px] border border-border bg-white">
+      <AdminCard className="mt-6 overflow-x-auto" padded={false}>
         <table className="w-full min-w-[min(100%,640px)] text-left text-sm">
           <thead>
-            <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-text-secondary">
+            <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
               <th className="px-5 py-4">Day</th>
               <th className="px-5 py-4">Title</th>
               <th className="px-5 py-4">Package</th>
@@ -255,41 +247,27 @@ export function ItinerariesManager() {
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan={4} className="px-5 py-6 text-text-secondary">
-                  Loading itineraries...
-                </td>
-              </tr>
+              <AdminTableState colSpan={4}>Loading itineraries...</AdminTableState>
             ) : visibleItineraries.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="px-5 py-6 text-text-secondary">
-                  No itinerary items yet.
-                </td>
-              </tr>
+              <AdminTableState colSpan={4}>No itinerary items yet.</AdminTableState>
             ) : (
               visibleItineraries.map((item) => (
-                <tr key={item.id} className="border-b border-border last:border-0">
-                  <td className="px-5 py-4 font-semibold text-primary">Day {item.day}</td>
-                  <td className="px-5 py-4 font-semibold text-ink">{item.title}</td>
-                  <td className="px-5 py-4 text-ink/80">{packageTitle(item.package_id)}</td>
+                <tr key={item.id} className="border-b border-admin-border last:border-0">
+                  <td className="px-5 py-4 font-semibold text-admin-primary">Day {item.day}</td>
+                  <td className="px-5 py-4 font-semibold text-admin-ink">{item.title}</td>
+                  <td className="px-5 py-4 text-admin-ink-2">{packageTitle(item.package_id)}</td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEditForm(item)}
-                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-sage-100 text-ink hover:bg-sage-200"
-                        aria-label="Edit"
-                      >
+                      <AdminIconButton onClick={() => openEditForm(item)} aria-label="Edit">
                         <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
+                      </AdminIconButton>
+                      <AdminIconButton
+                        variant="danger"
                         onClick={() => handleDelete(item.id)}
-                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-red-50 text-red-600 hover:bg-red-100"
                         aria-label="Delete"
                       >
                         <Trash2 className="h-4 w-4" />
-                      </button>
+                      </AdminIconButton>
                     </div>
                   </td>
                 </tr>
@@ -297,24 +275,7 @@ export function ItinerariesManager() {
             )}
           </tbody>
         </table>
-      </div>
+      </AdminCard>
     </div>
-  );
-}
-
-function Field({
-  label,
-  children,
-  full,
-}: {
-  label: string;
-  children: React.ReactNode;
-  full?: boolean;
-}) {
-  return (
-    <label className={`space-y-2 text-sm text-ink/80 ${full ? "sm:col-span-2" : ""}`}>
-      <span>{label}</span>
-      {children}
-    </label>
   );
 }

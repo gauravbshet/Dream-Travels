@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Pencil, Plus, Trash2, X } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 import { createStoragePath } from "@/lib/utils";
 import { useToast } from "./Toast";
 import { Modal } from "./Modal";
 import { ImageUploadField } from "./ImageUploadField";
+import { AdminBadge, AdminButton, AdminCard, AdminField, AdminIconButton, AdminPageHeader, AdminTableState } from "./ui";
 
 type Destination = {
   id: string;
@@ -182,21 +183,15 @@ export function DestinationsManager() {
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h3 className="text-xl font-semibold text-ink">Destinations</h3>
-          <p className="mt-1 text-sm text-text-secondary">
-            Manage travel destinations with country, categories, and a hero photo.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={openCreateForm}
-          className="flex items-center gap-2 rounded-[12px] bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
-        >
-          <Plus className="h-4 w-4" /> Add destination
-        </button>
-      </div>
+      <AdminPageHeader
+        title="Destinations"
+        description="Manage travel destinations with country, categories, and a hero photo."
+        action={
+          <AdminButton onClick={openCreateForm}>
+            <Plus className="h-4 w-4" /> Add destination
+          </AdminButton>
+        }
+      />
 
       {showForm && (
         <Modal
@@ -206,30 +201,30 @@ export function DestinationsManager() {
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Title">
+              <AdminField label="Title">
                 <input
                   value={form.title}
                   onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                  className="input"
+                  className="admin-input"
                   placeholder="Paris, Bali, Kyoto"
                 />
-              </Field>
-              <Field label="Country">
+              </AdminField>
+              <AdminField label="Country">
                 <input
                   value={form.country}
                   onChange={(e) => setForm((f) => ({ ...f, country: e.target.value }))}
-                  className="input"
+                  className="admin-input"
                   placeholder="France, Indonesia, Japan"
                 />
-              </Field>
-              <Field label="Categories">
+              </AdminField>
+              <AdminField label="Categories">
                 <input
                   value={form.categories}
                   onChange={(e) => setForm((f) => ({ ...f, categories: e.target.value }))}
-                  className="input"
+                  className="admin-input"
                   placeholder="Family, Group, Couple"
                 />
-              </Field>
+              </AdminField>
               <div className="sm:col-span-2">
                 <ImageUploadField
                   label="Hero image"
@@ -238,26 +233,22 @@ export function DestinationsManager() {
                   onImageUrlChange={(url) => setForm((f) => ({ ...f, photo_url: url }))}
                 />
                 {uploadingImage && (
-                  <p className="mt-2 text-sm text-text-secondary">Uploading image...</p>
+                  <p className="mt-2 text-sm text-admin-ink-muted">Uploading image...</p>
                 )}
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={saving}
-              className="rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark disabled:opacity-60"
-            >
+            <AdminButton type="submit" disabled={saving}>
               {saving ? "Saving..." : editingId ? "Save destination" : "Create destination"}
-            </button>
+            </AdminButton>
           </form>
         </Modal>
       )}
 
-      <div className="mt-6 overflow-x-auto rounded-[18px] border border-border bg-white">
+      <AdminCard className="mt-6 overflow-x-auto" padded={false}>
         <table className="w-full min-w-[min(100%,720px)] text-left text-sm">
           <thead>
-            <tr className="border-b border-border text-xs font-semibold uppercase tracking-wide text-text-secondary">
+            <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
               <th className="px-5 py-4">Title</th>
               <th className="px-5 py-4">Country</th>
               <th className="px-5 py-4">Categories</th>
@@ -267,32 +258,19 @@ export function DestinationsManager() {
           </thead>
           <tbody>
             {loading ? (
-              <tr>
-                <td colSpan={5} className="px-5 py-6 text-text-secondary">
-                  Loading destinations...
-                </td>
-              </tr>
+              <AdminTableState colSpan={5}>Loading destinations...</AdminTableState>
             ) : destinations.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-5 py-6 text-text-secondary">
-                  No destinations yet.
-                </td>
-              </tr>
+              <AdminTableState colSpan={5}>No destinations yet.</AdminTableState>
             ) : (
               destinations.map((destination) => (
-                <tr key={destination.id} className="border-b border-border last:border-0">
-                  <td className="px-5 py-4 font-semibold text-ink">{destination.title}</td>
-                  <td className="px-5 py-4 text-ink/80">{destination.country ?? "—"}</td>
-                  <td className="px-5 py-4 text-ink/80">
+                <tr key={destination.id} className="border-b border-admin-border last:border-0">
+                  <td className="px-5 py-4 font-semibold text-admin-ink">{destination.title}</td>
+                  <td className="px-5 py-4 text-admin-ink-2">{destination.country ?? "—"}</td>
+                  <td className="px-5 py-4 text-admin-ink-2">
                     {destination.categories?.length ? (
                       <div className="flex flex-wrap gap-2">
                         {destination.categories.map((category) => (
-                          <span
-                            key={category}
-                            className="rounded-full bg-sage-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-primary"
-                          >
-                            {category}
-                          </span>
+                          <AdminBadge key={category}>{category}</AdminBadge>
                         ))}
                       </div>
                     ) : (
@@ -307,27 +285,21 @@ export function DestinationsManager() {
                         className="h-16 w-24 rounded-[14px] object-cover"
                       />
                     ) : (
-                      <span className="text-text-secondary">No photo</span>
+                      <span className="text-admin-ink-muted">No photo</span>
                     )}
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEditForm(destination)}
-                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-sage-100 text-ink hover:bg-sage-200"
-                        aria-label="Edit"
-                      >
+                      <AdminIconButton onClick={() => openEditForm(destination)} aria-label="Edit">
                         <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
+                      </AdminIconButton>
+                      <AdminIconButton
+                        variant="danger"
                         onClick={() => handleDelete(destination.id)}
-                        className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-red-50 text-red-600 hover:bg-red-100"
                         aria-label="Delete"
                       >
                         <Trash2 className="h-4 w-4" />
-                      </button>
+                      </AdminIconButton>
                     </div>
                   </td>
                 </tr>
@@ -335,24 +307,7 @@ export function DestinationsManager() {
             )}
           </tbody>
         </table>
-      </div>
+      </AdminCard>
     </div>
-  );
-}
-
-function Field({
-  label,
-  children,
-  full,
-}: {
-  label: string;
-  children: React.ReactNode;
-  full?: boolean;
-}) {
-  return (
-    <label className={`space-y-2 text-sm text-ink/80 ${full ? "sm:col-span-2" : ""}`}>
-      <span>{label}</span>
-      {children}
-    </label>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { MapPin, Package, Users, RefreshCw } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
+import { AdminButton, AdminCard, AdminPageHeader } from "./ui";
 
 type Counts = {
   destinations: number;
@@ -56,38 +57,29 @@ export function AdminOverview() {
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-semibold text-ink tracking-[-0.01em]">Dashboard</h2>
-          <p className="mt-1 text-sm text-text-secondary">
-            Quick summary of your travel inventory and customer base.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={loadCounts}
-          className="flex items-center gap-2 rounded-[10px] border border-border bg-white px-4 py-2.5 text-sm font-semibold text-ink/80 transition hover:bg-sage-100"
-        >
-          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} /> Refresh
-        </button>
-      </div>
+      <AdminPageHeader
+        title="Dashboard"
+        description="Quick summary of your travel inventory and customer base."
+        action={
+          <AdminButton variant="secondary" onClick={loadCounts}>
+            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} /> Refresh
+          </AdminButton>
+        }
+      />
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((card) => {
           const Icon = card.icon;
           return (
-            <div
-              key={card.label}
-              className="rounded-[18px] border border-border bg-white p-6"
-            >
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+            <AdminCard key={card.label}>
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
                 <Icon className="h-4 w-4" />
                 {card.label}
               </div>
-              <p className="mt-3 text-3xl font-semibold text-ink">
+              <p className="mt-3 text-3xl font-semibold text-admin-ink">
                 {loading ? "—" : card.value}
               </p>
-            </div>
+            </AdminCard>
           );
         })}
       </div>

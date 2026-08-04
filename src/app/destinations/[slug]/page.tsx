@@ -44,7 +44,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                 />
 
                 <div className="grid gap-8 lg:grid-cols-2">
-                    <div className="overflow-hidden rounded-[24px] bg-white border border-border">
+                    <div className="overflow-hidden rounded-[24px] bg-surface border border-border">
                         <div className="relative h-[320px] sm:h-[420px] w-full">
                             <Image
                                 src={data.destination.cover_image ?? data.destination.image}
@@ -56,7 +56,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                         </div>
                     </div>
 
-                    <div className="rounded-[24px] border border-border bg-white p-8">
+                    <div className="rounded-[24px] border border-border bg-surface p-8">
                         <div className="space-y-4">
                             <p className="text-sm text-text-secondary">Location overview</p>
                             <div className="flex items-center gap-3 text-ink/80">
@@ -75,7 +75,7 @@ export default async function DestinationPage({ params }: { params: { slug: stri
                 <Section className="mt-14">
                     <div className="grid gap-6 lg:grid-cols-3">
                         {data.packages.map((pkg) => (
-                            <div key={pkg.id} className="rounded-[20px] border border-border bg-white p-5">
+                            <div key={pkg.id} className="rounded-[20px] border border-border bg-surface p-5">
                                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[16px]">
                                     <Image
                                         src={pkg.image}

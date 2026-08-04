@@ -35,10 +35,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
-              className={`flex items-center gap-2 rounded-[14px] px-4 py-3 text-sm font-medium shadow-soft ${
+              className={`flex items-center gap-2 rounded-[14px] px-4 py-3 text-sm font-medium shadow-admin-pop ${
                 toast.kind === "success"
-                  ? "bg-primary text-white"
-                  : "bg-red-600 text-white"
+                  ? "bg-admin-primary text-white"
+                  : "bg-admin-danger text-white"
               }`}
             >
               {toast.kind === "success" ? (

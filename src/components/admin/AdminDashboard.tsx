@@ -29,10 +29,10 @@ export function AdminDashboard({ userEmail }: { userEmail?: string | null }) {
 
   return (
     <ToastProvider>
-      <div className="flex min-h-screen w-full flex-col lg:flex-row">
+      <div className="flex min-h-screen w-full flex-col bg-admin-bg text-admin-ink lg:flex-row">
         <AdminSidebar active={activeSection} onChange={setActiveSection} userEmail={userEmail} />
 
-        <main className="flex-1 overflow-y-auto bg-surface px-4 py-8 sm:px-8 lg:px-10">
+        <main className="flex-1 overflow-y-auto px-4 py-8 sm:px-8 lg:px-10">
           {activeSection === "overview" && <AdminOverview />}
           {activeSection === "destinations" && <DestinationsManager />}
           {activeSection === "packages" && <PackagesManager />}

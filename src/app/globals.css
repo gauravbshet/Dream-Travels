@@ -66,6 +66,37 @@
      field is composed even before/without JS. */
   --mx: 50%;
   --my: 32%;
+
+  /* --------------------------------------------------------------------
+     Admin — premium light surface system.
+     Independent of the public dark-forest tokens above: the admin
+     dashboard is a data-focused, light workspace, not a themed reskin of
+     the marketing site. Same green/amber brand hues, inverted for a
+     light canvas, tuned so every pairing below clears WCAG AA on its
+     paired surface. See DESIGN.md.
+     -------------------------------------------------------------------- */
+  --admin-bg: oklch(0.975 0.006 155);
+  --admin-surface: oklch(1 0 0);
+  --admin-surface-2: oklch(0.955 0.01 155);
+  --admin-border: oklch(0.9 0.01 155);
+  --admin-border-lit: oklch(0.72 0.06 152);
+
+  --admin-ink: oklch(0.24 0.03 160);
+  --admin-ink-2: oklch(0.38 0.026 160);
+  --admin-ink-muted: oklch(0.53 0.02 160);
+
+  --admin-primary: oklch(0.5 0.13 152);
+  --admin-primary-dark: oklch(0.42 0.12 152);
+  --admin-primary-soft: oklch(0.94 0.035 150);
+
+  --admin-accent: oklch(0.62 0.14 65);
+  --admin-accent-soft: oklch(0.95 0.04 75);
+
+  --admin-danger: oklch(0.55 0.2 25);
+  --admin-danger-soft: oklch(0.96 0.03 25);
+
+  --admin-shadow-card: 0 1px 2px rgba(15, 23, 19, 0.04), 0 10px 30px -14px rgba(15, 23, 19, 0.14);
+  --admin-shadow-pop: 0 24px 60px -18px rgba(15, 23, 19, 0.32);
 }
 
 @theme inline {
@@ -96,6 +127,25 @@
   --color-sage-100: var(--surface);
   --color-sand: var(--amber);
   --color-cream: var(--bg-deep);
+
+  --color-admin-bg: var(--admin-bg);
+  --color-admin-surface: var(--admin-surface);
+  --color-admin-surface-2: var(--admin-surface-2);
+  --color-admin-border: var(--admin-border);
+  --color-admin-border-lit: var(--admin-border-lit);
+  --color-admin-ink: var(--admin-ink);
+  --color-admin-ink-2: var(--admin-ink-2);
+  --color-admin-ink-muted: var(--admin-ink-muted);
+  --color-admin-primary: var(--admin-primary);
+  --color-admin-primary-dark: var(--admin-primary-dark);
+  --color-admin-primary-soft: var(--admin-primary-soft);
+  --color-admin-accent: var(--admin-accent);
+  --color-admin-accent-soft: var(--admin-accent-soft);
+  --color-admin-danger: var(--admin-danger);
+  --color-admin-danger-soft: var(--admin-danger-soft);
+
+  --shadow-admin-card: var(--admin-shadow-card);
+  --shadow-admin-pop: var(--admin-shadow-pop);
 
   --font-sans: var(--font-archivo);
   --font-display: var(--font-bricolage);
@@ -364,6 +414,29 @@ body {
 
 .input:focus {
   border-color: var(--canopy);
+}
+
+.admin-input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface);
+  padding: 0.75rem 1rem;
+  font-size: 0.9375rem;
+  color: var(--admin-ink);
+  outline: none;
+  transition:
+    border-color var(--dur-micro) var(--ease-out-quart),
+    box-shadow var(--dur-micro) var(--ease-out-quart);
+}
+
+.admin-input::placeholder {
+  color: var(--admin-ink-muted);
+}
+
+.admin-input:focus {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--admin-primary) 16%, transparent);
 }
 
 /* --------------------------------------------------------------------------
