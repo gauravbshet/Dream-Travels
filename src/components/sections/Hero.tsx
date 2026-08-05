@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   motion,
   useScroll,
   useTransform,
   useReducedMotion,
-  AnimatePresence,
 } from "framer-motion";
 import { ArrowUpRight, Star } from "lucide-react";
 import { HeroSearch, HeroSearchCompact } from "./HeroSearch";
@@ -15,52 +14,7 @@ import heroImage from "../../../media/hero.png";
 
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const reduced = useReducedMotion();
-
-  const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [videoEnded, setVideoEnded] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  useEffect(() => {
-    if (isMobile && !videoEnded) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-
-      // Fallback timeout to ensure page isn't permanently locked if video fails/suspends
-      const fallbackTimer = setTimeout(() => {
-        setVideoEnded(true);
-      }, 8000);
-
-      // Force video play (necessary for some browsers / power savings modes)
-      const playVideo = async () => {
-        if (videoRef.current) {
-          try {
-            await videoRef.current.play();
-          } catch (err) {
-            console.warn("Video autoplay failed:", err);
-          }
-        }
-      };
-      const playTimer = setTimeout(playVideo, 100);
-
-      return () => {
-        document.body.style.overflow = originalOverflow;
-        clearTimeout(fallbackTimer);
-        clearTimeout(playTimer);
-      };
-    }
-  }, [isMobile, videoEnded]);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -72,8 +26,6 @@ export function Hero() {
   const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
   const copyY = useTransform(scrollYProgress, [0, 1], ["0%", "-25%"]);
   const copyOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
-
-  const showContent = !isMobile || (mounted && videoEnded);
 
   return (
     <section ref={ref} className="relative w-full h-screen min-h-[680px] max-h-[1080px] overflow-hidden flex flex-col justify-center">
@@ -95,30 +47,6 @@ export function Hero() {
         <div className="absolute inset-0 bg-radial-vignette opacity-40" />
       </motion.div>
 
-      {/* Mobile-only Hero Video Overlay */}
-      <AnimatePresence>
-        {isMobile && !videoEnded && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="absolute inset-0 z-20 w-full h-full bg-black overflow-hidden"
-          >
-            <video
-              ref={videoRef}
-              src="/media/ph.MP4"
-              className="w-full h-full object-cover"
-              autoPlay
-              muted
-              playsInline
-              preload="auto"
-              controls={false}
-              onEnded={() => setVideoEnded(true)}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Hero Content Container */}
       <div className="container-app relative z-20 pt-24 pb-28 sm:pb-32 lg:pb-36 flex flex-col justify-between h-full max-w-6xl">
         <div>
@@ -129,8 +57,8 @@ export function Hero() {
             {/* Rating Pill */}
             <motion.div
               initial={{ y: 16, opacity: 0 }}
-              animate={showContent ? { y: 0, opacity: 1 } : { y: 16, opacity: 0 }}
-              transition={{ duration: 0.7, delay: isMobile ? 0.05 : 0.1, ease: [0.16, 1, 0.3, 1] }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="mb-4 sm:mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-md shadow-md"
             >
               <Star className="h-3.5 w-3.5 fill-amber text-amber" />
@@ -140,8 +68,8 @@ export function Hero() {
             {/* Display Heading */}
             <motion.h1
               initial={{ y: 24, opacity: 0 }}
-              animate={showContent ? { y: 0, opacity: 1 } : { y: 24, opacity: 0 }}
-              transition={{ duration: 0.85, delay: isMobile ? 0.15 : 0.2, ease: [0.16, 1, 0.3, 1] }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.85, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15] drop-shadow-md"
             >
               Discover Extraordinary
@@ -152,8 +80,8 @@ export function Hero() {
             {/* Subheading */}
             <motion.p
               initial={{ y: 20, opacity: 0 }}
-              animate={showContent ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
-              transition={{ duration: 0.85, delay: isMobile ? 0.25 : 0.3, ease: [0.16, 1, 0.3, 1] }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.85, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="mt-4 sm:mt-5 max-w-xl text-sm sm:text-lg text-gray-200 leading-relaxed drop-shadow-sm font-normal"
             >
               Curated community trips, serene campsites, and luxury nature escapes designed for memories that last a lifetime.
@@ -162,8 +90,8 @@ export function Hero() {
             {/* Call to Actions */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
-              animate={showContent ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
-              transition={{ duration: 0.85, delay: isMobile ? 0.35 : 0.4, ease: [0.16, 1, 0.3, 1] }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.85, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="mt-6 sm:mt-8 flex flex-wrap items-center gap-4"
             >
               <a
@@ -180,8 +108,8 @@ export function Hero() {
         {/* Hero Search Floating Bar */}
         <motion.div
           initial={{ y: 30, opacity: 0 }}
-          animate={showContent ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 }}
-          transition={{ duration: 0.85, delay: isMobile ? 0.45 : 0.5, ease: [0.16, 1, 0.3, 1] }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.85, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="relative z-30 mt-6 sm:mt-8 mx-auto w-full max-w-full px-4 sm:px-6 lg:max-w-5xl -translate-y-4 sm:-translate-y-6 lg:-translate-y-8"
         >
           <div className="hidden sm:block">
