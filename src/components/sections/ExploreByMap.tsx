@@ -162,9 +162,9 @@ export function ExploreByMap() {
           </div>
 
           {/* Detail + region list */}
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-3.5 justify-between">
             <article className="overflow-hidden rounded-[14px] border border-border bg-surface">
-              <div data-tone="dark" className="relative aspect-[16/9] w-full overflow-hidden">
+              <div data-tone="dark" className="relative aspect-[2.4/1] sm:aspect-[2.6/1] w-full overflow-hidden">
                 <Image
                   key={active.id}
                   src={active.image}
@@ -173,46 +173,47 @@ export function ExploreByMap() {
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.14_0.02_158/0.46)] via-transparent to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-4">
-                  <span className="flex items-center gap-1.5 text-[12px] text-ink-2">
-                    <MapPin className="h-3.5 w-3.5 text-canopy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 p-3">
+                  <span className="flex items-center gap-1 text-[11px] text-white/80">
+                    <MapPin className="h-3 w-3 text-canopy" />
                     {active.state}
                   </span>
-                  <h3 className="font-display mt-1 text-[24px] leading-tight text-ink">
+                  <h3 className="font-sans text-[18px] sm:text-[20px] font-bold leading-tight text-white">
                     {active.name}
                   </h3>
                 </div>
               </div>
-              <div className="p-4">
-                <p className="text-[14px] leading-relaxed text-ink-muted">
+              <div className="p-3">
+                <p className="text-[12.5px] leading-relaxed text-ink-muted line-clamp-2">
                   {active.blurb}
                 </p>
-                <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+                <div className="mt-2.5 flex items-center justify-between border-t border-border/70 pt-2">
                   <div>
-                    <p className="text-[11px] text-ink-muted">Starting from</p>
-                    <p className="text-lg font-semibold text-ink">
+                    <p className="text-[10px] text-ink-muted">Starting from</p>
+                    <p className="text-base font-extrabold text-ink">
                       {formatPrice(active.fromPrice)}
                     </p>
                   </div>
-                  <span className="rounded-full border border-border px-3 py-1.5 text-[12px] text-ink-2">
+                  <span className="rounded-full border border-border/70 px-2.5 py-1 text-[11px] font-medium text-ink-2">
                     {active.packageCount} packages
                   </span>
                 </div>
               </div>
             </article>
 
-            <div className="rounded-[14px] border border-border bg-surface p-4">
-              <h3 className="mb-3 text-[13px] font-semibold text-ink">
+            {/* Where we run trips card */}
+            <div className="rounded-[14px] border border-border/80 bg-surface p-3 sm:p-3.5">
+              <h3 className="mb-2 text-[12px] font-bold text-ink tracking-tight">
                 Where we run trips
               </h3>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2 sm:gap-2.5">
                 {byRegion.map((group) => (
                   <div key={group.region}>
-                    <p className="mb-2 text-[11px] text-ink-muted">
+                    <p className="mb-1 text-[10px] font-semibold text-ink-muted uppercase tracking-wider">
                       {group.region}
                     </p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {group.items.map((d) => (
                         <RegionChip
                           key={d.id}
@@ -248,14 +249,14 @@ function RegionChip({
       onClick={onSelect}
       aria-pressed={active}
       className={cn(
-        "inline-flex min-h-[40px] items-center gap-2 rounded-full border px-3.5 text-[13px] transition-colors duration-[180ms]",
+        "inline-flex min-h-[28px] sm:min-h-[30px] items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] sm:text-[11.5px] font-medium transition-colors duration-[180ms]",
         active
-          ? "border-canopy bg-canopy/15 text-ink"
-          : "border-border text-ink-muted hover:border-border-lit hover:text-ink-2"
+          ? "border-canopy bg-canopy/15 text-ink font-semibold"
+          : "border-border/80 text-ink-muted hover:border-canopy/30 hover:text-ink-2"
       )}
     >
       {destination.name}
-      <span className={cn("text-[11px]", active ? "text-canopy" : "text-ink-muted")}>
+      <span className={cn("text-[9.5px]", active ? "text-canopy font-bold" : "text-ink-muted")}>
         {destination.packageCount}
       </span>
     </button>
