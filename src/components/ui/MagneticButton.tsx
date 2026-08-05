@@ -41,7 +41,7 @@ export function MagneticButton({
       onClick={onClick}
       className={cn(
         "relative inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-semibold transition-colors overflow-hidden",
-        variant === "primary" && "bg-canopy text-bg-deep hover:bg-[oklch(0.82_0.16_148)]",
+        variant === "primary" && "bg-canopy text-white hover:bg-canopy-hover",
         variant === "secondary" &&
           "bg-surface text-ink border border-border hover:border-border-lit",
         variant === "ghost" &&

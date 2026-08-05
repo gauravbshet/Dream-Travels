@@ -88,7 +88,7 @@ export function PackageCard({
                 </div>
               </div>
 
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-canopy px-4 py-2 text-xs font-semibold text-bg-deep transition-transform duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] group-hover:translate-x-0.5">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-canopy px-4 py-2 text-xs font-semibold text-white transition-transform duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)] group-hover:translate-x-0.5">
                 Book
                 <ArrowUpRight className="h-3.5 w-3.5" />
               </span>

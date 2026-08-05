@@ -100,7 +100,7 @@ export function HeroCarousel({ className }: { className?: string }) {
         <div className="mt-7 flex flex-wrap items-center gap-3">
           <a
             href="#packages"
-            className="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-canopy px-6 text-sm font-semibold text-bg-deep active:scale-[0.98]"
+            className="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-canopy px-6 text-sm font-semibold text-white active:scale-[0.98]"
           >
             See this season&rsquo;s trips
             <ArrowUpRight className="h-4 w-4" />

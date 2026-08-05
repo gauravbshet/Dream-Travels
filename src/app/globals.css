@@ -7,26 +7,29 @@
 
 :root {
   /* Ground */
-  --bg: oklch(0.16 0.022 158);
-  --bg-deep: oklch(0.12 0.018 158);
-  --surface: oklch(0.215 0.026 158);
-  --surface-2: oklch(0.265 0.028 158);
+  --bg: #eef3ea;
+  --bg-deep: #dce8d7;
+  --surface: rgba(255, 255, 255, 0.88);
+  --surface-2: rgba(255, 255, 255, 0.96);
+  --surface-glass: rgba(255, 255, 255, 0.72);
+  --surface-glass-strong: rgba(255, 255, 255, 0.92);
 
   /* Edges */
-  --border: oklch(0.31 0.022 158);
-  --border-lit: oklch(0.44 0.035 155);
+  --border: rgba(105, 144, 68, 0.16);
+  --border-lit: rgba(76, 159, 34, 0.2);
 
   /* Type */
-  --ink: oklch(0.97 0.008 150);
-  --ink-2: oklch(0.87 0.012 150);
-  --ink-muted: oklch(0.75 0.016 150);
+  --ink: #152615;
+  --ink-2: #42594a;
+  --ink-muted: #6b7a6a;
 
   /* Brand */
-  --canopy: oklch(0.76 0.155 148);
-  --canopy-deep: oklch(0.5 0.105 152);
-  --amber: oklch(0.8 0.13 72);
+  --canopy: #4c9f25;
+  --canopy-hover: #3f8c1f;
+  --canopy-deep: #2f6411;
+  --amber: #e7a327;
 
-  /* Legacy semantic names, remapped onto the dark system so existing
+  /* Legacy semantic names, remapped onto the light system so existing
      components inherit the theme rather than fighting it. */
   --background: var(--bg);
   --text-primary: var(--ink);
@@ -53,23 +56,24 @@
      scopes the swap onto whichever Section/card opts into it.
      -------------------------------------------------------------------- */
 
-  /* Light / natural surfaces */
-  --canvas: #f5f5ee;
-  --canvas-soft: #f8f8f3;
+  /* Light / natural surfaces — neutral off-white canvas, white cards, pale
+     green reserved for occasional soft-highlight sections/chips only. */
+  --canvas: #fafaf7;
+  --canvas-soft: #f7f8f4;
   --surface-light: #ffffff;
-  --surface-cream: #f5f5ee;
-  --surface-sage: #edf2e8;
-  --surface-sage-strong: #dde7d8;
-  --text-dark: #183528;
-  --text-dark-secondary: #5f6d63;
-  --text-dark-muted: #7a857d;
-  --border-light: #dde4da;
+  --surface-cream: #fafaf7;
+  --surface-sage: #f2f8ec;
+  --surface-sage-strong: #dff2c8;
+  --text-dark: #20221f;
+  --text-dark-secondary: #686d66;
+  --text-dark-muted: #9aa098;
+  --border-light: #e4e7e1;
 
   /* Brand — shared across light and dark surfaces */
-  --brand: #2f633f;
-  --brand-hover: #24543d;
-  --brand-deep: #163a2b;
-  --brand-soft: #6f965f;
+  --brand: #3f8c02;
+  --brand-hover: #347601;
+  --brand-deep: #285e02;
+  --brand-soft: #dff2c8;
 
   /* Dark forest surfaces (distinct from --bg/--bg-deep: a more saturated,
      intentional "forest" dark used for the footer and dark feature
@@ -151,6 +155,7 @@
   --color-border: var(--border);
   --color-border-lit: var(--border-lit);
   --color-canopy: var(--canopy);
+  --color-canopy-hover: var(--canopy-hover);
   --color-canopy-deep: var(--canopy-deep);
   --color-amber: var(--amber);
   --color-forest-900: var(--bg-deep);
@@ -258,12 +263,16 @@ body {
   --border-lit: var(--brand-soft);
 }
 
+/* Sage now only tints the section's own canvas (a rare, occasional soft
+   highlight per the finalized natural palette) — cards, text and borders
+   inside it stay identical to a light section: white cards, neutral
+   near-black text. Green is an accent, not a surface family. */
 [data-tone="sage"] {
   --ink: var(--text-dark);
   --ink-2: var(--text-dark-secondary);
   --ink-muted: var(--text-dark-muted);
-  --surface: var(--surface-sage-strong);
-  --surface-2: var(--surface-light);
+  --surface: var(--surface-light);
+  --surface-2: var(--surface-sage);
   --border: var(--border-light);
   --border-lit: var(--brand-soft);
 }

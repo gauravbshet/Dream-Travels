@@ -174,7 +174,7 @@ export default function LoginPage() {
                     href="/"
                     className="mb-7 flex items-center justify-center gap-2.5 text-ink"
                 >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-bg-deep">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-white">
                         <Plane className="h-4 w-4" />
                     </span>
                     <span className="font-display text-[19px] tracking-[-0.02em]">
@@ -316,7 +316,7 @@ export default function LoginPage() {
                                         whileTap={{ scale: 0.98 }}
                                         type="submit"
                                         disabled={loading}
-                                        className="w-full rounded-[11px] bg-canopy px-6 py-4 text-sm font-semibold text-bg-deep transition-colors duration-[180ms] hover:bg-[oklch(0.82_0.16_148)] disabled:cursor-not-allowed disabled:opacity-60"
+                                        className="w-full rounded-[11px] bg-canopy px-6 py-4 text-sm font-semibold text-white transition-colors duration-[180ms] hover:bg-canopy-hover disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         {loading
                                             ? mode === "signIn"

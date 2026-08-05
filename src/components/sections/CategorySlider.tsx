@@ -39,7 +39,7 @@ export function CategorySlider() {
                   className={cn(
                     "flex h-16 w-16 lg:h-14 lg:w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl border transition-all duration-300",
                     isActive
-                      ? "bg-canopy border-primary text-bg-deep scale-105"
+                      ? "bg-canopy border-primary text-white scale-105"
                       : "bg-surface border-border text-ink-muted hover:border-primary/40 hover:text-primary"
                   )}
                 >

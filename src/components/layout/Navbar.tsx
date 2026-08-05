@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Menu, X } from "lucide-react";
+import type { User } from "@supabase/supabase-js";
 import { Container } from "@/components/ui/Container";
 import { navLinks } from "@/data/site";
 import { cn } from "@/lib/utils";
@@ -13,17 +14,12 @@ import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 export function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<User | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [authReady, setAuthReady] = useState(false);
 
   const [scrolled, setScrolled] = useState(false);
 
-  const [supabase, setSupabase] = useState<ReturnType<typeof createBrowserSupabaseClient> | null>(null);
-
-  useEffect(() => {
-    setSupabase(createBrowserSupabaseClient());
-  }, []);
+  const [supabase] = useState(() => createBrowserSupabaseClient());
 
   useEffect(() => {
     function onScroll() {
@@ -116,13 +112,13 @@ export function Navbar() {
         className={cn(
           "sticky inset-x-0 top-0 z-[200] transition-[background-color,border-color,backdrop-filter] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)]",
           scrolled
-            ? "border-b border-border bg-[oklch(0.16_0.022_158/0.86)] backdrop-blur-xl"
+            ? "border-b border-border bg-white/92 backdrop-blur-xl"
             : "border-b border-transparent bg-transparent"
         )}
       >
         <Container className="flex h-[76px] lg:h-[84px] items-center justify-between gap-4 lg:gap-8">
           <Link href="/" className="flex min-h-11 items-center gap-2.5 shrink-0">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-bg-deep font-semibold text-base">
+            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-white font-semibold text-base">
               D
             </span>
             <span className="font-semibold text-[17px] tracking-[-0.01em] text-ink hidden xs:inline">
@@ -173,7 +169,7 @@ export function Navbar() {
                 {userRole === "admin" && (
                   <Link
                     href="/admin"
-                    className="rounded-[10px] px-4 py-2 text-sm font-medium bg-canopy text-bg-deep hover:bg-[oklch(0.82_0.16_148)] transition-colors"
+                    className="rounded-[10px] px-4 py-2 text-sm font-medium bg-canopy text-white hover:bg-canopy-hover transition-colors"
                   >
                     Admin Portal
                   </Link>
@@ -196,7 +192,7 @@ export function Navbar() {
                 </Link>
                 <Link
                   href="/login"
-                  className="rounded-[10px] bg-canopy px-5 py-2.5 text-sm font-semibold text-bg-deep transition-colors hover:bg-[oklch(0.82_0.16_148)]"
+                  className="rounded-[10px] bg-canopy px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-canopy-hover"
                 >
                   Sign Up
                 </Link>
@@ -209,8 +205,8 @@ export function Navbar() {
             <button
               aria-label="Search destinations"
               className={cn(
-                "flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] text-ink transition-colors",
-                scrolled ? "border border-border" : "border border-white/15 bg-white/[0.08] backdrop-blur-md"
+                "flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] text-ink transition-colors border border-[rgba(76,159,34,0.12)] bg-white/95 shadow-sm",
+                scrolled ? "" : ""
               )}
             >
               <Search className="h-[18px] w-[18px]" />
@@ -273,7 +269,7 @@ export function Navbar() {
                   <>
                     <Link
                       href="/dashboard"
-                      className="rounded-[12px] bg-canopy px-4 py-3 text-center text-sm font-semibold text-bg-deep"
+                      className="rounded-[12px] bg-canopy px-4 py-3 text-center text-sm font-semibold text-white"
                       onClick={() => setMenuOpen(false)}
                     >
                       Dashboard
@@ -313,7 +309,7 @@ export function Navbar() {
                     </Link>
                     <Link
                       href="/login"
-                      className="rounded-[12px] bg-canopy px-4 py-3 text-center text-sm font-semibold text-bg-deep"
+                      className="rounded-[12px] bg-canopy px-4 py-3 text-center text-sm font-semibold text-white"
                       onClick={() => setMenuOpen(false)}
                     >
                       Sign Up

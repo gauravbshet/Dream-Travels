@@ -22,7 +22,7 @@ export function TopRatedPackages({
     .slice(0, 10);
 
   return (
-    <Section tone="sage" id="top-rated">
+    <Section tone="light" id="top-rated">
       <Container>
         <Reveal>
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4 lg:mb-12">

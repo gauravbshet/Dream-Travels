@@ -115,9 +115,9 @@ function Arrow({
       aria-label={label}
       className={cn(
         "absolute top-[38%] z-[10] hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full",
-        "border border-border bg-[oklch(0.16_0.022_158/0.82)] text-ink backdrop-blur-md",
+        "border border-[rgba(76,159,34,0.12)] bg-white/90 text-ink shadow-sm backdrop-blur-md",
         "transition-[opacity,border-color,transform] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)]",
-        "hover:border-border-lit hover:scale-105 active:scale-95 sm:flex",
+        "hover:border-[rgba(76,159,34,0.2)] hover:scale-105 active:scale-95 sm:flex",
         disabled && "pointer-events-none opacity-0",
         side === "left" ? "left-2 lg:left-3" : "right-2 lg:right-3"
       )}

@@ -66,7 +66,7 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1fr_1fr_1fr_1fr] lg:gap-8">
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-bg-deep font-semibold text-base">
+              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-white font-semibold text-base">
                 D
               </span>
               <span className="text-lg font-semibold text-ink">Dream Travels</span>
@@ -81,7 +81,7 @@ export function Footer() {
                   key={s.label}
                   href="#"
                   aria-label={s.label}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-ink-muted transition-colors hover:bg-canopy hover:border-primary hover:text-bg-deep"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-ink-muted transition-colors hover:bg-canopy hover:border-primary hover:text-white"
                 >
                   <SocialGlyph path={s.path} />
                 </a>
@@ -128,7 +128,7 @@ export function Footer() {
               <button
                 type="submit"
                 aria-label="Subscribe"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[11px] bg-canopy text-bg-deep transition-colors hover:bg-[oklch(0.82_0.16_148)]"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[11px] bg-canopy text-white transition-colors hover:bg-canopy-hover"
               >
                 <Send className="h-4 w-4" />
               </button>

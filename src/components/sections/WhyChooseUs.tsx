@@ -8,7 +8,7 @@ import { features } from "@/data/site";
 
 export function WhyChooseUs() {
   return (
-    <Section tone="sage" id="about">
+    <Section tone="light" id="about">
       <Container>
         <SectionHeading
           title="Why Travel With Dream Travels"
