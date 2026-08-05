@@ -146,7 +146,7 @@ export default function LoginPage() {
     }
 
     return (
-        <main className="relative flex min-h-screen items-center justify-center px-4 py-24">
+        <main data-tone="dark" className="relative flex min-h-screen items-center justify-center px-4 py-24">
             {/* Terrain backdrop: the place is present even on a utility screen. */}
             <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
                 <img

@@ -29,7 +29,7 @@ export function BlogSection({ blogs = staticBlogs }: { blogs?: Blog[] }) {
                   sizes="(max-width: 768px) 70vw, 30vw"
                   className="object-cover transition-transform duration-300 ease-out hover:scale-[1.03]"
                 />
-                <span className="absolute left-3 top-3 rounded-full bg-[oklch(0.19_0.024_158/0.82)] px-3 py-1 text-[11px] font-semibold text-ink backdrop-blur">
+                <span className="absolute left-3 top-3 rounded-full bg-[oklch(0.19_0.024_158/0.82)] px-3 py-1 text-[11px] font-semibold text-white backdrop-blur">
                   {blog.category}
                 </span>
               </div>

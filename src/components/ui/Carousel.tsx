@@ -113,6 +113,7 @@ function Arrow({
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
+      data-tone="light"
       className={cn(
         "absolute top-[38%] z-[10] hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full",
         "border border-[rgba(76,159,34,0.12)] bg-white/90 text-ink shadow-sm backdrop-blur-md",

@@ -33,6 +33,7 @@ export function HeroCarousel({ className }: { className?: string }) {
 
   return (
     <div
+      data-tone="dark"
       className={cn(
         // svh keeps the composition correct under mobile browser chrome.
         "relative h-[88svh] max-h-[760px] min-h-[560px] w-full overflow-hidden",

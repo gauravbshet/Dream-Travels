@@ -67,7 +67,7 @@ export function ExploreByMap() {
 
         <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr] lg:gap-6">
           {/* Map plate */}
-          <div className="relative overflow-hidden rounded-[14px] border border-border bg-[oklch(0.185_0.024_158)] p-3 sm:p-5">
+          <div className="relative overflow-hidden rounded-[14px] border border-border bg-[#F5F5EE] p-3 sm:p-5">
             <svg
               viewBox={`0 0 ${MAP_VIEWBOX.width} ${MAP_VIEWBOX.height}`}
               className="mx-auto h-auto w-full max-w-[520px]"
@@ -85,7 +85,7 @@ export function ExploreByMap() {
                     d="M50 0 L0 0 0 50"
                     fill="none"
                     stroke="var(--canopy)"
-                    strokeOpacity="0.09"
+                    strokeOpacity="0.06"
                     strokeWidth="1"
                   />
                 </pattern>
@@ -93,7 +93,7 @@ export function ExploreByMap() {
                   <stop
                     offset="0%"
                     stopColor="var(--canopy)"
-                    stopOpacity="0.22"
+                    stopOpacity="0.08"
                   />
                   <stop offset="100%" stopColor="var(--canopy)" stopOpacity="0" />
                 </radialGradient>
@@ -113,7 +113,7 @@ export function ExploreByMap() {
 
               <path
                 d={INDIA_OUTLINE}
-                fill="oklch(0.26 0.035 158)"
+                fill="#E5EEDC"
                 stroke="var(--canopy)"
                 strokeOpacity="0.55"
                 strokeWidth="2.5"
@@ -133,7 +133,7 @@ export function ExploreByMap() {
                       <circle
                         r="34"
                         fill="var(--canopy)"
-                        fillOpacity="0.18"
+                        fillOpacity="0.12"
                         className="pointer-events-none"
                       />
                     )}
@@ -145,8 +145,8 @@ export function ExploreByMap() {
                     />
                     <circle
                       r={isActive ? 11 : 7}
-                      fill={isActive ? "var(--canopy)" : "var(--amber)"}
-                      stroke="oklch(0.13 0.02 158)"
+                      fill={isActive ? "var(--canopy-hover)" : "var(--canopy)"}
+                      stroke="#F5F5EE"
                       strokeWidth="3"
                       className="pointer-events-none transition-all duration-300"
                     />
@@ -156,7 +156,7 @@ export function ExploreByMap() {
             </svg>
 
             {/* Pins are decorative-only for AT; the list below is the real control. */}
-            <p className="mt-2 text-center text-[11px] text-ink-muted">
+            <p className="mt-2 text-center text-[11px] text-text-dark-secondary">
               Hover or tap a pin — full list below
             </p>
           </div>

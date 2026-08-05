@@ -59,32 +59,34 @@ export function HeroSearch({ className }: { className?: string }) {
       onPointerMove={onPointerMove}
       className={cn(
         "spotlight rounded-[18px] border border-[rgba(76,159,34,0.14)] bg-[rgba(255,255,255,0.94)] p-3 shadow-[0_32px_80px_-42px_rgba(41,77,37,0.18)] backdrop-blur-xl",
-        "flex flex-col gap-3 md:flex-row md:items-center",
+        "flex flex-col gap-2.5 xl:flex-row xl:items-center",
         className
       )}
     >
-      {fields.map((field, i) => (
-        <button
-          key={field.id}
-          type="button"
-          className={cn(
-            "group relative z-[3] flex flex-1 min-w-0 items-center gap-3 rounded-[16px] border border-[rgba(76,159,34,0.08)] bg-surface px-4 py-4 text-left transition duration-[180ms] hover:border-canopy/30 hover:bg-surface-2",
-            i < fields.length - 1 && "xl:rounded-none xl:border-r xl:border-[rgba(76,159,34,0.1)]"
-          )}
-        >
-          <field.icon className="h-[18px] w-[18px] shrink-0 text-canopy-deep" />
-          <span className="min-w-0">
-            <span className="block text-[11px] font-semibold text-ink-muted">
-              {field.label}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:flex xl:flex-1 xl:items-center gap-2 flex-1 min-w-0">
+        {fields.map((field, i) => (
+          <button
+            key={field.id}
+            type="button"
+            className={cn(
+              "group relative z-[3] flex flex-1 min-w-0 items-center gap-2.5 rounded-[14px] border border-[rgba(76,159,34,0.08)] bg-surface px-3.5 py-3 text-left transition duration-[180ms] hover:border-canopy/30 hover:bg-surface-2",
+              i < fields.length - 1 && "xl:rounded-none xl:border-r xl:border-[rgba(76,159,34,0.1)]"
+            )}
+          >
+            <field.icon className="h-4 w-4 shrink-0 text-canopy-deep" />
+            <span className="min-w-0">
+              <span className="block text-[10px] font-semibold text-ink-muted">
+                {field.label}
+              </span>
+              <span className="block truncate text-[13.5px] font-medium text-ink">
+                {field.placeholder}
+              </span>
             </span>
-            <span className="block truncate text-[15px] text-ink">
-              {field.placeholder}
-            </span>
-          </span>
-        </button>
-      ))}
+          </button>
+        ))}
+      </div>
 
-      <MagneticButton className="relative z-[3] w-full shrink-0 justify-center rounded-[16px] bg-canopy px-5 py-4 text-sm font-semibold text-white shadow-sm transition duration-[180ms] hover:bg-canopy-hover xl:ml-3 xl:w-auto">
+      <MagneticButton className="relative z-[3] w-full shrink-0 justify-center rounded-[14px] bg-canopy px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition duration-[180ms] hover:bg-canopy-hover xl:ml-2 xl:w-auto">
         <Search className="h-4 w-4" />
         Search
       </MagneticButton>

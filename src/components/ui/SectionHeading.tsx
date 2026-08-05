@@ -17,7 +17,7 @@ export function SectionHeading({
   return (
     <Reveal
       className={cn(
-        "mb-8 lg:mb-12",
+        "mb-4 sm:mb-5 lg:mb-6",
         align === "center" && "mx-auto max-w-2xl text-center",
         className
       )}
@@ -26,7 +26,7 @@ export function SectionHeading({
       {description && (
         <p
           className={cn(
-            "prose-measure mt-4 text-base leading-relaxed text-ink-muted lg:text-lg",
+            "prose-measure mt-1.5 sm:mt-2 text-sm sm:text-base leading-relaxed text-ink-muted",
             align === "center" && "mx-auto"
           )}
         >

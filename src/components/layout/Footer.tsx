@@ -55,7 +55,7 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer id="contact" className="relative mt-10 overflow-hidden bg-surface-dark-deep border-t border-border pb-28 pt-16 lg:pb-16 lg:pt-24 text-ink-muted">
+    <footer id="contact" data-tone="dark" className="relative mt-10 overflow-hidden bg-surface-dark-deep border-t border-border pb-28 pt-16 lg:pb-16 lg:pt-24 text-ink-muted">
       <span
         aria-hidden
         className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9rem] lg:text-[13rem] font-semibold tracking-tight text-ink/[0.03] select-none"
@@ -63,8 +63,8 @@ export function Footer() {
         DREAM TRAVELS
       </span>
       <Container className="relative">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1fr_1fr_1fr] lg:gap-8">
-          <div className="lg:col-span-1">
+        <div className="grid gap-y-14 lg:grid-cols-[minmax(220px,1.9fr)_repeat(4,minmax(90px,0.7fr))_minmax(180px,1.3fr)] lg:items-start lg:gap-x-6 xl:gap-x-8">
+          <div>
             <Link href="/" className="flex items-center gap-2">
               <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-white font-semibold text-base">
                 D
@@ -75,7 +75,7 @@ export function Footer() {
               Premium, curated travel experiences designed for the modern
               explorer. Wander far, wander well.
             </p>
-            <div className="mt-5 flex items-center gap-2">
+            <div className="mt-6 flex items-center gap-2">
               {socials.map((s) => (
                 <a
                   key={s.label}
@@ -89,10 +89,12 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Desktop columns */}
-          <div className="hidden lg:grid lg:flex-1 lg:grid-cols-4 lg:gap-6">
+          {/* Desktop columns — `contents` lifts each group into a direct
+              child of the outer grid so it gets its own track, instead of
+              a nested 4-col grid squeezed into a single outer track. */}
+          <div className="hidden lg:contents">
             {footerGroups.map((group) => (
-              <div key={group.title}>
+              <div key={group.title} className="min-w-0">
                 <h4 className="font-semibold text-ink">{group.title}</h4>
                 <ul className="mt-4 space-y-2.5">
                   {group.links.map((link) => (
@@ -107,23 +109,23 @@ export function Footer() {
             ))}
           </div>
 
-          {/* Mobile accordion */}
+          {/* Mobile/tablet accordion */}
           <div className="flex flex-col lg:hidden">
             {footerGroups.map((group) => (
               <FooterAccordion key={group.title} title={group.title} links={group.links} />
             ))}
           </div>
 
-          <div className="lg:w-1/5">
+          <div className="min-w-0">
             <h4 className="font-semibold text-ink">Newsletter</h4>
-            <p className="mt-3 text-sm">
+            <p className="mt-4 text-sm leading-relaxed">
               Get exclusive deals and travel inspiration in your inbox.
             </p>
             <form className="mt-4 flex items-center gap-2" onSubmit={(e) => e.preventDefault()}>
               <input
                 type="email"
                 placeholder="Your email"
-                className="w-full rounded-[12px] border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted outline-none focus:ring-2 focus:ring-primary"
+                className="w-full min-w-0 rounded-[12px] border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted outline-none focus:ring-2 focus:ring-primary"
               />
               <button
                 type="submit"
@@ -136,7 +138,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs sm:flex-row">
+        <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs sm:flex-row">
           <p>© 2026 Dream Travels. All rights reserved.</p>
           <p>Designed for explorers, by explorers.</p>
         </div>

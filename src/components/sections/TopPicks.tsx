@@ -19,7 +19,7 @@ export function TopPicks({ packages = staticTopPicks }: { packages?: Package[] }
             <PackageCard
               key={pkg.id}
               pkg={pkg}
-              className="w-[78%] xs:w-[70%] sm:w-[46%] shrink-0 snap-start lg:w-full"
+              className="w-[160px] xs:w-[175px] sm:w-[220px] shrink-0 snap-start lg:w-full"
             />
           ))}
         </ResponsiveScroller>

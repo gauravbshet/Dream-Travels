@@ -62,8 +62,6 @@ export function Navbar() {
         if (!mounted) return;
         setUserRole(profile?.role ?? null);
       }
-
-      setAuthReady(true);
     }
 
     loadSession();
@@ -109,19 +107,25 @@ export function Navbar() {
   return (
     <>
       <header
+        data-tone={scrolled ? "light" : "dark"}
         className={cn(
-          "sticky inset-x-0 top-0 z-[200] transition-[background-color,border-color,backdrop-filter] duration-[320ms] ease-[cubic-bezier(0.165,0.84,0.44,1)]",
+          "fixed inset-x-0 top-0 z-[200] transition-all duration-300 ease-in-out",
           scrolled
-            ? "border-b border-border bg-white/92 backdrop-blur-xl"
-            : "border-b border-transparent bg-transparent"
+            ? "border-b border-border/80 bg-surface/95 backdrop-blur-xl shadow-xs text-ink"
+            : "bg-gradient-to-b from-black/70 via-black/30 to-transparent border-transparent text-white"
         )}
       >
-        <Container className="flex h-[76px] lg:h-[84px] items-center justify-between gap-4 lg:gap-8">
+        <Container className="flex h-[72px] lg:h-[80px] items-center justify-between gap-4 lg:gap-8">
           <Link href="/" className="flex min-h-11 items-center gap-2.5 shrink-0">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-white font-semibold text-base">
+            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-white font-semibold text-base shadow-sm">
               D
             </span>
-            <span className="font-semibold text-[17px] tracking-[-0.01em] text-ink hidden xs:inline">
+            <span
+              className={cn(
+                "font-semibold text-[17px] tracking-[-0.01em] hidden xs:inline transition-colors",
+                scrolled ? "text-ink" : "text-white"
+              )}
+            >
               Dream Travels
             </span>
           </Link>
@@ -136,7 +140,13 @@ export function Navbar() {
                   href={link.href}
                   className={cn(
                     "relative px-3.5 py-2 text-[14.5px] font-medium transition-colors",
-                    active ? "text-primary" : "text-ink-muted hover:text-ink"
+                    active
+                      ? scrolled
+                        ? "text-primary"
+                        : "text-white font-bold"
+                      : scrolled
+                      ? "text-ink-muted hover:text-ink"
+                      : "text-white/80 hover:text-white"
                   )}
                 >
                   {link.label}
@@ -149,27 +159,37 @@ export function Navbar() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-2">
-            <IconButton label="Search">
+            <IconButton label="Search" className={scrolled ? "" : "text-white hover:bg-white/10"}>
               <Search className="h-[18px] w-[18px]" />
             </IconButton>
             {session ? (
               <>
                 <Link
                   href="/dashboard"
-                  className="rounded-[10px] px-4 py-2 text-sm font-medium text-ink/80 hover:bg-sage-100 transition-colors"
+                  className={cn(
+                    "rounded-[10px] px-4 py-2 text-sm font-medium transition-colors",
+                    scrolled
+                      ? "text-ink/80 hover:bg-sage-100"
+                      : "text-white/90 hover:bg-white/15"
+                  )}
                 >
                   Dashboard
                 </Link>
                 <Link
                   href="/dashboard#wishlist"
-                  className="rounded-[10px] px-4 py-2 text-sm font-medium text-ink/80 hover:bg-sage-100 transition-colors"
+                  className={cn(
+                    "rounded-[10px] px-4 py-2 text-sm font-medium transition-colors",
+                    scrolled
+                      ? "text-ink/80 hover:bg-sage-100"
+                      : "text-white/90 hover:bg-white/15"
+                  )}
                 >
                   Wishlist
                 </Link>
                 {userRole === "admin" && (
                   <Link
                     href="/admin"
-                    className="rounded-[10px] px-4 py-2 text-sm font-medium bg-canopy text-white hover:bg-canopy-hover transition-colors"
+                    className="rounded-[10px] px-4 py-2 text-sm font-medium bg-canopy text-white hover:bg-canopy-hover transition-colors shadow-xs"
                   >
                     Admin Portal
                   </Link>
@@ -177,7 +197,12 @@ export function Navbar() {
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="rounded-[10px] px-4 py-2 text-sm font-medium text-ink/80 hover:bg-sage-100 transition-colors"
+                  className={cn(
+                    "rounded-[10px] px-4 py-2 text-sm font-medium transition-colors",
+                    scrolled
+                      ? "text-ink/80 hover:bg-sage-100"
+                      : "text-white/90 hover:bg-white/15"
+                  )}
                 >
                   Sign Out
                 </button>
@@ -186,13 +211,18 @@ export function Navbar() {
               <>
                 <Link
                   href="/login"
-                  className="rounded-[10px] px-4 py-2 text-sm font-medium text-ink/80 hover:bg-sage-100 transition-colors"
+                  className={cn(
+                    "rounded-[10px] px-4 py-2 text-sm font-medium transition-colors",
+                    scrolled
+                      ? "text-ink/80 hover:bg-sage-100"
+                      : "text-white/90 hover:bg-white/15"
+                  )}
                 >
                   Login
                 </Link>
                 <Link
                   href="/login"
-                  className="rounded-[10px] bg-canopy px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-canopy-hover"
+                  className="rounded-[10px] bg-canopy px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-canopy-hover shadow-xs"
                 >
                   Sign Up
                 </Link>
@@ -200,13 +230,15 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile: the hero owns search, so the bar stays minimal */}
+          {/* Mobile buttons */}
           <div className="flex lg:hidden items-center gap-2 justify-end">
             <button
               aria-label="Search destinations"
               className={cn(
-                "flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] text-ink transition-colors border border-[rgba(76,159,34,0.12)] bg-white/95 shadow-sm",
-                scrolled ? "" : ""
+                "flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] transition-colors border shadow-xs",
+                scrolled
+                  ? "border-border/60 bg-white/95 text-ink"
+                  : "border-white/20 bg-black/30 text-white backdrop-blur-md"
               )}
             >
               <Search className="h-[18px] w-[18px]" />
@@ -215,8 +247,10 @@ export function Navbar() {
               aria-label="Open menu"
               onClick={() => setMenuOpen(true)}
               className={cn(
-                "flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] text-ink transition-colors",
-                scrolled ? "border border-border" : "border border-white/15 bg-white/[0.08] backdrop-blur-md"
+                "flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border transition-colors",
+                scrolled
+                  ? "border-border text-ink"
+                  : "border-white/20 text-white bg-black/30 backdrop-blur-md"
               )}
             >
               <Menu className="h-5 w-5" />
@@ -239,6 +273,7 @@ export function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 260 }}
+              data-tone="dark"
               className="absolute right-0 top-0 flex h-full w-[84%] max-w-sm flex-col border-l border-border bg-bg-deep p-6"
               onClick={(e) => e.stopPropagation()}
             >
@@ -328,14 +363,19 @@ export function Navbar() {
 function IconButton({
   children,
   label,
+  className,
 }: {
   children: React.ReactNode;
   label: string;
+  className?: string;
 }) {
   return (
     <button
       aria-label={label}
-      className="flex h-10 w-10 items-center justify-center rounded-[10px] text-ink/70 hover:bg-sage-100 hover:text-ink transition-colors"
+      className={cn(
+        "flex h-10 w-10 items-center justify-center rounded-[10px] text-ink/70 hover:bg-sage-100 hover:text-ink transition-colors",
+        className
+      )}
     >
       {children}
     </button>

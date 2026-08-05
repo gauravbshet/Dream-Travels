@@ -17,7 +17,7 @@ export function BottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 lg:hidden px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-      <div className="mx-auto flex max-w-md items-center justify-between rounded-[14px] bg-[oklch(0.19_0.024_158/0.88)] px-2 py-2 backdrop-blur-xl border border-border">
+      <div data-tone="dark" className="mx-auto flex max-w-md items-center justify-between rounded-[14px] bg-[oklch(0.19_0.024_158/0.88)] px-2 py-2 backdrop-blur-xl border border-border">
         {items.map((item) => {
           const isActive = active === item.id;
           const Icon = item.icon;

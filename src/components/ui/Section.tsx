@@ -6,12 +6,22 @@ const toneClassName: Record<SectionTone, string> = {
   light: "bg-canvas",
   sage: "bg-surface-sage",
   dark: "bg-surface-dark relative overflow-hidden",
-  image: "",
+  image: "bg-canvas",
 };
 
-const toneDataAttr: Partial<Record<SectionTone, "light" | "sage">> = {
+// Every tone sets an explicit data-tone — none of them may rely on an
+// implicit ":root" default, since that default is not guaranteed to stay
+// dark (see globals.css history). "image" sections sit on the same light
+// canvas as a regular section — headings, captions, etc. outside the photo
+// tiles must read as section foreground (dark-on-light), not image-overlay
+// foreground. Photo tiles that overlay text directly on a darkened photo
+// must opt into `data-tone="dark"` locally, scoped to just that tile, so the
+// light-on-dark pairing never leaks into the surrounding section chrome.
+const toneDataAttr: Record<SectionTone, "light" | "sage" | "dark"> = {
   light: "light",
   sage: "sage",
+  dark: "dark",
+  image: "light",
 };
 
 export function Section({
@@ -32,7 +42,7 @@ export function Section({
       id={id}
       data-tone={toneDataAttr[tone]}
       className={cn(
-        !flush && "py-14 lg:py-24",
+        !flush && "py-6 sm:py-8 lg:py-12",
         toneClassName[tone],
         className
       )}

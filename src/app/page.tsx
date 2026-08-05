@@ -5,7 +5,6 @@ import { TrendingDestinations } from "@/components/sections/TrendingDestinations
 import { TopRatedPackages } from "@/components/sections/TopRatedPackages";
 import { ExploreByMap } from "@/components/sections/ExploreByMap";
 import { RecommendedDestinations } from "@/components/sections/RecommendedDestinations";
-import { PromoBanner } from "@/components/sections/PromoBanner";
 import { InterestingDestinations } from "@/components/sections/InterestingDestinations";
 import { TopPicks } from "@/components/sections/TopPicks";
 import { BudgetCards } from "@/components/sections/BudgetCards";
@@ -14,7 +13,6 @@ import { ReviewCarousel } from "@/components/sections/ReviewCarousel";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
 import { PopularExperiences } from "@/components/sections/PopularExperiences";
 import { SeasonalCollections } from "@/components/sections/SeasonalCollections";
-import { BlogSection } from "@/components/sections/BlogSection";
 import { EventsSection } from "@/components/sections/EventsSection";
 import { heroBadge } from "@/data/site";
 import { createServerSupabaseClient } from "@/lib/supabase.server";
@@ -29,7 +27,6 @@ import {
 } from "@/data/destinations";
 import { packages as staticPackages, topPicks as staticTopPicks } from "@/data/packages";
 import { reviews as staticReviews, type Review } from "@/data/reviews";
-import { blogs as staticBlogs, type Blog } from "@/data/blogs";
 import { events as staticEvents, type TravelEvent } from "@/data/events";
 import type { PopularExperience, SeasonalCollection } from "@/data/destinations";
 
@@ -62,7 +59,6 @@ async function fetchFeaturedData() {
     { data: packages },
     { data: topPickPackages },
     { data: reviewsData },
-    { data: blogsData },
     { data: eventsData },
     { data: experiencesData },
     { data: collectionsData },
@@ -95,10 +91,6 @@ async function fetchFeaturedData() {
       .order("created_at", { ascending: false })
       .limit(6),
     supabase.from("reviews").select("id,name,avatar,rating,review,date").order("created_at", { ascending: false }),
-    supabase
-      .from("blogs")
-      .select("id,title,category,image,read_time,author,date,excerpt")
-      .order("created_at", { ascending: false }),
     supabase.from("events").select("id,title,image,date,location").order("created_at", { ascending: false }),
     supabase.from("popular_experiences").select("id,title,image").order("created_at", { ascending: false }),
     supabase.from("seasonal_collections").select("id,title,image").order("created_at", { ascending: false }),
@@ -152,17 +144,6 @@ async function fetchFeaturedData() {
 
   const reviews: Review[] = reviewsData?.length ? reviewsData : staticReviews;
 
-  const blogs: Blog[] = (blogsData?.length ? blogsData : staticBlogs).map((blog) => ({
-    id: blog.id,
-    title: blog.title,
-    category: blog.category,
-    image: blog.image,
-    readTime: "read_time" in blog ? blog.read_time : blog.readTime,
-    author: blog.author,
-    date: blog.date,
-    excerpt: blog.excerpt,
-  }));
-
   const events: TravelEvent[] = eventsData?.length ? eventsData : staticEvents;
 
   const experiences: PopularExperience[] = experiencesData?.length ? experiencesData : staticExperiences;
@@ -189,7 +170,6 @@ async function fetchFeaturedData() {
     featuredPackages,
     topPicks,
     reviews,
-    blogs,
     events,
     experiences,
     collections,
@@ -204,7 +184,6 @@ export default async function Home() {
     featuredPackages,
     topPicks,
     reviews,
-    blogs,
     events,
     experiences,
     collections,
@@ -223,7 +202,6 @@ export default async function Home() {
         <TrendingTrips packages={featuredPackages} />
         <TrendingDestinations />
         <RecommendedDestinations destinations={featuredDestinations} />
-        <PromoBanner />
         <InterestingDestinations destinations={interestingDestinations} />
         <TopRatedPackages packages={featuredPackages} />
         <TopPicks packages={topPicks} />
@@ -234,7 +212,6 @@ export default async function Home() {
         <WhyChooseUs />
         <PopularExperiences experiences={experiences} />
         <SeasonalCollections collections={collections} />
-        <BlogSection blogs={blogs} />
         <EventsSection events={events} />
       </main>
     </>

@@ -26,7 +26,7 @@ export function TrendingDestinations({
     <Section tone="image" id="trending">
       <Container>
         <Reveal>
-          <div className="mb-8 flex flex-wrap items-end justify-between gap-4 lg:mb-12">
+          <div className="mb-4 sm:mb-5 lg:mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
               <h2 className="display-section text-ink">Trending destinations</h2>
               <p className="prose-measure mt-3 text-base text-ink-muted lg:text-lg">
@@ -64,6 +64,7 @@ function TrendingTile({ destination }: { destination: MapDestination }) {
       <div
         ref={ref}
         onPointerMove={onPointerMove}
+        data-tone="dark"
         className="spotlight lit-edge relative aspect-[3/4] overflow-hidden rounded-[14px] border border-border"
       >
         <Image

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Star } from "lucide-react";
+import { ArrowUpRight, Star, Calendar, MapPin, Flame } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Carousel } from "@/components/ui/Carousel";
@@ -25,7 +25,7 @@ export function TopRatedPackages({
     <Section tone="light" id="top-rated">
       <Container>
         <Reveal>
-          <div className="mb-8 flex flex-wrap items-end justify-between gap-4 lg:mb-12">
+          <div className="mb-4 sm:mb-5 lg:mb-6 flex flex-wrap items-end justify-between gap-4">
             <div>
               <h2 className="display-section text-ink">Top rated packages</h2>
               <p className="prose-measure mt-3 text-base text-ink-muted lg:text-lg">
@@ -55,77 +55,100 @@ export function TopRatedPackages({
 function RatedPackageCard({ pkg, rank }: { pkg: Package; rank: number }) {
   const { ref, onPointerMove } = useSpotlight<HTMLDivElement>();
   const original = pkg.originalPrice ?? pkg.original_price;
-  const discount =
-    original && original > pkg.price
-      ? Math.round(((original - pkg.price) / original) * 100)
-      : null;
 
   return (
     <Link
       href={`/packages/${pkg.slug ?? pkg.id}`}
-      className="group block w-[262px] shrink-0 snap-start sm:w-[290px] lg:w-[310px]"
+      className="group block w-[160px] xs:w-[175px] sm:w-[220px] lg:w-[245px] shrink-0 snap-start"
     >
-      <div
-        ref={ref}
-        onPointerMove={onPointerMove}
-        className="spotlight lit-edge flex h-full flex-col overflow-hidden rounded-[14px] border border-border bg-surface"
-      >
-        <div data-tone="dark" className="relative aspect-[16/11] w-full overflow-hidden">
-          <Image
-            src={pkg.image}
-            alt={pkg.title}
-            fill
-            sizes="(max-width: 640px) 80vw, 310px"
-            className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.16_0.022_158/0.48)] via-transparent to-transparent" />
+      <article className="h-full">
+        <div
+          ref={ref}
+          onPointerMove={onPointerMove}
+          className="spotlight lit-edge flex h-full flex-col overflow-hidden rounded-[16px] border border-border/80 bg-surface shadow-xs transition-shadow duration-300 hover:shadow-md"
+        >
+          {/* Image & Overlay Badges Header */}
+          <div data-tone="dark" className="relative aspect-[4/3] w-full overflow-hidden">
+            <Image
+              src={pkg.image}
+              alt={pkg.title}
+              fill
+              sizes="(max-width: 640px) 80vw, 310px"
+              className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
 
-          {/* Rank is the section's whole premise — show it. */}
-          <span className="absolute left-3 top-3 z-[3] flex h-7 min-w-7 items-center justify-center rounded-full bg-[oklch(0.16_0.022_158/0.78)] px-2 text-[12px] font-semibold text-ink backdrop-blur-md">
-            {rank}
-          </span>
-
-          {discount && (
-            <span className="absolute left-12 top-3 z-[3] rounded-full bg-amber px-2.5 py-1 text-[11px] font-semibold text-bg-deep">
-              {discount}% off
+            {/* Rank badge top left */}
+            <span className="absolute left-2.5 top-2.5 z-[3] flex h-6 min-w-6 items-center justify-center rounded-md bg-canopy/90 px-1.5 text-[10px] font-extrabold text-white backdrop-blur-md shadow-2xs">
+              #{rank}
             </span>
-          )}
 
-          <WishlistButton className="absolute right-3 top-3 z-[3]" />
-
-          <span className="absolute bottom-3 left-3 z-[3] text-[13px] font-medium text-ink-2">
-            {pkg.location}
-          </span>
-        </div>
-
-        <div className="relative z-[3] flex flex-1 flex-col p-4">
-          <h3 className="font-display text-[17px] leading-snug text-ink line-clamp-2">
-            {pkg.title}
-          </h3>
-
-          <div className="mt-2 flex items-center gap-2 text-[13px]">
-            <span className="flex items-center gap-1 font-semibold text-ink">
-              <Star className="h-3.5 w-3.5 fill-amber text-amber" />
-              {pkg.rating.toFixed(1)}
+            {/* Category tag right next to rank */}
+            <span className="absolute left-10 top-2.5 z-[3] rounded-md bg-black/40 px-1.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-md">
+              {pkg.category}
             </span>
-            <span className="text-ink-muted">·</span>
-            <span className="text-ink-muted">{pkg.duration}</span>
-            <span className="text-ink-muted">·</span>
-            <span className="text-ink-muted">{pkg.reviews} reviews</span>
+
+            {/* Wishlist Heart */}
+            <WishlistButton className="absolute right-2.5 top-2.5 z-[3] rounded-full bg-black/30 p-1.5 text-white backdrop-blur-md hover:bg-black/50" />
+
+            {/* Bottom Left: Duration Pill */}
+            <span className="absolute bottom-2.5 left-2.5 z-[3] rounded-xs bg-black/75 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white backdrop-blur-md">
+              {pkg.duration}
+            </span>
           </div>
 
-          <div className="mt-auto flex items-baseline gap-2 pt-4">
-            <span className="text-lg font-semibold text-ink">
-              {formatPrice(pkg.price)}
-            </span>
-            {original && original > pkg.price && (
-              <span className="text-[13px] text-ink-muted line-through">
-                {formatPrice(original)}
-              </span>
-            )}
+          {/* Brand Emblem Icon */}
+          <div className="relative -mt-3 ml-3 z-[4] flex h-6 w-6 items-center justify-center rounded-full bg-canopy text-white shadow-sm ring-2 ring-surface">
+            <Flame className="h-3.5 w-3.5 fill-white text-white" />
+          </div>
+
+          {/* Card Body Details */}
+          <div className="relative z-[3] flex flex-1 flex-col justify-between p-3 pt-1">
+            <div>
+              <h3 className="font-sans text-[13.5px] sm:text-[14px] font-bold leading-snug tracking-tight text-ink line-clamp-2 group-hover:text-canopy transition-colors">
+                {pkg.title}
+              </h3>
+
+              <div className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-ink-muted">
+                <MapPin className="h-3 w-3 text-canopy shrink-0" />
+                <span className="truncate">{pkg.location}</span>
+              </div>
+
+              <div className="mt-1 flex items-center justify-between gap-1 text-[11px] font-medium text-ink-muted">
+                <div className="flex items-center gap-1 truncate">
+                  <Calendar className="h-3 w-3 text-amber-500 shrink-0" />
+                  <span className="truncate">{pkg.dates}</span>
+                </div>
+                <span className="shrink-0 rounded bg-amber-500/10 px-1 py-0.5 text-[9.5px] font-bold text-amber-600 dark:bg-amber-500/20 dark:text-amber-400">
+                  +4 Batches
+                </span>
+              </div>
+            </div>
+
+            {/* Footer Row */}
+            <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-2.5">
+              <div className="flex items-baseline gap-0.5">
+                {original && original > pkg.price && (
+                  <span className="text-[11px] text-ink-muted line-through mr-0.5">
+                    {formatPrice(original)}
+                  </span>
+                )}
+                <span className="text-[15px] font-extrabold text-ink">
+                  {formatPrice(pkg.price)}
+                </span>
+                <span className="text-[10px] font-normal text-ink-muted">
+                  /person
+                </span>
+              </div>
+
+              <div className="flex items-center gap-0.5 text-[11px] font-bold text-ink">
+                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                <span>{pkg.rating.toFixed(1)}</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </article>
     </Link>
   );
 }

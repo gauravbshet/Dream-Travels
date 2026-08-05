@@ -8,18 +8,15 @@ import { Section } from "@/components/ui/Section";
 import { cn } from "@/lib/utils";
 
 export function CategorySlider() {
-  const [active, setActive] = useState("nearby");
+  const [active, setActive] = useState(categories[0]?.id ?? "");
 
   return (
     // Intentionally tighter top spacing under the hero — flush overrides default py
     <Section tone="light" flush className="pt-6 pb-2 lg:py-10">
       <Container>
         <div
-          className={cn(
-            "flex gap-5 overflow-x-auto no-scrollbar pb-1",
-            "sm:gap-6",
-            "lg:grid lg:grid-cols-6 xl:grid-cols-12 lg:gap-4 lg:overflow-visible"
-          )}
+          className="grid gap-3 xs:gap-4 sm:gap-6 lg:gap-8"
+          style={{ gridTemplateColumns: `repeat(${categories.length}, minmax(0, 1fr))` }}
         >
           {categories.map((cat, i) => {
             const isActive = active === cat.id;
@@ -31,23 +28,24 @@ export function CategorySlider() {
                 // NOTE: Category selection is currently decorative — it highlights
                 // the active button visually but does not filter downstream content.
                 // aria-pressed reflects the toggle state for screen readers.
-                aria-pressed={isActive}                transition={{ duration: 0.35, delay: i * 0.03 }}
+                aria-pressed={isActive}
+                transition={{ duration: 0.35, delay: i * 0.03 }}
                 whileTap={{ scale: 0.94 }}
-                className="flex shrink-0 flex-col items-center gap-2 lg:shrink"
+                className="flex min-w-0 flex-col items-center gap-2"
               >
                 <span
                   className={cn(
-                    "flex h-16 w-16 lg:h-14 lg:w-14 xl:h-16 xl:w-16 items-center justify-center rounded-2xl border transition-all duration-300",
+                    "flex h-12 w-12 xs:h-14 xs:w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border transition-all duration-300",
                     isActive
                       ? "bg-canopy border-primary text-white scale-105"
                       : "bg-surface border-border text-ink-muted hover:border-primary/40 hover:text-primary"
                   )}
                 >
-                  <Icon className="h-6 w-6 lg:h-5 lg:w-5 xl:h-6 xl:w-6" />
+                  <Icon className="h-4.5 w-4.5 xs:h-5 xs:w-5 sm:h-6 sm:w-6" />
                 </span>
                 <span
                   className={cn(
-                    "text-xs lg:text-[13px] font-medium transition-colors whitespace-nowrap",
+                    "w-full text-center text-[11px] sm:text-xs lg:text-[13px] font-medium leading-tight transition-colors text-balance",
                     isActive ? "text-primary" : "text-ink-muted"
                   )}
                 >
