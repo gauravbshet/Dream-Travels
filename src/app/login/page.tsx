@@ -98,14 +98,21 @@ export default function LoginPage() {
         }
 
         if (data?.user?.id) {
-            const { error: profileError } = await supabase.from("profiles").insert([
-                {
-                    id: data.user.id,
-                    full_name: fullName,
-                    phone,
-                    role: "user",
-                },
-            ]);
+            // A database trigger (on_auth_user_created) already creates this row
+            // from auth.users, so upsert here instead of insert to avoid a
+            // duplicate-key conflict and to fill in full_name/phone right away.
+            const { error: profileError } = await supabase.from("profiles").upsert(
+                [
+                    {
+                        id: data.user.id,
+                        email,
+                        full_name: fullName,
+                        phone,
+                        role: "user",
+                    },
+                ],
+                { onConflict: "id" }
+            );
             if (profileError) {
                 console.warn("Unable to save profile metadata:", profileError.message);
             }

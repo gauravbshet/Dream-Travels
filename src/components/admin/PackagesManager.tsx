@@ -3,18 +3,27 @@
 import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
-import { createStoragePath } from "@/lib/utils";
+import { createStoragePath, slugify } from "@/lib/utils";
 import { useToast } from "./Toast";
 import { Modal } from "./Modal";
 import { ImageUploadField } from "./ImageUploadField";
-import { AdminButton, AdminCard, AdminField, AdminIconButton, AdminPageHeader, AdminTableState } from "./ui";
+import { AdminBadge, AdminButton, AdminCard, AdminField, AdminIconButton, AdminPageHeader, AdminTableState } from "./ui";
 
 type PackageRow = {
   id: string;
+  slug: string | null;
   title: string;
   destination_id: string | null;
+  location: string | null;
+  category: string | null;
+  pickup: string | null;
+  dates: string | null;
   duration: string | null;
   price: number | null;
+  original_price: number | null;
+  rating: number | null;
+  reviews: number | null;
+  is_top_pick: boolean | null;
   overview: string | null;
   image: string | null;
   additional_images: string[] | null;
@@ -24,9 +33,18 @@ type DestinationOption = { id: string; name: string };
 
 type FormState = {
   title: string;
+  slug: string;
   destination_id: string;
+  location: string;
+  category: string;
+  pickup: string;
+  dates: string;
   duration: string;
   price: string;
+  original_price: string;
+  rating: string;
+  reviews: string;
+  is_top_pick: boolean;
   overview: string;
   image: string;
   image_file: File | null;
@@ -35,9 +53,18 @@ type FormState = {
 
 const emptyForm: FormState = {
   title: "",
+  slug: "",
   destination_id: "",
+  location: "",
+  category: "",
+  pickup: "",
+  dates: "",
   duration: "",
   price: "",
+  original_price: "",
+  rating: "",
+  reviews: "",
+  is_top_pick: false,
   overview: "",
   image: "",
   image_file: null,
@@ -62,7 +89,9 @@ export function PackagesManager() {
     const [packagesRes, destinationsRes] = await Promise.all([
       supabase
         .from("packages")
-        .select("id,title,duration,price,overview,image,additional_images,destination_id")
+        .select(
+          "id,slug,title,duration,price,original_price,overview,image,additional_images,destination_id,location,category,pickup,dates,rating,reviews,is_top_pick"
+        )
         .order("created_at", { ascending: false }),
       supabase.from("destinations").select("id,name").order("name"),
     ]);
@@ -96,9 +125,18 @@ export function PackagesManager() {
     setEditingId(pkg.id);
     setForm({
       title: pkg.title ?? "",
+      slug: pkg.slug ?? "",
       destination_id: pkg.destination_id ?? "",
+      location: pkg.location ?? "",
+      category: pkg.category ?? "",
+      pickup: pkg.pickup ?? "",
+      dates: pkg.dates ?? "",
       duration: pkg.duration ?? "",
       price: pkg.price?.toString() ?? "",
+      original_price: pkg.original_price?.toString() ?? "",
+      rating: pkg.rating?.toString() ?? "",
+      reviews: pkg.reviews?.toString() ?? "",
+      is_top_pick: pkg.is_top_pick ?? false,
       overview: pkg.overview ?? "",
       image: pkg.image ?? "",
       image_file: null,
@@ -153,13 +191,27 @@ export function PackagesManager() {
       return;
     }
 
+    if (!form.destination_id) {
+      showToast("Please select a destination for this package.", "error");
+      return;
+    }
+
     setSaving(true);
 
     const payload = {
       title: form.title.trim(),
+      slug: (form.slug.trim() || slugify(form.title)) || null,
       destination_id: form.destination_id || null,
+      location: form.location.trim() || null,
+      category: form.category.trim() || null,
+      pickup: form.pickup.trim() || null,
+      dates: form.dates.trim() || null,
       duration: form.duration.trim() || null,
       price: form.price ? Number(form.price) : null,
+      original_price: form.original_price ? Number(form.original_price) : null,
+      rating: form.rating ? Number(form.rating) : null,
+      reviews: form.reviews ? Number(form.reviews) : null,
+      is_top_pick: form.is_top_pick,
       overview: form.overview.trim() || null,
       image: form.image.trim() || null,
       additional_images: form.additional_images
@@ -242,12 +294,52 @@ export function PackagesManager() {
                   placeholder="5-Day Paris Romantic Getaway"
                 />
               </AdminField>
+              <AdminField label="Slug">
+                <input
+                  value={form.slug}
+                  onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+                  className="admin-input"
+                  placeholder="auto-generated from title if left blank"
+                />
+              </AdminField>
+              <AdminField label="Location (shown on package page)">
+                <input
+                  value={form.location}
+                  onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Paris, France"
+                />
+              </AdminField>
+              <AdminField label="Category">
+                <input
+                  value={form.category}
+                  onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Honeymoon, Family, Adventure"
+                />
+              </AdminField>
               <AdminField label="Duration">
                 <input
                   value={form.duration}
                   onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))}
                   className="admin-input"
                   placeholder="e.g. 5D / 4N"
+                />
+              </AdminField>
+              <AdminField label="Pickup">
+                <input
+                  value={form.pickup}
+                  onChange={(e) => setForm((f) => ({ ...f, pickup: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Airport pickup included"
+                />
+              </AdminField>
+              <AdminField label="Dates">
+                <input
+                  value={form.dates}
+                  onChange={(e) => setForm((f) => ({ ...f, dates: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Available year-round"
                 />
               </AdminField>
               <AdminField label="Price">
@@ -258,6 +350,49 @@ export function PackagesManager() {
                   className="admin-input"
                   placeholder="e.g. 35000"
                 />
+              </AdminField>
+              <AdminField label="Original Price (for discount strike-through)">
+                <input
+                  type="number"
+                  value={form.original_price}
+                  onChange={(e) => setForm((f) => ({ ...f, original_price: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. 42000"
+                />
+              </AdminField>
+              <AdminField label="Rating">
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="5"
+                  value={form.rating}
+                  onChange={(e) => setForm((f) => ({ ...f, rating: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. 4.8"
+                />
+              </AdminField>
+              <AdminField label="Reviews count">
+                <input
+                  type="number"
+                  min="0"
+                  value={form.reviews}
+                  onChange={(e) => setForm((f) => ({ ...f, reviews: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. 128"
+                />
+              </AdminField>
+              <AdminField label="Top pick">
+                <div className="flex items-center gap-2 pt-2 text-sm text-admin-ink-2">
+                  <input
+                    id="package-is-top-pick"
+                    type="checkbox"
+                    checked={form.is_top_pick}
+                    onChange={(e) => setForm((f) => ({ ...f, is_top_pick: e.target.checked }))}
+                    className="h-4 w-4"
+                  />
+                  <label htmlFor="package-is-top-pick">Show as a top pick</label>
+                </div>
               </AdminField>
               <div className="sm:col-span-2">
                 <ImageUploadField
@@ -296,21 +431,23 @@ export function PackagesManager() {
       )}
 
       <AdminCard className="mt-6 overflow-x-auto" padded={false}>
-        <table className="w-full min-w-[min(100%,720px)] text-left text-sm">
+        <table className="w-full min-w-[min(100%,880px)] text-left text-sm">
           <thead>
             <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
               <th className="px-5 py-4">Title</th>
               <th className="px-5 py-4">Destination</th>
+              <th className="px-5 py-4">Location</th>
               <th className="px-5 py-4">Duration</th>
               <th className="px-5 py-4">Price</th>
+              <th className="px-5 py-4">Top pick</th>
               <th className="px-5 py-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <AdminTableState colSpan={5}>Loading packages...</AdminTableState>
+              <AdminTableState colSpan={7}>Loading packages...</AdminTableState>
             ) : packages.length === 0 ? (
-              <AdminTableState colSpan={5}>No packages yet.</AdminTableState>
+              <AdminTableState colSpan={7}>No packages yet.</AdminTableState>
             ) : (
               packages.map((pkg) => (
                 <tr key={pkg.id} className="border-b border-admin-border last:border-0">
@@ -318,9 +455,13 @@ export function PackagesManager() {
                   <td className="px-5 py-4 text-admin-ink-2">
                     {destinations.find((d) => d.id === pkg.destination_id)?.name ?? "—"}
                   </td>
+                  <td className="px-5 py-4 text-admin-ink-2">{pkg.location ?? "—"}</td>
                   <td className="px-5 py-4 text-admin-ink-2">{pkg.duration ?? "—"}</td>
                   <td className="px-5 py-4 text-admin-ink-2">
                     {pkg.price != null ? `₹${pkg.price}` : "—"}
+                  </td>
+                  <td className="px-5 py-4">
+                    {pkg.is_top_pick ? <AdminBadge>Top pick</AdminBadge> : "—"}
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">

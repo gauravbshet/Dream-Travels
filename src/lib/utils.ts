@@ -13,6 +13,14 @@ export function formatPrice(value: number) {
   }).format(value);
 }
 
+export function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export function createStoragePath(folder: string, file: File) {
   const rawFileName = file.name.replace(/\\/g, "/").split("/").pop() ?? file.name;
   const extension = rawFileName.split(".").pop()?.toLowerCase() ?? "";

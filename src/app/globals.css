@@ -515,7 +515,10 @@ body {
   border-color: var(--canopy);
 }
 
-.admin-input {
+/* :where() keeps this at zero specificity so Tailwind padding utilities
+   (e.g. pl-11 for an inset icon) always win, regardless of source order,
+   instead of silently losing to this shorthand `padding` declaration. */
+:where(.admin-input) {
   width: 100%;
   border-radius: 10px;
   border: 1px solid var(--admin-border);

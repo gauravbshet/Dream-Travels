@@ -25,12 +25,23 @@ Columns:
 - `id uuid` primary key references `auth.users.id`
 - `role text` (e.g. `user`, `admin`)
 - `full_name text`
+- `phone text`
+- `email text`
 - `created_at timestamp with time zone` default `now()`
 
 Used by:
 - `src/components/layout/Navbar.tsx` for role-based admin link display
 - `src/app/admin/page.tsx` to verify admin access
 - `src/components/admin/CustomersManager.tsx` to load customer profiles
+- `src/app/login/page.tsx` to create/update the profile on sign up
+
+As of 2026-08-05, `email` is populated automatically by a database trigger
+(`on_auth_user_created` / `handle_new_user`) that copies it from `auth.users`
+whenever a user signs up, and kept in sync on email changes via
+`on_auth_user_email_updated`. An `is_admin()` helper plus an "Admins can read
+all profiles" policy was added so the admin Customers tab can see every
+profile, not just the signed-in admin's own row. See
+`supabase/migrations/2026_08_05b_fix_profiles_email_and_admin_read.sql`.
 
 ### 1.2 `wishlists`
 Stores user-specific saved package rows.
@@ -65,6 +76,17 @@ Used by:
 - `src/app/page.tsx`
 - `src/app/destinations/[slug]/page.tsx`
 - `src/components/admin/DestinationsManager.tsx`
+- `src/components/admin/PackagesManager.tsx` (destination dropdown)
+
+Note: prior to 2026-08-05, `DestinationsManager.tsx` was mistakenly reading
+and writing a different, incompatible column set (`title`, `country`,
+`categories`, `photo_url`) that did not match the columns above, which the
+public pages and the packages admin dropdown have always relied on. This has
+been fixed so all admin and public code now agree on the schema documented
+here. If your live table still has the old columns, run
+`supabase/migrations/2026_08_05_fix_destinations_packages_schema.sql`, which
+backfills `name`/`image`/`cover_image` from the legacy columns before you drop
+them.
 
 ### 1.4 `packages`
 Public package listing data.
@@ -75,6 +97,7 @@ Columns:
 - `title text`
 - `location text`
 - `image text`
+- `additional_images text[]`
 - `category text`
 - `duration text`
 - `pickup text`
@@ -92,7 +115,15 @@ Columns:
 Used by:
 - `src/app/page.tsx`
 - `src/app/packages/[slug]/page.tsx`
+- `src/app/destinations/[slug]/page.tsx`
 - `src/components/admin/PackagesManager.tsx`
+
+As of 2026-08-05, `location`, `category`, `pickup`, `dates`, `original_price`,
+`rating`, `reviews`, `is_top_pick`, and `slug` are fully editable from the
+admin Packages form (previously only title/destination/duration/price/overview
+were exposed, even though the public pages already read the rest). See
+`supabase/migrations/2026_08_05_fix_destinations_packages_schema.sql` for the
+migration that adds any of these columns if your live table predates them.
 
 ### 1.5 `itineraries`
 Package itinerary details.
