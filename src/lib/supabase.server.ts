@@ -21,11 +21,9 @@ export function createServerSupabaseClient() {
         cookies: {
             getAll: async () =>
                 (await cookies()).getAll().map((cookie) => ({ name: cookie.name, value: cookie.value })),
-            setAll: async (cookieList) => {
-                const cookieStore = await cookies();
-                cookieList.forEach(({ name, value, options }) => {
-                    cookieStore.set(name, value, options || {});
-                });
+            setAll: async () => {
+                // Cookie setting is only supported in Next.js Route Handlers or Server Actions.
+                // For normal server component rendering, do not attempt to write cookies here.
             },
         },
     });
