@@ -16,7 +16,7 @@ export function TrendingTrips({
   return (
     <Section tone="light" id="community">
       <Container>
-        <div className="flex items-center justify-between gap-4 mb-2">
+        <div className="flex flex-col gap-4 mb-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-canopy/10 px-3 py-1 text-[11px] font-semibold text-primary">
               <span className="relative flex h-1.5 w-1.5">

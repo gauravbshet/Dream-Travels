@@ -60,14 +60,14 @@ export function Carousel({
   }, []);
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative left-1/2 -translate-x-1/2 w-screen max-w-none", className)}>
       <div
         ref={trackRef}
         role="region"
         aria-label={label}
         tabIndex={0}
         className={cn(
-          "no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 sm:gap-5 lg:gap-6",
+          "no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 px-4 sm:px-6 lg:px-8 sm:gap-5 lg:gap-6",
           itemClassName
         )}
       >

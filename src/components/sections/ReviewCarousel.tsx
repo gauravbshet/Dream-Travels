@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
+import { Carousel } from "@/components/ui/Carousel";
 import { Section } from "@/components/ui/Section";
 import { reviews as staticReviews } from "@/data/reviews";
 import type { Review } from "@/data/reviews";
@@ -32,10 +32,11 @@ export function ReviewCarousel({ reviews = staticReviews }: { reviews?: Review[]
           </div>
         </div>
 
-        <ResponsiveScroller gridClassName="lg:grid-cols-3 lg:gap-6">
+        <Carousel label="Our Travellers' Experiences">
           {reviews.map((review) => (
             <motion.article
-              key={review.id}              className="w-[82%] xs:w-[72%] sm:w-[56%] shrink-0 snap-start lg:w-full flex flex-col rounded-[14px] bg-surface p-6 border border-border"
+              key={review.id}
+              className="w-[82%] xs:w-[72%] sm:w-[56%] lg:w-[360px] shrink-0 snap-start flex flex-col rounded-[14px] bg-surface p-6 border border-border"
             >
               <div className="flex gap-0.5">
                 {Array.from({ length: review.rating }).map((_, idx) => (
@@ -56,7 +57,7 @@ export function ReviewCarousel({ reviews = staticReviews }: { reviews?: Review[]
               </div>
             </motion.article>
           ))}
-        </ResponsiveScroller>
+        </Carousel>
       </Container>
     </Section>
   );

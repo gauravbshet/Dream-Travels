@@ -1,6 +1,6 @@
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
+import { Carousel } from "@/components/ui/Carousel";
 import { Section } from "@/components/ui/Section";
 import { PackageCard } from "@/components/cards/PackageCard";
 import { topPicks as staticTopPicks } from "@/data/packages";
@@ -14,16 +14,16 @@ export function TopPicks({ packages = staticTopPicks }: { packages?: Package[] }
           title="Top Picks by Dream Travels"
           description="Our editorial team's favorite journeys this season."
         />
-        <ResponsiveScroller gridClassName="lg:grid-cols-4 lg:gap-6">
-          {packages.map((pkg) => (
-            <PackageCard
-              key={pkg.id}
-              pkg={pkg}
-              className="w-[160px] xs:w-[175px] sm:w-[220px] shrink-0 snap-start lg:w-full"
-            />
-          ))}
-        </ResponsiveScroller>
       </Container>
+      <Carousel label="Top picks by Dream Travels">
+        {packages.map((pkg) => (
+          <PackageCard
+            key={pkg.id}
+            pkg={pkg}
+            className="w-[200px] xs:w-[220px] sm:w-[260px] lg:w-[300px] shrink-0 snap-start"
+          />
+        ))}
+      </Carousel>
     </Section>
   );
 }

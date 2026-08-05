@@ -604,3 +604,161 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ==========================================================================
+   Premium Mobile Cards (max-width: 768px only)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Section spacing: 32px top/bottom padding */
+  section:not(.flush-section) {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+
+  /* Force the Carousel and ResponsiveScroller to have 16px horizontal padding and gap, snap scrolling */
+  .no-scrollbar, [role="region"] {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    gap: 16px !important;
+    scroll-snap-type: x mandatory !important;
+  }
+
+  /* Force the parent/wrapper (Link) of the card to be 320px wide */
+  .premium-card-wrapper {
+    width: 320px !important;
+    min-width: 320px !important;
+    max-width: 320px !important;
+    flex: 0 0 320px !important;
+    scroll-snap-align: start !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transition: transform 0.2s ease, opacity 0.2s ease !important;
+  }
+
+  /* Active press scale animation (touch active state) */
+  .premium-card-wrapper:active {
+    transform: scale(1.02) !important;
+  }
+
+  /* Target the card container div */
+  .premium-card-container {
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    border: 1px solid rgba(105, 144, 68, 0.16) !important;
+  }
+
+  /* Image container height: 210-220px (we'll use 220px) */
+  .premium-card-img-container {
+    position: relative !important;
+    width: 100% !important;
+    height: 220px !important;
+    aspect-ratio: auto !important;
+    overflow: hidden !important;
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+  }
+
+  .premium-card-img-container img {
+    object-fit: cover !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* Margin between image and content: 12px. Also card padding: 14px */
+  .premium-card-body {
+    padding: 14px !important;
+    margin-top: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+    justify-content: space-between !important;
+  }
+
+  /* Title: 22px, font-weight:700, max 2 lines */
+  .premium-card-title {
+    font-size: 22px !important;
+    line-height: 1.25 !important;
+    font-weight: 700 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  /* Location: 14px */
+  .premium-card-location {
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    margin-top: 6px !important;
+  }
+
+  .premium-card-location svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* Duration / Dates & Batch info under location */
+  .premium-card-meta {
+    font-size: 12px !important;
+    margin-top: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  /* Footer price / rating */
+  .premium-card-footer {
+    margin-top: 14px !important;
+    padding-top: 12px !important;
+    border-top: 1px solid rgba(105, 144, 68, 0.1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  /* Price: 26px bold, /person: 16px gray */
+  .premium-card-price-container {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 2px !important;
+  }
+
+  .premium-card-price {
+    font-size: 26px !important;
+    font-weight: 700 !important;
+  }
+
+  .premium-card-price-slash {
+    font-size: 16px !important;
+    color: #6b7a6a !important;
+  }
+
+  /* Rating: 14px bold */
+  .premium-card-rating {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+
+  .premium-card-rating svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* Hide the flame badge on mobile cards to keep it clean and premium */
+  .premium-card-flame {
+    display: none !important;
+  }
+
+  .premium-card-category-offset {
+    left: 40px !important;
+    top: 10px !important;
+  }
+}

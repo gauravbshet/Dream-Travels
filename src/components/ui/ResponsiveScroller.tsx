@@ -12,8 +12,8 @@ export function ResponsiveScroller({
   return (
     <div
       className={cn(
-        "flex gap-4 overflow-x-auto no-scrollbar px-4 -mx-4 sm:px-6 sm:-mx-6 pb-2 snap-x snap-mandatory",
-        "lg:grid lg:overflow-visible lg:px-0 lg:mx-0 lg:pb-0 lg:snap-none",
+        "relative left-1/2 -translate-x-1/2 min-w-[100vw] max-w-none flex gap-4 overflow-x-auto no-scrollbar px-4 pb-2 snap-x snap-mandatory",
+        "sm:px-6 lg:left-0 lg:translate-x-0 lg:min-w-full lg:max-w-full lg:px-0 lg:grid lg:overflow-visible lg:pb-0 lg:snap-none",
         gridClassName,
         className
       )}
