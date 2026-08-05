@@ -43,7 +43,42 @@
   --sage-200: var(--surface-2);
   --sage-100: var(--surface);
   --sand: var(--amber);
-  --cream: var(--bg-deep);
+  --cream: var(--canvas);
+
+  /* --------------------------------------------------------------------
+     Premium Natural Theme — light / sage / dark-forest surface families
+     (theme migration, phase 1: token foundation). The dark tokens above
+     remain the global default — nothing here flips them. Instead each
+     surface family gets its own foreground set, and `[data-tone]` below
+     scopes the swap onto whichever Section/card opts into it.
+     -------------------------------------------------------------------- */
+
+  /* Light / natural surfaces */
+  --canvas: #f5f5ee;
+  --canvas-soft: #f8f8f3;
+  --surface-light: #ffffff;
+  --surface-cream: #f5f5ee;
+  --surface-sage: #edf2e8;
+  --surface-sage-strong: #dde7d8;
+  --text-dark: #183528;
+  --text-dark-secondary: #5f6d63;
+  --text-dark-muted: #7a857d;
+  --border-light: #dde4da;
+
+  /* Brand — shared across light and dark surfaces */
+  --brand: #2f633f;
+  --brand-hover: #24543d;
+  --brand-deep: #163a2b;
+  --brand-soft: #6f965f;
+
+  /* Dark forest surfaces (distinct from --bg/--bg-deep: a more saturated,
+     intentional "forest" dark used for the footer and dark feature
+     sections, vs. the near-black desaturated page ground) */
+  --surface-dark: #163a2b;
+  --surface-dark-deep: #0e2519;
+  --text-light: #f5f7f2;
+  --text-light-secondary: #c8d0c8;
+  --border-dark: rgba(255, 255, 255, 0.12);
 
   /* Motion */
   --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -126,7 +161,29 @@
   --color-sage-200: var(--surface-2);
   --color-sage-100: var(--surface);
   --color-sand: var(--amber);
-  --color-cream: var(--bg-deep);
+  --color-cream: var(--cream);
+
+  --color-canvas: var(--canvas);
+  --color-canvas-soft: var(--canvas-soft);
+  --color-surface-light: var(--surface-light);
+  --color-surface-cream: var(--surface-cream);
+  --color-surface-sage: var(--surface-sage);
+  --color-surface-sage-strong: var(--surface-sage-strong);
+  --color-text-dark: var(--text-dark);
+  --color-text-dark-secondary: var(--text-dark-secondary);
+  --color-text-dark-muted: var(--text-dark-muted);
+  --color-border-light: var(--border-light);
+
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-soft: var(--brand-soft);
+
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-dark-deep: var(--surface-dark-deep);
+  --color-text-light: var(--text-light);
+  --color-text-light-secondary: var(--text-light-secondary);
+  --color-border-dark: var(--border-dark);
 
   --color-admin-bg: var(--admin-bg);
   --color-admin-surface: var(--admin-surface);
@@ -181,6 +238,48 @@ body {
 
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   Tone scoping — lets existing token-driven utilities (text-ink,
+   text-text-secondary, bg-surface, border-border, etc.) resolve to the
+   light/sage foreground+surface family for any subtree opted in via
+   data-tone, with zero per-component class changes. Unscoped elements
+   keep inheriting the dark defaults declared in :root above.
+   -------------------------------------------------------------------------- */
+
+[data-tone="light"] {
+  --ink: var(--text-dark);
+  --ink-2: var(--text-dark-secondary);
+  --ink-muted: var(--text-dark-muted);
+  --surface: var(--surface-light);
+  --surface-2: var(--surface-sage);
+  --border: var(--border-light);
+  --border-lit: var(--brand-soft);
+}
+
+[data-tone="sage"] {
+  --ink: var(--text-dark);
+  --ink-2: var(--text-dark-secondary);
+  --ink-muted: var(--text-dark-muted);
+  --surface: var(--surface-sage-strong);
+  --surface-2: var(--surface-light);
+  --border: var(--border-light);
+  --border-lit: var(--brand-soft);
+}
+
+/* Explicit reset back to the dark/photo-appropriate foreground for a
+   subtree nested inside a light/sage ancestor — used on photo overlay
+   regions (image + gradient + overlaid title/badges) inside cards that
+   otherwise now live on a light or sage card body. */
+[data-tone="dark"] {
+  --ink: var(--text-light);
+  --ink-2: var(--text-light);
+  --ink-muted: var(--text-light-secondary);
+  --surface: var(--surface-dark);
+  --surface-2: var(--surface-dark);
+  --border: var(--border-dark);
+  --border-lit: var(--border-dark);
 }
 
 ::selection {

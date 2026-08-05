@@ -15,7 +15,7 @@ export function PopularExperiences({
   experiences?: PopularExperience[];
 }) {
   return (
-    <Section>
+    <Section tone="image">
       <Container>
         <SectionHeading title="Popular Experiences" />
         <ResponsiveScroller gridClassName="lg:grid-cols-4 xl:grid-cols-8 lg:gap-4">
@@ -30,7 +30,7 @@ export function PopularExperiences({
                 sizes="(max-width: 768px) 40vw, 12vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
               <span className="absolute inset-x-0 bottom-3 text-center text-sm font-semibold text-white">
                 {exp.title}
               </span>

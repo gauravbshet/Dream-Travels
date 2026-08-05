@@ -12,7 +12,7 @@ export function TrendingTrips({
   packages?: Package[];
 }) {
   return (
-    <Section id="community">
+    <Section tone="sage" id="community">
       <Container>
         <div className="flex flex-wrap items-center gap-3 mb-1">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-canopy/10 px-3 py-1 text-[11px] font-semibold text-primary">

@@ -147,12 +147,12 @@ export default function LoginPage() {
                     alt=""
                     className="h-full w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-[oklch(0.14_0.02_158/0.82)]" />
+                <div className="absolute inset-0 bg-[oklch(0.14_0.02_158/0.48)]" />
                 <div
                     className="absolute inset-0"
                     style={{
                         background:
-                            "radial-gradient(70% 55% at 50% 45%, transparent 0%, oklch(0.14 0.02 158 / 0.85) 100%)",
+                            "radial-gradient(70% 55% at 50% 45%, transparent 0%, oklch(0.14 0.02 158 / 0.55) 100%)",
                     }}
                 />
             </div>
@@ -175,7 +175,7 @@ export default function LoginPage() {
                     </span>
                 </Link>
 
-                <div className="rounded-[16px] border border-border bg-[oklch(0.19_0.024_158/0.86)] p-7 backdrop-blur-2xl sm:p-9">
+                <div data-tone="light" className="rounded-[16px] border border-border bg-[rgba(245,245,238,0.94)] p-7 backdrop-blur-2xl sm:p-9">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={mode}
@@ -287,7 +287,7 @@ export default function LoginPage() {
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: "auto" }}
                                                 exit={{ opacity: 0, height: 0 }}
-                                                className="overflow-hidden rounded-[11px] border border-[oklch(0.5_0.16_25)] bg-[oklch(0.3_0.09_25/0.5)] px-4 py-3 text-sm text-[oklch(0.86_0.09_25)]"
+                                                className="overflow-hidden rounded-[11px] border border-[oklch(0.55_0.18_25)] bg-[oklch(0.55_0.18_25/0.12)] px-4 py-3 text-sm text-[oklch(0.4_0.18_25)]"
                                             >
                                                 {error}
                                             </motion.p>
@@ -298,7 +298,7 @@ export default function LoginPage() {
                                                 initial={{ opacity: 0, height: 0 }}
                                                 animate={{ opacity: 1, height: "auto" }}
                                                 exit={{ opacity: 0, height: 0 }}
-                                                className="overflow-hidden rounded-[11px] border border-canopy-deep bg-[oklch(0.3_0.07_150/0.5)] px-4 py-3 text-sm text-[oklch(0.88_0.09_150)]"
+                                                className="overflow-hidden rounded-[11px] border border-canopy-deep bg-[oklch(0.55_0.12_150/0.12)] px-4 py-3 text-sm text-[oklch(0.35_0.1_150)]"
                                             >
                                                 {message}
                                             </motion.p>

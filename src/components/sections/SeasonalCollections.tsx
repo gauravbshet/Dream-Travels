@@ -15,7 +15,7 @@ export function SeasonalCollections({
   collections?: SeasonalCollection[];
 }) {
   return (
-    <Section>
+    <Section tone="image">
       <Container>
         <SectionHeading title="Seasonal Collections" />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 lg:gap-6">
@@ -31,7 +31,7 @@ export function SeasonalCollections({
                 sizes="(max-width: 768px) 50vw, 30vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/32 to-transparent" />
               <div className="absolute inset-x-0 bottom-3 flex items-center justify-between px-4">
                 <span className="text-sm font-semibold text-white">{c.title}</span>
                 <ArrowUpRight className="h-4 w-4 text-white/80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

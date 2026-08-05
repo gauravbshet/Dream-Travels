@@ -13,7 +13,7 @@ const MotionLink = motion.create(Link);
 
 export function BudgetCards({ tiers = staticBudgetTiers }: { tiers?: BudgetTier[] }) {
   return (
-    <Section id="packages">
+    <Section tone="sage" id="packages">
       <Container>
         <SectionHeading
           title="Budget Friendly"

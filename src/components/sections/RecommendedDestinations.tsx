@@ -12,7 +12,7 @@ export function RecommendedDestinations({
   destinations?: Destination[];
 }) {
   return (
-    <Section id="destinations">
+    <Section tone="light" id="destinations">
       <Container>
         <SectionHeading
           title="Recommended Destinations"

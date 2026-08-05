@@ -30,7 +30,7 @@ export function PackageCard({
           onPointerMove={onPointerMove}
           className="spotlight lit-edge flex h-full flex-col overflow-hidden rounded-[14px] border border-border bg-surface"
         >
-          <div className="relative aspect-[4/3] w-full overflow-hidden">
+          <div data-tone="dark" className="relative aspect-[4/3] w-full overflow-hidden">
             <Image
               src={pkg.image}
               alt={pkg.title}
@@ -39,7 +39,7 @@ export function PackageCard({
               className="object-cover transition-transform duration-[620ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
             />
             {/* Anchors the image into the dark surface instead of floating on it. */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.16_0.022_158/0.85)] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.16_0.022_158/0.42)] via-transparent to-transparent" />
 
             <WishlistButton className="absolute right-3 top-3 z-[3]" />
 

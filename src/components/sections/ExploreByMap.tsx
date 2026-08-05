@@ -44,7 +44,7 @@ export function ExploreByMap() {
   );
 
   return (
-    <Section id="map">
+    <Section tone="light" id="map">
       <Container>
         <Reveal>
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4 lg:mb-12">
@@ -164,7 +164,7 @@ export function ExploreByMap() {
           {/* Detail + region list */}
           <div className="flex flex-col gap-5">
             <article className="overflow-hidden rounded-[14px] border border-border bg-surface">
-              <div className="relative aspect-[16/9] w-full overflow-hidden">
+              <div data-tone="dark" className="relative aspect-[16/9] w-full overflow-hidden">
                 <Image
                   key={active.id}
                   src={active.image}
@@ -173,7 +173,7 @@ export function ExploreByMap() {
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.14_0.02_158/0.92)] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.14_0.02_158/0.46)] via-transparent to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-4">
                   <span className="flex items-center gap-1.5 text-[12px] text-ink-2">
                     <MapPin className="h-3.5 w-3.5 text-canopy" />

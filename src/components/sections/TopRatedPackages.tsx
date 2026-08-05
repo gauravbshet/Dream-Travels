@@ -22,7 +22,7 @@ export function TopRatedPackages({
     .slice(0, 10);
 
   return (
-    <Section id="top-rated">
+    <Section tone="sage" id="top-rated">
       <Container>
         <Reveal>
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4 lg:mb-12">
@@ -70,7 +70,7 @@ function RatedPackageCard({ pkg, rank }: { pkg: Package; rank: number }) {
         onPointerMove={onPointerMove}
         className="spotlight lit-edge flex h-full flex-col overflow-hidden rounded-[14px] border border-border bg-surface"
       >
-        <div className="relative aspect-[16/11] w-full overflow-hidden">
+        <div data-tone="dark" className="relative aspect-[16/11] w-full overflow-hidden">
           <Image
             src={pkg.image}
             alt={pkg.title}
@@ -78,7 +78,7 @@ function RatedPackageCard({ pkg, rank }: { pkg: Package; rank: number }) {
             sizes="(max-width: 640px) 80vw, 310px"
             className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.16_0.022_158/0.9)] via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.16_0.022_158/0.48)] via-transparent to-transparent" />
 
           {/* Rank is the section's whole premise — show it. */}
           <span className="absolute left-3 top-3 z-[3] flex h-7 min-w-7 items-center justify-center rounded-full bg-[oklch(0.16_0.022_158/0.78)] px-2 text-[12px] font-semibold text-ink backdrop-blur-md">

@@ -12,7 +12,7 @@ export function CategorySlider() {
 
   return (
     // Intentionally tighter top spacing under the hero — flush overrides default py
-    <Section flush className="pt-6 pb-2 lg:py-10">
+    <Section tone="light" flush className="pt-6 pb-2 lg:py-10">
       <Container>
         <div
           className={cn(

@@ -34,7 +34,7 @@ function PromoCard({ promo }: { promo: (typeof promos)[number] }) {
           className="object-cover"
         />
       </motion.div>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e12]/75 via-[#0a1e12]/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e12]/45 via-[#0a1e12]/10 to-transparent" />
       <div className="relative z-10 flex h-full flex-col justify-end p-6 lg:p-8">
         <h3 className="font-display text-xl lg:text-2xl font-semibold text-white tracking-[-0.02em]">{promo.title}</h3>
         <p className="mt-1.5 max-w-sm text-sm text-white/80">{promo.description}</p>
@@ -56,7 +56,7 @@ function PromoCard({ promo }: { promo: (typeof promos)[number] }) {
 
 export function PromoBanner() {
   return (
-    <Section id="experiences">
+    <Section tone="image" id="experiences">
       <Container>
         <SectionHeading title="New Attractions" />
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">

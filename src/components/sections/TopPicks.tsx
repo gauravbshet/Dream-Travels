@@ -8,7 +8,7 @@ import type { Package } from "@/data/packages";
 
 export function TopPicks({ packages = staticTopPicks }: { packages?: Package[] }) {
   return (
-    <Section>
+    <Section tone="light">
       <Container>
         <SectionHeading
           title="Top Picks by Dream Travels"

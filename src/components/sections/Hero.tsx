@@ -25,7 +25,7 @@ export function Hero() {
   // Terrain parallax: the photograph recedes slower than the copy over it.
   const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
   const copyY = useTransform(scrollYProgress, [0, 1], ["0%", "-14%"]);
-  const veil = useTransform(scrollYProgress, [0, 1], [0, 0.45]);
+  const veil = useTransform(scrollYProgress, [0, 1], [0, 0.25]);
 
   return (
     <section className="relative -mt-[76px] lg:-mt-[84px]">
@@ -60,7 +60,7 @@ export function Hero() {
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(96deg, oklch(0.08 0 0 / 0.72) 0%, oklch(0.1 0 0 / 0.4) 46%, oklch(0.12 0 0 / 0.08) 100%)",
+                  "linear-gradient(96deg, oklch(0.08 0 0 / 0.46) 0%, oklch(0.1 0 0 / 0.24) 46%, oklch(0.12 0 0 / 0.06) 100%)",
               }}
             />
             <motion.div

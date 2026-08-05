@@ -41,7 +41,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
     }
 
     return (
-        <main className="flex-1 py-20">
+        <main data-tone="light" className="flex-1 bg-canvas py-20">
             <Container>
                 <SectionHeading
                     title={data.pkg.title}

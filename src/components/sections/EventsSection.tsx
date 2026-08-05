@@ -12,7 +12,7 @@ import type { TravelEvent } from "@/data/events";
 
 export function EventsSection({ events = staticEvents }: { events?: TravelEvent[] }) {
   return (
-    <Section>
+    <Section tone="light">
       <Container>
         <SectionHeading title="Upcoming Events" />
         <ResponsiveScroller gridClassName="lg:grid-cols-4 xl:grid-cols-5 lg:gap-5">

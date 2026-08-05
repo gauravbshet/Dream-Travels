@@ -12,7 +12,7 @@ import type { Blog } from "@/data/blogs";
 
 export function BlogSection({ blogs = staticBlogs }: { blogs?: Blog[] }) {
   return (
-    <Section id="blogs">
+    <Section tone="light" id="blogs">
       <Container>
         <SectionHeading title="Travel Stories" />
         <ResponsiveScroller gridClassName="lg:grid-cols-3 lg:gap-6">

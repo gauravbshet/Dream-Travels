@@ -12,7 +12,7 @@ import type { Review } from "@/data/reviews";
 
 export function ReviewCarousel({ reviews = staticReviews }: { reviews?: Review[] }) {
   return (
-    <Section>
+    <Section tone="light">
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeading

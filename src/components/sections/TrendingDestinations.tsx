@@ -23,7 +23,7 @@ export function TrendingDestinations({
     .slice(0, 10);
 
   return (
-    <Section id="trending">
+    <Section tone="image" id="trending">
       <Container>
         <Reveal>
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4 lg:mb-12">
@@ -73,7 +73,7 @@ function TrendingTile({ destination }: { destination: MapDestination }) {
           sizes="(max-width: 640px) 70vw, 290px"
           className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.07]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.018_158/0.94)] via-[oklch(0.14_0.02_158/0.28)] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.018_158/0.5)] via-[oklch(0.14_0.02_158/0.15)] to-transparent" />
 
         <WishlistButton className="absolute right-3 top-3 z-[3]" />
 

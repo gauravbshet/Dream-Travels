@@ -55,7 +55,7 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer id="contact" className="relative mt-10 overflow-hidden bg-cream border-t border-border pb-28 pt-16 lg:pb-16 lg:pt-24 text-ink-muted">
+    <footer id="contact" className="relative mt-10 overflow-hidden bg-surface-dark-deep border-t border-border pb-28 pt-16 lg:pb-16 lg:pt-24 text-ink-muted">
       <span
         aria-hidden
         className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9rem] lg:text-[13rem] font-semibold tracking-tight text-ink/[0.03] select-none"

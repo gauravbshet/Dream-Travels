@@ -24,7 +24,7 @@ function DestTile({ d }: { d: MasonryDestination }) {
         sizes="(max-width: 768px) 45vw, 20vw"
         className="object-cover transition-transform duration-700 group-hover:scale-110"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 p-3.5 text-white">
         <p className="font-semibold text-sm">{d.name}</p>
         <p className="text-xs text-white/80">
@@ -46,7 +46,7 @@ export function InterestingDestinations({
   const rowTwo = destinations.slice(mid);
 
   return (
-    <Section>
+    <Section tone="light">
       <Container>
         <SectionHeading
           title="Interesting Destinations"
