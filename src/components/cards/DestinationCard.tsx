@@ -21,20 +21,20 @@ export function DestinationCard({
   const { ref, onPointerMove } = useSpotlight<HTMLDivElement>();
 
   return (
-    <Link href={href} className={cn("group block", className)}>
+    <Link href={href} className={cn("group block w-[190px] shrink-0 sm:w-[210px]", className)}>
       <article className="h-full">
         <div
           ref={ref}
           onPointerMove={onPointerMove}
-          className="spotlight lit-edge flex h-full flex-col overflow-hidden rounded-[12px] sm:rounded-[14px] border border-border/70 bg-surface shadow-2xs transition-all duration-300 hover:shadow-md hover:border-canopy/30"
+          className="spotlight lit-edge flex h-full flex-col overflow-hidden rounded-[14px] border border-border/70 bg-surface shadow-2xs transition-all duration-300 hover:shadow-md hover:border-canopy/30"
         >
           {/* Image & Overlay Badges Header */}
-          <div data-tone="dark" className="relative aspect-[1.25/1] w-full overflow-hidden">
+          <div data-tone="dark" className="relative h-[126px] w-full overflow-hidden rounded-t-[14px] sm:h-[142px]">
             <Image
               src={destination.image}
               alt={destination.name}
               fill
-              sizes="(max-width: 640px) 160px, 240px"
+              sizes="(max-width: 640px) 190px, 240px"
               className="object-cover transition-transform duration-[620ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
             />
             {/* Soft gradient overlay */}
@@ -60,31 +60,31 @@ export function DestinationCard({
           </div>
 
           {/* Card Details Body */}
-          <div className="relative z-[3] flex flex-1 flex-col justify-between p-2.5 sm:p-3 pt-0.5 sm:pt-1">
+          <div className="relative z-[3] flex flex-1 flex-col justify-between p-2.5 pt-0.5 sm:p-3 sm:pt-1">
             <div>
-              <h3 className="font-sans text-[12.5px] sm:text-[13.5px] font-bold leading-snug tracking-tight text-ink line-clamp-2 group-hover:text-canopy transition-colors">
+              <h3 className="font-sans text-[13px] font-semibold leading-[1.15] tracking-tight text-ink line-clamp-2 transition-colors group-hover:text-canopy sm:text-[14px]">
                 {destination.name}
               </h3>
 
-              <div className="mt-1 flex items-center gap-1 text-[10px] sm:text-[11px] font-medium text-ink-muted">
-                <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-canopy shrink-0" />
+              <div className="mt-1 flex items-center gap-1 text-[10.5px] font-medium text-ink-muted sm:text-[11px]">
+                <MapPin className="h-2.5 w-2.5 shrink-0 text-canopy sm:h-3 sm:w-3" />
                 <span className="truncate">{destination.name}, India</span>
               </div>
             </div>
 
             {/* Footer Row: Price & Rating */}
-            <div className="mt-2 flex items-center justify-between border-t border-border/60 pt-2">
-              <div className="flex items-baseline gap-0.5">
-                <span className="text-[13.5px] sm:text-[14.5px] font-extrabold text-ink">
+            <div className="mt-2 flex items-center justify-between gap-2 border-t border-border/60 pt-2">
+              <div className="flex min-w-0 items-baseline gap-1 overflow-hidden whitespace-nowrap">
+                <span className="shrink-0 text-[15px] font-bold leading-none text-ink sm:text-[16px]">
                   {formatPrice(destination.price)}
                 </span>
-                <span className="text-[9.5px] sm:text-[10px] font-normal text-ink-muted">
+                <span className="shrink-0 text-[10px] font-medium leading-none text-gray-400 sm:text-[10px]">
                   /person
                 </span>
               </div>
 
-              <div className="flex items-center gap-0.5 text-[10px] sm:text-[11px] font-bold text-ink">
-                <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-amber-400 text-amber-400" />
+              <div className="ml-2 flex shrink-0 items-center gap-0.5 text-[9.5px] font-bold text-ink sm:text-[10px]">
+                <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400 sm:h-3 sm:w-3" />
                 <span>{destination.rating.toFixed(1)}</span>
               </div>
             </div>

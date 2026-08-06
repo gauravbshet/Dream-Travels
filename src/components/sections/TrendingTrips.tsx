@@ -47,7 +47,8 @@ export function TrendingTrips({
             <PackageCard
               key={pkg.id}
               pkg={pkg}
-              className="w-[160px] xs:w-[175px] sm:w-[220px] lg:w-[245px] shrink-0 snap-start"
+              variant="compact"
+              className="snap-start"
             />
           ))}
         </Carousel>
