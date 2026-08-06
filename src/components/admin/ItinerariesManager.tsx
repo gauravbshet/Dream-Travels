@@ -12,6 +12,11 @@ type ItineraryRow = {
   day: number;
   title: string;
   description: string | null;
+  stay_location: string | null;
+  stay_type: string | null;
+  meals: string | null;
+  image: string | null;
+  optional_note: string | null;
 };
 
 type PackageOption = { id: string; title: string };
@@ -21,6 +26,11 @@ type FormState = {
   day: string;
   title: string;
   description: string;
+  stay_location: string;
+  stay_type: string;
+  meals: string;
+  image: string;
+  optional_note: string;
 };
 
 const emptyForm: FormState = {
@@ -28,6 +38,11 @@ const emptyForm: FormState = {
   day: "",
   title: "",
   description: "",
+  stay_location: "",
+  stay_type: "",
+  meals: "",
+  image: "",
+  optional_note: "",
 };
 
 export function ItinerariesManager() {
@@ -82,6 +97,11 @@ export function ItinerariesManager() {
       day: item.day?.toString() ?? "",
       title: item.title ?? "",
       description: item.description ?? "",
+      stay_location: item.stay_location ?? "",
+      stay_type: item.stay_type ?? "",
+      meals: item.meals ?? "",
+      image: item.image ?? "",
+      optional_note: item.optional_note ?? "",
     });
     setShowForm(true);
   }
@@ -101,6 +121,11 @@ export function ItinerariesManager() {
       day: Number(form.day),
       title: form.title.trim(),
       description: form.description.trim() || null,
+      stay_location: form.stay_location.trim() || null,
+      stay_type: form.stay_type.trim() || null,
+      meals: form.meals.trim() || null,
+      image: form.image.trim() || null,
+      optional_note: form.optional_note.trim() || null,
     };
 
     const { error } = editingId
@@ -149,7 +174,7 @@ export function ItinerariesManager() {
         <div>
           <h3 className="text-xl font-semibold text-admin-ink">Itineraries</h3>
           <p className="mt-1 text-sm text-admin-ink-muted">
-            Add day-by-day itinerary entries linked to a package.
+            Add day-by-day itinerary entries — title, description, stay, and meals — linked to a package.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -217,6 +242,7 @@ export function ItinerariesManager() {
                   value={form.title}
                   onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                   className="admin-input"
+                  placeholder="e.g. Arrival in Dimapur"
                 />
               </AdminField>
               <AdminField label="Description" full>
@@ -224,6 +250,46 @@ export function ItinerariesManager() {
                   value={form.description}
                   onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                   className="admin-input min-h-[100px]"
+                />
+              </AdminField>
+              <AdminField label="Stay location">
+                <input
+                  value={form.stay_location}
+                  onChange={(e) => setForm((f) => ({ ...f, stay_location: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Kohima"
+                />
+              </AdminField>
+              <AdminField label="Stay type">
+                <input
+                  value={form.stay_type}
+                  onChange={(e) => setForm((f) => ({ ...f, stay_type: e.target.value }))}
+                  className="admin-input"
+                  placeholder="Hotel, Resort, Camp, Homestay"
+                />
+              </AdminField>
+              <AdminField label="Meals">
+                <input
+                  value={form.meals}
+                  onChange={(e) => setForm((f) => ({ ...f, meals: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Breakfast + Dinner"
+                />
+              </AdminField>
+              <AdminField label="Optional note">
+                <input
+                  value={form.optional_note}
+                  onChange={(e) => setForm((f) => ({ ...f, optional_note: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Optional trek (extra charges)"
+                />
+              </AdminField>
+              <AdminField label="Day image URL" full>
+                <input
+                  value={form.image}
+                  onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))}
+                  className="admin-input"
+                  placeholder="https://..."
                 />
               </AdminField>
             </div>
@@ -236,26 +302,28 @@ export function ItinerariesManager() {
       )}
 
       <AdminCard className="mt-6 overflow-x-auto" padded={false}>
-        <table className="w-full min-w-[min(100%,640px)] text-left text-sm">
+        <table className="w-full min-w-[min(100%,720px)] text-left text-sm">
           <thead>
             <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
               <th className="px-5 py-4">Day</th>
               <th className="px-5 py-4">Title</th>
               <th className="px-5 py-4">Package</th>
+              <th className="px-5 py-4">Stay</th>
               <th className="px-5 py-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <AdminTableState colSpan={4}>Loading itineraries...</AdminTableState>
+              <AdminTableState colSpan={5}>Loading itineraries...</AdminTableState>
             ) : visibleItineraries.length === 0 ? (
-              <AdminTableState colSpan={4}>No itinerary items yet.</AdminTableState>
+              <AdminTableState colSpan={5}>No itinerary items yet.</AdminTableState>
             ) : (
               visibleItineraries.map((item) => (
                 <tr key={item.id} className="border-b border-admin-border last:border-0">
                   <td className="px-5 py-4 font-semibold text-admin-primary">Day {item.day}</td>
                   <td className="px-5 py-4 font-semibold text-admin-ink">{item.title}</td>
                   <td className="px-5 py-4 text-admin-ink-2">{packageTitle(item.package_id)}</td>
+                  <td className="px-5 py-4 text-admin-ink-2">{item.stay_location ?? "—"}</td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <AdminIconButton onClick={() => openEditForm(item)} aria-label="Edit">

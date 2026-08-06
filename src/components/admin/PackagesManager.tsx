@@ -7,6 +7,8 @@ import { createStoragePath, slugify } from "@/lib/utils";
 import { useToast } from "./Toast";
 import { Modal } from "./Modal";
 import { ImageUploadField } from "./ImageUploadField";
+import { TagListInput } from "./TagListInput";
+import { FaqBuilder, type FaqItem } from "./FaqBuilder";
 import { AdminBadge, AdminButton, AdminCard, AdminField, AdminIconButton, AdminPageHeader, AdminTableState } from "./ui";
 
 type PackageRow = {
@@ -17,6 +19,7 @@ type PackageRow = {
   location: string | null;
   category: string | null;
   pickup: string | null;
+  drop_point: string | null;
   dates: string | null;
   duration: string | null;
   price: number | null;
@@ -24,9 +27,22 @@ type PackageRow = {
   rating: number | null;
   reviews: number | null;
   is_top_pick: boolean | null;
+  status: string | null;
   overview: string | null;
   image: string | null;
   additional_images: string[] | null;
+  highlights: string[] | null;
+  inclusions: string[] | null;
+  exclusions: string[] | null;
+  faq: FaqItem[] | null;
+  difficulty: string | null;
+  best_time: string | null;
+  languages: string[] | null;
+  travel_type: string | null;
+  max_group_size: number | null;
+  transport: string | null;
+  accommodation: string | null;
+  meals: string | null;
 };
 
 type DestinationOption = { id: string; name: string };
@@ -38,6 +54,7 @@ type FormState = {
   location: string;
   category: string;
   pickup: string;
+  drop_point: string;
   dates: string;
   duration: string;
   price: string;
@@ -45,10 +62,23 @@ type FormState = {
   rating: string;
   reviews: string;
   is_top_pick: boolean;
+  status: string;
   overview: string;
   image: string;
   image_file: File | null;
   additional_images: string;
+  highlights: string[];
+  inclusions: string[];
+  exclusions: string[];
+  faq: FaqItem[];
+  difficulty: string;
+  best_time: string;
+  languages: string;
+  travel_type: string;
+  max_group_size: string;
+  transport: string;
+  accommodation: string;
+  meals: string;
 };
 
 const emptyForm: FormState = {
@@ -58,6 +88,7 @@ const emptyForm: FormState = {
   location: "",
   category: "",
   pickup: "",
+  drop_point: "",
   dates: "",
   duration: "",
   price: "",
@@ -65,11 +96,27 @@ const emptyForm: FormState = {
   rating: "",
   reviews: "",
   is_top_pick: false,
+  status: "published",
   overview: "",
   image: "",
   image_file: null,
   additional_images: "",
+  highlights: [],
+  inclusions: [],
+  exclusions: [],
+  faq: [],
+  difficulty: "",
+  best_time: "",
+  languages: "",
+  travel_type: "",
+  max_group_size: "",
+  transport: "",
+  accommodation: "",
+  meals: "",
 };
+
+const PACKAGE_COLUMNS =
+  "id,slug,title,duration,price,original_price,overview,image,additional_images,destination_id,location,category,pickup,drop_point,dates,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals";
 
 export function PackagesManager() {
   const supabase = createBrowserSupabaseClient();
@@ -87,12 +134,7 @@ export function PackagesManager() {
   async function loadData() {
     setLoading(true);
     const [packagesRes, destinationsRes] = await Promise.all([
-      supabase
-        .from("packages")
-        .select(
-          "id,slug,title,duration,price,original_price,overview,image,additional_images,destination_id,location,category,pickup,dates,rating,reviews,is_top_pick"
-        )
-        .order("created_at", { ascending: false }),
+      supabase.from("packages").select(PACKAGE_COLUMNS).order("created_at", { ascending: false }),
       supabase.from("destinations").select("id,name").order("name"),
     ]);
 
@@ -130,6 +172,7 @@ export function PackagesManager() {
       location: pkg.location ?? "",
       category: pkg.category ?? "",
       pickup: pkg.pickup ?? "",
+      drop_point: pkg.drop_point ?? "",
       dates: pkg.dates ?? "",
       duration: pkg.duration ?? "",
       price: pkg.price?.toString() ?? "",
@@ -137,10 +180,23 @@ export function PackagesManager() {
       rating: pkg.rating?.toString() ?? "",
       reviews: pkg.reviews?.toString() ?? "",
       is_top_pick: pkg.is_top_pick ?? false,
+      status: pkg.status ?? "published",
       overview: pkg.overview ?? "",
       image: pkg.image ?? "",
       image_file: null,
       additional_images: pkg.additional_images?.join(", ") ?? "",
+      highlights: pkg.highlights ?? [],
+      inclusions: pkg.inclusions ?? [],
+      exclusions: pkg.exclusions ?? [],
+      faq: pkg.faq ?? [],
+      difficulty: pkg.difficulty ?? "",
+      best_time: pkg.best_time ?? "",
+      languages: pkg.languages?.join(", ") ?? "",
+      travel_type: pkg.travel_type ?? "",
+      max_group_size: pkg.max_group_size?.toString() ?? "",
+      transport: pkg.transport ?? "",
+      accommodation: pkg.accommodation ?? "",
+      meals: pkg.meals ?? "",
     });
     setShowForm(true);
   }
@@ -205,6 +261,7 @@ export function PackagesManager() {
       location: form.location.trim() || null,
       category: form.category.trim() || null,
       pickup: form.pickup.trim() || null,
+      drop_point: form.drop_point.trim() || null,
       dates: form.dates.trim() || null,
       duration: form.duration.trim() || null,
       price: form.price ? Number(form.price) : null,
@@ -212,12 +269,28 @@ export function PackagesManager() {
       rating: form.rating ? Number(form.rating) : null,
       reviews: form.reviews ? Number(form.reviews) : null,
       is_top_pick: form.is_top_pick,
+      status: form.status,
       overview: form.overview.trim() || null,
       image: form.image.trim() || null,
       additional_images: form.additional_images
         .split(",")
         .map((item) => item.trim())
         .filter(Boolean),
+      highlights: form.highlights.map((item) => item.trim()).filter(Boolean),
+      inclusions: form.inclusions.map((item) => item.trim()).filter(Boolean),
+      exclusions: form.exclusions.map((item) => item.trim()).filter(Boolean),
+      faq: form.faq.filter((item) => item.question.trim() && item.answer.trim()),
+      difficulty: form.difficulty.trim() || null,
+      best_time: form.best_time.trim() || null,
+      languages: form.languages
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean),
+      travel_type: form.travel_type.trim() || null,
+      max_group_size: form.max_group_size ? Number(form.max_group_size) : null,
+      transport: form.transport.trim() || null,
+      accommodation: form.accommodation.trim() || null,
+      meals: form.meals.trim() || null,
     };
 
     const { error } = editingId
@@ -267,10 +340,10 @@ export function PackagesManager() {
       {showForm && (
         <Modal
           title={editingId ? "Edit package" : "New package"}
-          description="Add or update a package listing with pricing, destination mapping, and images."
+          description="Everything here feeds the public package page directly — no code changes needed."
           onClose={() => setShowForm(false)}
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid gap-4 sm:grid-cols-2">
               <AdminField label="Destination Mapping">
                 <select
@@ -302,6 +375,16 @@ export function PackagesManager() {
                   placeholder="auto-generated from title if left blank"
                 />
               </AdminField>
+              <AdminField label="Status">
+                <select
+                  value={form.status}
+                  onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
+                  className="admin-input"
+                >
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                </select>
+              </AdminField>
               <AdminField label="Location (shown on package page)">
                 <input
                   value={form.location}
@@ -318,6 +401,14 @@ export function PackagesManager() {
                   placeholder="e.g. Honeymoon, Family, Adventure"
                 />
               </AdminField>
+              <AdminField label="Travel type">
+                <input
+                  value={form.travel_type}
+                  onChange={(e) => setForm((f) => ({ ...f, travel_type: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Group, Private, Customizable"
+                />
+              </AdminField>
               <AdminField label="Duration">
                 <input
                   value={form.duration}
@@ -326,12 +417,20 @@ export function PackagesManager() {
                   placeholder="e.g. 5D / 4N"
                 />
               </AdminField>
-              <AdminField label="Pickup">
+              <AdminField label="Pickup point">
                 <input
                   value={form.pickup}
                   onChange={(e) => setForm((f) => ({ ...f, pickup: e.target.value }))}
                   className="admin-input"
-                  placeholder="e.g. Airport pickup included"
+                  placeholder="e.g. Cochin Airport (COK)"
+                />
+              </AdminField>
+              <AdminField label="Drop point">
+                <input
+                  value={form.drop_point}
+                  onChange={(e) => setForm((f) => ({ ...f, drop_point: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Cochin Airport (COK)"
                 />
               </AdminField>
               <AdminField label="Dates">
@@ -340,6 +439,14 @@ export function PackagesManager() {
                   onChange={(e) => setForm((f) => ({ ...f, dates: e.target.value }))}
                   className="admin-input"
                   placeholder="e.g. Available year-round"
+                />
+              </AdminField>
+              <AdminField label="Best time to visit">
+                <input
+                  value={form.best_time}
+                  onChange={(e) => setForm((f) => ({ ...f, best_time: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Sep - Mar"
                 />
               </AdminField>
               <AdminField label="Price">
@@ -382,6 +489,56 @@ export function PackagesManager() {
                   placeholder="e.g. 128"
                 />
               </AdminField>
+              <AdminField label="Difficulty">
+                <input
+                  value={form.difficulty}
+                  onChange={(e) => setForm((f) => ({ ...f, difficulty: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Easy, Moderate, Challenging"
+                />
+              </AdminField>
+              <AdminField label="Max group size">
+                <input
+                  type="number"
+                  min="0"
+                  value={form.max_group_size}
+                  onChange={(e) => setForm((f) => ({ ...f, max_group_size: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. 15"
+                />
+              </AdminField>
+              <AdminField label="Transport">
+                <input
+                  value={form.transport}
+                  onChange={(e) => setForm((f) => ({ ...f, transport: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. AC coach + private cabs"
+                />
+              </AdminField>
+              <AdminField label="Accommodation">
+                <input
+                  value={form.accommodation}
+                  onChange={(e) => setForm((f) => ({ ...f, accommodation: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. 3-star hotels & resorts"
+                />
+              </AdminField>
+              <AdminField label="Meals">
+                <input
+                  value={form.meals}
+                  onChange={(e) => setForm((f) => ({ ...f, meals: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. Daily breakfast + 2 dinners"
+                />
+              </AdminField>
+              <AdminField label="Languages">
+                <input
+                  value={form.languages}
+                  onChange={(e) => setForm((f) => ({ ...f, languages: e.target.value }))}
+                  className="admin-input"
+                  placeholder="Comma-separated, e.g. English, Hindi"
+                />
+              </AdminField>
               <AdminField label="Top pick">
                 <div className="flex items-center gap-2 pt-2 text-sm text-admin-ink-2">
                   <input
@@ -396,7 +553,7 @@ export function PackagesManager() {
               </AdminField>
               <div className="sm:col-span-2">
                 <ImageUploadField
-                  label="Main image"
+                  label="Main / hero image"
                   imageUrl={form.image}
                   onImageFileChange={uploadPackageImage}
                   onImageUrlChange={(url) => setForm((f) => ({ ...f, image: url }))}
@@ -405,7 +562,7 @@ export function PackagesManager() {
                   <p className="mt-2 text-sm text-admin-ink-muted">Uploading image...</p>
                 )}
               </div>
-              <AdminField label="Additional Images" full>
+              <AdminField label="Gallery images" full>
                 <input
                   value={form.additional_images}
                   onChange={(e) => setForm((f) => ({ ...f, additional_images: e.target.value }))}
@@ -413,14 +570,45 @@ export function PackagesManager() {
                   placeholder="Comma-separated URLs"
                 />
               </AdminField>
-              <AdminField label="Details / Description" full>
+              <AdminField label="Overview" full>
                 <textarea
                   value={form.overview}
                   onChange={(e) => setForm((f) => ({ ...f, overview: e.target.value }))}
                   className="admin-input min-h-[100px]"
-                  placeholder="Itinerary highlights, inclusions, and pricing details"
+                  placeholder="A rich description of the trip"
                 />
               </AdminField>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div>
+                <p className="mb-2 text-sm font-medium text-admin-ink">Highlights</p>
+                <TagListInput
+                  items={form.highlights}
+                  onChange={(items) => setForm((f) => ({ ...f, highlights: items }))}
+                  placeholder="e.g. Sunrise trek to Tiger Hill"
+                />
+              </div>
+              <div>
+                <p className="mb-2 text-sm font-medium text-admin-ink">Inclusions</p>
+                <TagListInput
+                  items={form.inclusions}
+                  onChange={(items) => setForm((f) => ({ ...f, inclusions: items }))}
+                  placeholder="e.g. Airport transfers"
+                />
+              </div>
+              <div>
+                <p className="mb-2 text-sm font-medium text-admin-ink">Exclusions</p>
+                <TagListInput
+                  items={form.exclusions}
+                  onChange={(items) => setForm((f) => ({ ...f, exclusions: items }))}
+                  placeholder="e.g. Personal expenses"
+                />
+              </div>
+              <div>
+                <p className="mb-2 text-sm font-medium text-admin-ink">FAQs</p>
+                <FaqBuilder items={form.faq} onChange={(items) => setForm((f) => ({ ...f, faq: items }))} />
+              </div>
             </div>
 
             <AdminButton type="submit" disabled={saving}>
@@ -431,7 +619,7 @@ export function PackagesManager() {
       )}
 
       <AdminCard className="mt-6 overflow-x-auto" padded={false}>
-        <table className="w-full min-w-[min(100%,880px)] text-left text-sm">
+        <table className="w-full min-w-[min(100%,960px)] text-left text-sm">
           <thead>
             <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
               <th className="px-5 py-4">Title</th>
@@ -439,15 +627,16 @@ export function PackagesManager() {
               <th className="px-5 py-4">Location</th>
               <th className="px-5 py-4">Duration</th>
               <th className="px-5 py-4">Price</th>
+              <th className="px-5 py-4">Status</th>
               <th className="px-5 py-4">Top pick</th>
               <th className="px-5 py-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <AdminTableState colSpan={7}>Loading packages...</AdminTableState>
+              <AdminTableState colSpan={8}>Loading packages...</AdminTableState>
             ) : packages.length === 0 ? (
-              <AdminTableState colSpan={7}>No packages yet.</AdminTableState>
+              <AdminTableState colSpan={8}>No packages yet.</AdminTableState>
             ) : (
               packages.map((pkg) => (
                 <tr key={pkg.id} className="border-b border-admin-border last:border-0">
@@ -459,6 +648,11 @@ export function PackagesManager() {
                   <td className="px-5 py-4 text-admin-ink-2">{pkg.duration ?? "—"}</td>
                   <td className="px-5 py-4 text-admin-ink-2">
                     {pkg.price != null ? `₹${pkg.price}` : "—"}
+                  </td>
+                  <td className="px-5 py-4">
+                    <AdminBadge className={pkg.status === "draft" ? "bg-admin-accent-soft text-admin-accent" : undefined}>
+                      {pkg.status === "draft" ? "Draft" : "Published"}
+                    </AdminBadge>
                   </td>
                   <td className="px-5 py-4">
                     {pkg.is_top_pick ? <AdminBadge>Top pick</AdminBadge> : "—"}

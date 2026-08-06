@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
@@ -14,7 +15,7 @@ async function getDestination(slug: string) {
         .from("destinations")
         .select("id,slug,name,cover_image,image,description,price,rating")
         .eq("slug", slug)
-        .single();
+        .maybeSingle();
 
     if (!destination) {
         return null;
@@ -23,16 +24,19 @@ async function getDestination(slug: string) {
     const { data: packages } = await supabase
         .from("packages")
         .select("id,slug,title,location,image,category,duration,pickup,dates,price,rating,reviews")
-        .eq("destination_id", destination.id);
+        .eq("destination_id", destination.id)
+        .eq("status", "published");
 
     return { destination, packages: packages ?? [] };
 }
 
-export default async function DestinationPage({ params }: { params: { slug: string } }) {
-    const data = await getDestination(params.slug);
+// Next.js 16 passes `params` as a Promise for dynamic route segments.
+export default async function DestinationPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const data = await getDestination(slug);
 
     if (!data) {
-        return <div className="min-h-screen py-24 text-center">Destination not found.</div>;
+        notFound();
     }
 
     return (

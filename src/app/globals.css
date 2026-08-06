@@ -623,12 +623,13 @@ body {
     scroll-snap-type: x mandatory !important;
   }
 
-  /* Force the parent/wrapper (Link) of the card to be 320px wide */
+  /* Fluid width: scales with the viewport instead of one fixed number, so it
+     self-adjusts across phone sizes (~78vw, clamped between 260-310px). */
   .premium-card-wrapper {
-    width: 320px !important;
-    min-width: 320px !important;
-    max-width: 320px !important;
-    flex: 0 0 320px !important;
+    width: clamp(260px, 78vw, 310px) !important;
+    min-width: clamp(260px, 78vw, 310px) !important;
+    max-width: 310px !important;
+    flex: 0 0 clamp(260px, 78vw, 310px) !important;
     scroll-snap-align: start !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -642,7 +643,7 @@ body {
 
   /* Target the card container div */
   .premium-card-container {
-    border-radius: 20px !important;
+    border-radius: clamp(18px, 5vw, 22px) !important;
     overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
@@ -650,15 +651,16 @@ body {
     border: 1px solid rgba(105, 144, 68, 0.16) !important;
   }
 
-  /* Image container height: 210-220px (we'll use 220px) */
+  /* Image height now derives from the card's fluid width via aspect-ratio,
+     instead of a fixed px number, so it scales proportionally with the card. */
   .premium-card-img-container {
     position: relative !important;
     width: 100% !important;
-    height: 220px !important;
-    aspect-ratio: auto !important;
+    height: auto !important;
+    aspect-ratio: 16 / 10 !important;
     overflow: hidden !important;
-    border-top-left-radius: 20px !important;
-    border-top-right-radius: 20px !important;
+    border-top-left-radius: clamp(18px, 5vw, 22px) !important;
+    border-top-right-radius: clamp(18px, 5vw, 22px) !important;
   }
 
   .premium-card-img-container img {
@@ -667,9 +669,9 @@ body {
     height: 100% !important;
   }
 
-  /* Margin between image and content: 12px. Also card padding: 14px */
+  /* Margin between image and content: 12px. Also card padding: fluid 14-16px */
   .premium-card-body {
-    padding: 14px !important;
+    padding: clamp(14px, 4vw, 16px) !important;
     margin-top: 12px !important;
     display: flex !important;
     flex-direction: column !important;
@@ -677,20 +679,22 @@ body {
     justify-content: space-between !important;
   }
 
-  /* Title: 22px, font-weight:700, max 2 lines */
+  /* Title: fluid 18-22px, font-weight:700, single line so the card doesn't grow tall */
   .premium-card-title {
-    font-size: 22px !important;
+    font-size: clamp(18px, 5vw, 22px) !important;
     line-height: 1.25 !important;
     font-weight: 700 !important;
     display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
+    -webkit-line-clamp: 1 !important;
     -webkit-box-orient: vertical !important;
     overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
   }
 
-  /* Location: 14px */
+  /* Location: fluid 13-15px */
   .premium-card-location {
-    font-size: 14px !important;
+    font-size: clamp(13px, 3.6vw, 15px) !important;
     display: flex !important;
     align-items: center !important;
     gap: 4px !important;
@@ -698,30 +702,35 @@ body {
   }
 
   .premium-card-location svg {
-    width: 14px !important;
-    height: 14px !important;
+    width: clamp(15px, 4vw, 18px) !important;
+    height: clamp(15px, 4vw, 18px) !important;
   }
 
   /* Duration / Dates & Batch info under location */
   .premium-card-meta {
-    font-size: 12px !important;
+    font-size: clamp(11px, 3vw, 12px) !important;
     margin-top: 6px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
   }
 
+  .premium-card-meta svg {
+    width: clamp(15px, 4vw, 18px) !important;
+    height: clamp(15px, 4vw, 18px) !important;
+  }
+
   /* Footer price / rating */
   .premium-card-footer {
-    margin-top: 14px !important;
-    padding-top: 12px !important;
+    margin-top: 10px !important;
+    padding-top: 10px !important;
     border-top: 1px solid rgba(105, 144, 68, 0.1) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
   }
 
-  /* Price: 26px bold, /person: 16px gray */
+  /* Price: fluid 22-28px bold, /person: fluid 11-13px gray */
   .premium-card-price-container {
     display: flex !important;
     align-items: baseline !important;
@@ -729,18 +738,18 @@ body {
   }
 
   .premium-card-price {
-    font-size: 26px !important;
+    font-size: clamp(22px, 7vw, 28px) !important;
     font-weight: 700 !important;
   }
 
   .premium-card-price-slash {
-    font-size: 16px !important;
+    font-size: clamp(11px, 3vw, 13px) !important;
     color: #6b7a6a !important;
   }
 
-  /* Rating: 14px bold */
+  /* Rating: fluid 12-14px bold, fluid 16-18px star */
   .premium-card-rating {
-    font-size: 14px !important;
+    font-size: clamp(12px, 3.4vw, 14px) !important;
     font-weight: 700 !important;
     display: flex !important;
     align-items: center !important;
@@ -748,8 +757,8 @@ body {
   }
 
   .premium-card-rating svg {
-    width: 14px !important;
-    height: 14px !important;
+    width: clamp(15px, 4vw, 18px) !important;
+    height: clamp(15px, 4vw, 18px) !important;
   }
 
   /* Hide the flame badge on mobile cards to keep it clean and premium */

@@ -125,6 +125,16 @@ were exposed, even though the public pages already read the rest). See
 `supabase/migrations/2026_08_05_fix_destinations_packages_schema.sql` for the
 migration that adds any of these columns if your live table predates them.
 
+As of 2026-08-06, the following content columns were added for the full
+package detail page and are also editable from admin: `highlights text[]`,
+`inclusions text[]`, `exclusions text[]`, `faq jsonb` (array of
+`{question, answer}`), `status text` (`draft` | `published`, gates public
+visibility), `difficulty`, `drop_point`, `best_time`, `languages text[]`,
+`travel_type`, `max_group_size int`, `transport`, `accommodation`, `meals`.
+`itineraries` also gained `stay_location`, `stay_type`, `meals`, `image`, and
+`optional_note` for the day-wise timeline. See
+`supabase/migrations/2026_08_06_extend_packages_content_fields.sql`.
+
 ### 1.5 `itineraries`
 Package itinerary details.
 
