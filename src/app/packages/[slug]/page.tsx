@@ -14,6 +14,9 @@ import {
     Compass,
     Check,
     X as XIcon,
+    ShieldCheck,
+    Sparkles,
+    Headphones,
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { createServerSupabaseClient } from "@/lib/supabase.server";
@@ -21,6 +24,8 @@ import { formatPrice } from "@/lib/utils";
 import { PackageGallery } from "@/components/packages/PackageGallery";
 import { PackageBookingCard } from "@/components/packages/PackageBookingCard";
 import { PackageMobileBar } from "@/components/packages/PackageMobileBar";
+import { PackageSectionNav } from "@/components/packages/PackageSectionNav";
+import { PackageItinerary } from "@/components/packages/PackageItinerary";
 
 type PackageDetail = {
     id: string;
@@ -163,6 +168,64 @@ export async function generateMetadata({
 // Next.js 16 passes `params` as a Promise for dynamic route segments — this
 // was the root cause of "Package not found" on every package: the previous
 // code read `params.slug` synchronously and always got `undefined`.
+const DUMMY_ITINERARY: ItineraryDay[] = [
+    {
+        id: "day-1",
+        day: 1,
+        title: "Arrival, Welcome & Scenic Tea Garden Sunset Walk",
+        description: "Arrive at the destination where our private transport representative welcomes you. Check into your luxury nature resort, relax, and head out for an enchanting evening walk through lush green tea gardens followed by a traditional welcome tea tasting session.",
+        stay_location: "Grand Nature Resort & Spa",
+        stay_type: "4-Star Luxury Resort",
+        meals: "Dinner Included",
+        image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
+        optional_note: "Welcome drink & evening campfire included at resort",
+    },
+    {
+        id: "day-2",
+        day: 2,
+        title: "Full Day Waterfall Trek & Spice Plantation Exploration",
+        description: "Wake up to fresh mountain air and enjoy a lavish buffet breakfast. Embark on a private guided excursion to famous waterfalls, misty viewpoints, and an authentic organic spice plantation with exotic flora and fauna.",
+        stay_location: "Grand Nature Resort & Spa",
+        stay_type: "4-Star Luxury Resort",
+        meals: "Breakfast & Dinner Included",
+        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+        optional_note: "Comfortable trekking shoes recommended for waterfall path",
+    },
+    {
+        id: "day-3",
+        day: 3,
+        title: "High Altitude Peak Sunrise & Cultural Folk Performance",
+        description: "Early morning jeep safari to the highest peak viewpoint for a breathtaking sunrise above the clouds. Afternoon at leisure for shopping local handicraft souvenirs and tea leaves. In the evening, enjoy a live traditional cultural dance & martial arts show.",
+        stay_location: "Grand Nature Resort & Spa",
+        stay_type: "4-Star Luxury Resort",
+        meals: "Breakfast & Dinner Included",
+        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+        optional_note: "Camera recommended for panoramic cloud bed sunrise photos",
+    },
+    {
+        id: "day-4",
+        day: 4,
+        title: "Lakeside Boating, Wildlife Sanctuary & Evening Campfire",
+        description: "Visit the serene lake for a private boat ride surrounded by dense forest hills. Spot wild elephants, deer, and rare birds along the lakeside. Return to the resort for a memorable outdoor campfire dinner under the stars.",
+        stay_location: "Grand Nature Resort & Spa",
+        stay_type: "4-Star Luxury Resort",
+        meals: "Breakfast & Campfire BBQ Dinner",
+        image: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
+        optional_note: "BBQ & live acoustic music at the evening campfire",
+    },
+    {
+        id: "day-5",
+        day: 5,
+        title: "Leisure Morning, Souvenir Shopping & Departure",
+        description: "Enjoy a relaxed final breakfast overlooking the valley. Check out from the resort with unforgettable memories. Private transfer arranged back to the airport/railway station for your onward journey.",
+        stay_location: null,
+        stay_type: null,
+        meals: "Breakfast Included",
+        image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80",
+        optional_note: "Private vehicle transfer to airport/station",
+    },
+];
+
 export default async function PackagePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const data = await getPackageData(slug);
@@ -171,7 +234,8 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
         notFound();
     }
 
-    const { pkg, itinerary, related } = data;
+    const { pkg, itinerary: rawItinerary, related } = data;
+    const itinerary = rawItinerary && rawItinerary.length > 0 ? rawItinerary : DUMMY_ITINERARY;
     const gallery = [pkg.image, ...(pkg.additional_images ?? [])].filter(
         (src): src is string => Boolean(src)
     );
@@ -198,7 +262,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
     };
 
     return (
-        <main className="flex-1 pb-24 lg:pb-0">
+        <main className="flex-1 pt-20 sm:pt-24 lg:pt-28 pb-28 lg:pb-16 bg-canvas">
             {/* eslint-disable-next-line react/no-danger */}
             <script
                 type="application/ld+json"
@@ -206,64 +270,78 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             />
 
             {/* Breadcrumb */}
-            <Container className="pt-6">
-                <nav className="flex items-center gap-2 text-xs text-ink/50">
-                    <Link href="/" className="hover:text-ink">Home</Link>
-                    <span>/</span>
-                    <Link href="/packages" className="hover:text-ink">Packages</Link>
-                    <span>/</span>
-                    <span className="text-ink/70">{pkg.title}</span>
+            <Container className="mb-4">
+                <nav className="flex items-center gap-2 text-xs font-medium text-ink-muted">
+                    <Link href="/" className="hover:text-canopy transition-colors">Home</Link>
+                    <span className="text-border-lit">/</span>
+                    <Link href="/packages" className="hover:text-canopy transition-colors">Packages</Link>
+                    <span className="text-border-lit">/</span>
+                    <span className="text-ink font-semibold truncate max-w-[200px] sm:max-w-none">{pkg.title}</span>
                 </nav>
             </Container>
 
-            {/* Hero */}
-            <div className="relative mt-4 h-[360px] w-full overflow-hidden sm:h-[460px]">
-                {gallery[0] && (
-                    <Image src={gallery[0]} alt={pkg.title} fill priority sizes="100vw" className="object-cover" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10" />
-                <Container className="relative flex h-full flex-col justify-end pb-8 text-white">
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-                        {pkg.rating != null && (
-                            <span className="flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 backdrop-blur">
-                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" /> {pkg.rating.toFixed(1)}
-                            </span>
-                        )}
-                        {pkg.duration && (
-                            <span className="rounded-full bg-white/15 px-3 py-1 backdrop-blur">{pkg.duration}</span>
-                        )}
-                        {pkg.category && (
-                            <span className="rounded-full bg-white/15 px-3 py-1 backdrop-blur">{pkg.category}</span>
-                        )}
-                        {pkg.travel_type && (
-                            <span className="rounded-full bg-white/15 px-3 py-1 backdrop-blur">{pkg.travel_type}</span>
-                        )}
-                    </div>
-                    <h1 className="display-section mt-4 max-w-2xl text-3xl sm:text-5xl">{pkg.title}</h1>
-                    <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-white/85">
-                        {pkg.location && (
-                            <span className="flex items-center gap-1.5">
-                                <MapPin className="h-4 w-4" /> {pkg.location}
-                            </span>
-                        )}
-                        <span className="font-semibold text-white">
-                            Starting {formatPrice(pkg.price)} / person
-                        </span>
-                    </div>
-                </Container>
-            </div>
+            {/* Hero Banner */}
+            <Container className="mb-8">
+                <div className="relative h-[380px] sm:h-[480px] lg:h-[520px] w-full overflow-hidden rounded-[20px] sm:rounded-[24px] shadow-md border border-border/60">
+                    {gallery[0] && (
+                        <Image src={gallery[0]} alt={pkg.title} fill priority sizes="100vw" className="object-cover" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
 
-            <Container className="mt-10">
-                <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
-                    <div className="space-y-10">
+                    <div className="relative z-10 flex h-full flex-col justify-end p-5 sm:p-8 text-white">
+                        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                            {pkg.rating != null && (
+                                <span className="flex items-center gap-1 rounded-full bg-black/40 px-3 py-1 backdrop-blur-md border border-white/15">
+                                    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" /> {pkg.rating.toFixed(1)}
+                                </span>
+                            )}
+                            {pkg.duration && (
+                                <span className="rounded-full bg-canopy px-3 py-1 font-bold text-white shadow-xs">
+                                    {pkg.duration}
+                                </span>
+                            )}
+                            {pkg.category && (
+                                <span className="rounded-full bg-black/40 px-3 py-1 backdrop-blur-md border border-white/15">
+                                    {pkg.category}
+                                </span>
+                            )}
+                            {pkg.travel_type && (
+                                <span className="rounded-full bg-black/40 px-3 py-1 backdrop-blur-md border border-white/15">
+                                    {pkg.travel_type}
+                                </span>
+                            )}
+                        </div>
+                        <h1 className="font-sans mt-3 text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
+                            {pkg.title}
+                        </h1>
+                        <div className="mt-3 flex flex-wrap items-center gap-4 text-xs sm:text-sm text-white/90 font-medium">
+                            {pkg.location && (
+                                <span className="flex items-center gap-1.5">
+                                    <MapPin className="h-4 w-4 text-canopy shrink-0" /> {pkg.location}
+                                </span>
+                            )}
+                            <span className="rounded-full bg-black/50 px-3 py-1 text-white font-bold backdrop-blur-md border border-white/10">
+                                Starting {formatPrice(pkg.price)} <span className="font-normal text-white/70">/ person</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </Container>
+
+            {/* Sticky Section Quick Jump Nav Bar */}
+            <PackageSectionNav />
+
+            <Container>
+                <div className="grid gap-8 lg:grid-cols-[1fr_380px] items-start">
+                    <div className="space-y-12">
                         {/* Gallery */}
                         {gallery.length > 1 && <PackageGallery images={gallery} title={pkg.title} />}
 
                         {/* Overview */}
                         {pkg.overview && (
-                            <section>
-                                <h2 className="text-xl font-semibold text-ink">Overview</h2>
-                                <p className="prose-measure mt-3 text-[15px] leading-relaxed text-ink/75">
+                            <section id="overview" className="scroll-mt-36">
+                                <h2 className="text-2xl font-bold tracking-tight text-ink">Trip Overview</h2>
+                                <p className="prose-measure mt-3 text-base leading-relaxed text-ink/80">
                                     {pkg.overview}
                                 </p>
                             </section>
@@ -271,15 +349,15 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
                         {/* Highlights */}
                         {pkg.highlights && pkg.highlights.length > 0 && (
-                            <section>
-                                <h2 className="text-xl font-semibold text-ink">Highlights</h2>
+                            <section id="highlights" className="scroll-mt-36">
+                                <h2 className="text-2xl font-bold tracking-tight text-ink">Trip Highlights</h2>
                                 <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                                     {pkg.highlights.map((item, i) => (
                                         <li
                                             key={i}
-                                            className="flex items-start gap-2.5 rounded-[14px] border border-border bg-surface p-4 text-sm text-ink/80"
+                                            className="flex items-start gap-3 rounded-[16px] border border-border/80 bg-surface p-4 text-sm font-medium text-ink shadow-2xs hover:border-canopy/40 hover:shadow-xs transition-all"
                                         >
-                                            <Compass className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> {item}
+                                            <Compass className="mt-0.5 h-4 w-4 shrink-0 text-canopy" /> {item}
                                         </li>
                                     ))}
                                 </ul>
@@ -287,76 +365,36 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                         )}
 
                         {/* Trip facts */}
-                        <section>
-                            <h2 className="text-xl font-semibold text-ink">Trip facts</h2>
+                        <section id="facts" className="scroll-mt-36">
+                            <h2 className="text-2xl font-bold tracking-tight text-ink">Trip Facts & Details</h2>
                             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
                                 <Fact icon={<Clock className="h-4 w-4" />} label="Duration" value={pkg.duration} />
-                                <Fact icon={<Users className="h-4 w-4" />} label="Group size" value={pkg.max_group_size ? `Up to ${pkg.max_group_size}` : null} />
+                                <Fact icon={<Users className="h-4 w-4" />} label="Group size" value={pkg.max_group_size ? `Up to ${pkg.max_group_size} guests` : null} />
                                 <Fact icon={<Compass className="h-4 w-4" />} label="Difficulty" value={pkg.difficulty} />
-                                <Fact icon={<Utensils className="h-4 w-4" />} label="Meals" value={pkg.meals} />
+                                <Fact icon={<Utensils className="h-4 w-4" />} label="Meals Included" value={pkg.meals} />
                                 <Fact icon={<MapPin className="h-4 w-4" />} label="Transport" value={pkg.transport} />
                                 <Fact icon={<LanguagesIcon className="h-4 w-4" />} label="Languages" value={pkg.languages?.join(", ")} />
-                                <Fact icon={<MapPin className="h-4 w-4" />} label="Pickup" value={pkg.pickup} />
-                                <Fact icon={<MapPin className="h-4 w-4" />} label="Drop" value={pkg.drop_point} />
-                                <Fact icon={<Clock className="h-4 w-4" />} label="Best time" value={pkg.best_time} />
+                                <Fact icon={<MapPin className="h-4 w-4" />} label="Pickup Point" value={pkg.pickup} />
+                                <Fact icon={<MapPin className="h-4 w-4" />} label="Drop Point" value={pkg.drop_point} />
+                                <Fact icon={<Clock className="h-4 w-4" />} label="Best Time to Visit" value={pkg.best_time} />
                             </div>
                         </section>
 
-                        {/* Day-wise itinerary */}
-                        {itinerary.length > 0 && (
-                            <section>
-                                <h2 className="text-xl font-semibold text-ink">Day-by-day itinerary</h2>
-                                <div className="relative mt-6 space-y-6 border-l border-border pl-8">
-                                    {itinerary.map((day) => (
-                                        <div key={day.id} className="relative">
-                                            <span className="absolute -left-[41px] flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                                                {day.day}
-                                            </span>
-                                            <div className="rounded-[18px] border border-border bg-surface p-5">
-                                                <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                                                    Day {day.day}
-                                                </p>
-                                                <h3 className="mt-1 text-lg font-semibold text-ink">{day.title}</h3>
-                                                {day.description && (
-                                                    <p className="mt-2 text-sm leading-relaxed text-ink/75">{day.description}</p>
-                                                )}
-                                                {day.image && (
-                                                    <div className="relative mt-3 h-48 w-full overflow-hidden rounded-[14px]">
-                                                        <Image src={day.image} alt={day.title} fill sizes="600px" className="object-cover" />
-                                                    </div>
-                                                )}
-                                                <div className="mt-3 flex flex-wrap gap-2 text-xs text-ink/60">
-                                                    {day.meals && (
-                                                        <span className="rounded-full bg-sage-100 px-3 py-1">🍽 {day.meals}</span>
-                                                    )}
-                                                    {day.stay_location && (
-                                                        <span className="rounded-full bg-sage-100 px-3 py-1">
-                                                            🏨 {day.stay_location}
-                                                            {day.stay_type ? ` (${day.stay_type})` : ""}
-                                                        </span>
-                                                    )}
-                                                    {day.optional_note && (
-                                                        <span className="rounded-full bg-amber-500/10 px-3 py-1 text-amber-700">
-                                                            {day.optional_note}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
+                        {/* Day-wise itinerary (Interactive & Timeline modes) */}
+                        <PackageItinerary itinerary={itinerary} />
 
                         {/* Inclusions / Exclusions */}
                         {((pkg.inclusions?.length ?? 0) > 0 || (pkg.exclusions?.length ?? 0) > 0) && (
-                            <section className="grid gap-6 sm:grid-cols-2">
+                            <section id="inclusions" className="scroll-mt-36 grid gap-6 sm:grid-cols-2">
                                 {(pkg.inclusions?.length ?? 0) > 0 && (
-                                    <div className="rounded-[18px] border border-border bg-surface p-5">
-                                        <h3 className="font-semibold text-ink">What&apos;s included</h3>
-                                        <ul className="mt-3 space-y-2 text-sm text-ink/75">
+                                    <div className="rounded-[20px] border border-emerald-200/80 bg-emerald-50/30 p-5 sm:p-6">
+                                        <h3 className="text-lg font-bold text-emerald-950 flex items-center gap-2">
+                                            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-white text-xs font-bold">✓</span>
+                                            What&apos;s Included
+                                        </h3>
+                                        <ul className="mt-4 space-y-2.5 text-sm font-medium text-ink/80">
                                             {pkg.inclusions!.map((item, i) => (
-                                                <li key={i} className="flex items-start gap-2">
+                                                <li key={i} className="flex items-start gap-2.5">
                                                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /> {item}
                                                 </li>
                                             ))}
@@ -364,11 +402,14 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                                     </div>
                                 )}
                                 {(pkg.exclusions?.length ?? 0) > 0 && (
-                                    <div className="rounded-[18px] border border-border bg-surface p-5">
-                                        <h3 className="font-semibold text-ink">Not included</h3>
-                                        <ul className="mt-3 space-y-2 text-sm text-ink/75">
+                                    <div className="rounded-[20px] border border-rose-200/80 bg-rose-50/30 p-5 sm:p-6">
+                                        <h3 className="text-lg font-bold text-rose-950 flex items-center gap-2">
+                                            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-white text-xs font-bold">✕</span>
+                                            Not Included
+                                        </h3>
+                                        <ul className="mt-4 space-y-2.5 text-sm font-medium text-ink/80">
                                             {pkg.exclusions!.map((item, i) => (
-                                                <li key={i} className="flex items-start gap-2">
+                                                <li key={i} className="flex items-start gap-2.5">
                                                     <XIcon className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" /> {item}
                                                 </li>
                                             ))}
@@ -378,17 +419,55 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                             </section>
                         )}
 
+                        {/* Why Choose Us / Trust Badges */}
+                        <section id="trust" className="scroll-mt-36 rounded-[20px] border border-border/80 bg-surface p-5 sm:p-6 shadow-2xs">
+                            <h2 className="text-lg sm:text-xl font-bold text-ink flex items-center gap-2">
+                                <Sparkles className="h-5 w-5 text-canopy" /> Why Book With Dream Travels?
+                            </h2>
+                            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                                <div className="flex items-start gap-3 rounded-[14px] bg-canvas/60 p-3.5 border border-border/60">
+                                    <ShieldCheck className="h-5 w-5 text-canopy shrink-0 mt-0.5" />
+                                    <div>
+                                        <h4 className="font-bold text-xs sm:text-sm text-ink">100% Verified Local Guides</h4>
+                                        <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed">Experienced, licensed local experts ensuring your trip is safe, authentic, and hassle-free.</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3 rounded-[14px] bg-canvas/60 p-3.5 border border-border/60">
+                                    <Sparkles className="h-5 w-5 text-canopy shrink-0 mt-0.5" />
+                                    <div>
+                                        <h4 className="font-bold text-xs sm:text-sm text-ink">Transparent Pricing</h4>
+                                        <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed">No hidden fees or unexpected costs. What you see is exactly what you pay.</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3 rounded-[14px] bg-canvas/60 p-3.5 border border-border/60">
+                                    <Headphones className="h-5 w-5 text-canopy shrink-0 mt-0.5" />
+                                    <div>
+                                        <h4 className="font-bold text-xs sm:text-sm text-ink">24/7 On-Trip Support</h4>
+                                        <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed">Dedicated trip coordinator available round the clock on WhatsApp and call throughout your journey.</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3 rounded-[14px] bg-canvas/60 p-3.5 border border-border/60">
+                                    <Check className="h-5 w-5 text-canopy shrink-0 mt-0.5" />
+                                    <div>
+                                        <h4 className="font-bold text-xs sm:text-sm text-ink">Flexible Cancellation</h4>
+                                        <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed">Free cancellation up to 48 hours before departure on qualifying package bookings.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
                         {/* FAQs */}
                         {pkg.faq && pkg.faq.length > 0 && (
-                            <section>
-                                <h2 className="text-xl font-semibold text-ink">Frequently asked questions</h2>
-                                <div className="mt-4 space-y-2">
+                            <section id="faq" className="scroll-mt-36">
+                                <h2 className="text-2xl font-bold tracking-tight text-ink">Frequently Asked Questions</h2>
+                                <div className="mt-4 space-y-3">
                                     {pkg.faq.map((item, i) => (
-                                        <details key={i} className="group rounded-[14px] border border-border bg-surface p-4">
-                                            <summary className="cursor-pointer list-none font-medium text-ink">
-                                                {item.question}
+                                        <details key={i} className="group rounded-[16px] border border-border/80 bg-surface p-4 sm:p-5 transition-colors [&[open]]:border-canopy/40">
+                                            <summary className="cursor-pointer list-none font-bold text-ink flex items-center justify-between gap-4">
+                                                <span>{item.question}</span>
+                                                <span className="text-canopy font-bold text-lg transition-transform group-open:rotate-45">+</span>
                                             </summary>
-                                            <p className="mt-2 text-sm text-ink/70">{item.answer}</p>
+                                            <p className="mt-3 text-sm leading-relaxed text-ink/80 border-t border-border/60 pt-3">{item.answer}</p>
                                         </details>
                                     ))}
                                 </div>

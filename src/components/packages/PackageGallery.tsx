@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function PackageGallery({ images, title }: { images: string[]; title: string }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -13,42 +14,35 @@ export function PackageGallery({ images, title }: { images: string[]; title: str
 
   return (
     <>
-      <div className="grid grid-cols-4 gap-2 sm:gap-3">
-        <button
-          type="button"
-          onClick={() => setOpenIndex(0)}
-          className="group relative col-span-4 aspect-[16/9] overflow-hidden rounded-[20px] sm:col-span-2 sm:row-span-2 sm:aspect-auto"
-        >
-          <Image
-            src={visible[0]}
-            alt={title}
-            fill
-            sizes="(max-width: 640px) 100vw, 50vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            priority
-          />
-        </button>
-        {visible.slice(1).map((src, i) => (
-          <button
-            type="button"
-            key={src + i}
-            onClick={() => setOpenIndex(i + 1)}
-            className="group relative col-span-2 aspect-square overflow-hidden rounded-[16px] sm:col-span-1"
-          >
-            <Image
-              src={src}
-              alt={`${title} photo ${i + 2}`}
-              fill
-              sizes="25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            {i === visible.length - 2 && remaining > 0 && (
-              <span className="absolute inset-0 flex items-center justify-center bg-black/55 text-sm font-semibold text-white">
-                +{remaining} more
-              </span>
-            )}
-          </button>
-        ))}
+      <div className="space-y-3">
+        <h2 className="text-xl font-bold tracking-tight text-ink">Trip Gallery</h2>
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
+          {visible.map((src, i) => (
+            <button
+              type="button"
+              key={src + i}
+              onClick={() => setOpenIndex(i)}
+              className={cn(
+                "group relative overflow-hidden rounded-[14px] border border-border/70 bg-surface shadow-2xs transition-all duration-300 hover:shadow-md hover:border-canopy/40",
+                i === 0 ? "col-span-2 row-span-2 aspect-[4/3] sm:aspect-auto" : "col-span-1 aspect-square"
+              )}
+            >
+              <Image
+                src={src}
+                alt={`${title} photo ${i + 1}`}
+                fill
+                sizes="(max-width: 640px) 50vw, 25vw"
+                className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
+              />
+              <div className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
+              {i === visible.length - 1 && remaining > 0 && (
+                <span className="absolute inset-0 flex items-center justify-center bg-black/60 font-bold text-white text-sm backdrop-blur-xs">
+                  +{remaining} Photos
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {openIndex !== null && (

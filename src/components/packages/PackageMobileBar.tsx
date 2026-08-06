@@ -20,24 +20,24 @@ export function PackageMobileBar({
   )}`;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[200] flex items-center justify-between gap-3 border-t border-border bg-surface/95 px-4 py-3 backdrop-blur-lg lg:hidden">
+    <div className="fixed inset-x-3 bottom-3 z-[180] flex items-center justify-between gap-3 rounded-[16px] border border-border/80 bg-surface/95 px-4 py-3 shadow-xl backdrop-blur-xl lg:hidden">
       <div>
-        <p className="text-[10px] uppercase tracking-wide text-ink/50">From</p>
-        <p className="text-base font-bold text-ink">{formatPrice(price)}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-muted">Starting from</p>
+        <p className="text-base font-extrabold text-ink">{formatPrice(price)}</p>
       </div>
       <div className="flex items-center gap-2">
         <a
           href={whatsappHref}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center justify-center rounded-[10px] border border-border bg-surface p-3 text-ink"
+          className="flex items-center justify-center rounded-[12px] border border-border/80 bg-surface p-2.5 text-ink hover:bg-sage-100 transition-colors"
           aria-label="Chat on WhatsApp"
         >
           <MessageCircle className="h-4 w-4 text-[#25D366]" />
         </a>
         <Link
           href={`/booking?package=${encodeURIComponent(slug)}`}
-          className="rounded-[10px] bg-primary px-5 py-3 text-sm font-semibold text-white"
+          className="rounded-[12px] bg-canopy hover:bg-canopy-hover px-5 py-2.5 text-sm font-bold text-white shadow-xs transition-colors"
         >
           Book Now
         </Link>

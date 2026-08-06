@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Compass, MessageCircle, User, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,7 +14,13 @@ const items = [
 ] as const;
 
 export function BottomNav() {
+  const pathname = usePathname();
   const [active, setActive] = useState<string>("explore");
+
+  // On package detail pages (/packages/[slug]), hide global BottomNav so PackageMobileBar has clean priority at bottom-0
+  if (pathname?.startsWith("/packages/") && pathname.split("/").filter(Boolean).length >= 2) {
+    return null;
+  }
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 lg:hidden px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
