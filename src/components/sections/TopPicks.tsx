@@ -20,7 +20,7 @@ export function TopPicks({ packages = staticTopPicks }: { packages?: Package[] }
           <PackageCard
             key={pkg.id}
             pkg={pkg}
-            className="w-[200px] xs:w-[220px] sm:w-[260px] lg:w-[300px] shrink-0 snap-start"
+            className="snap-start"
           />
         ))}
       </Carousel>

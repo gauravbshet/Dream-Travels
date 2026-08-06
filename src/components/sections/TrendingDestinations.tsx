@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Flame, MapPin, Star } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Carousel } from "@/components/ui/Carousel";
@@ -59,42 +59,72 @@ function TrendingTile({ destination }: { destination: MapDestination }) {
   return (
     <Link
       href={`/destinations/${destination.id}`}
-      className="group block w-[240px] shrink-0 snap-start sm:w-[268px] lg:w-[288px]"
+      className="group flex flex-col h-full shrink-0 w-[190px] sm:w-[210px] snap-start"
     >
-      <div
-        ref={ref}
-        onPointerMove={onPointerMove}
-        data-tone="dark"
-        className="spotlight lit-edge relative aspect-[3/4] overflow-hidden rounded-[14px] border border-border"
-      >
-        <Image
-          src={destination.image}
-          alt={`${destination.name}, ${destination.state}`}
-          fill
-          sizes="(max-width: 640px) 70vw, 290px"
-          className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.07]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.018_158/0.5)] via-[oklch(0.14_0.02_158/0.15)] to-transparent" />
+      <article className="flex flex-col h-full flex-1">
+        <div
+          ref={ref}
+          onPointerMove={onPointerMove}
+          className="spotlight lit-edge flex h-full flex-1 flex-col overflow-hidden rounded-[14px] border border-border/70 bg-surface shadow-2xs transition-all duration-300 hover:shadow-md hover:border-canopy/30"
+        >
+          {/* Image & Overlay Badges Header */}
+          <div data-tone="dark" className="relative h-[126px] w-full overflow-hidden rounded-t-[14px] shrink-0 sm:h-[142px]">
+            <Image
+              src={destination.image}
+              alt={`${destination.name}, ${destination.state}`}
+              fill
+              sizes="(max-width: 640px) 190px, 240px"
+              className="object-cover transition-transform duration-[620ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/20" />
 
-        <WishlistButton className="absolute right-3 top-3 z-[3]" />
-
-        <div className="absolute inset-x-0 bottom-0 z-[3] p-4">
-          <span className="text-[11px] font-medium tracking-[0.08em] text-canopy">
-            EXPLORE
-          </span>
-          <h3 className="font-display mt-1 text-[26px] leading-none text-ink">
-            {destination.name}
-          </h3>
-          <div className="mt-2.5 flex items-center justify-between gap-2">
-            <span className="text-[13px] text-ink-2">
-              From {formatPrice(destination.fromPrice)}
+            {/* Top Left: Category Badge */}
+            <span className="absolute left-2 top-2 z-[3] rounded-md bg-canopy/90 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-semibold text-white backdrop-blur-md shadow-2xs">
+              Trending
             </span>
-            <span className="text-[12px] text-ink-muted">
-              {destination.packageCount} trips
+
+            {/* Top Right: Wishlist Heart */}
+            <WishlistButton className="absolute right-2 top-2 z-[3] rounded-full bg-black/30 p-1 sm:p-1.5 text-white backdrop-blur-md hover:bg-black/50" />
+
+            {/* Bottom Left: Duration/Trip Count Badge */}
+            <span className="absolute bottom-2 left-2 z-[3] flex items-center gap-1 rounded-full bg-canopy px-2 py-0.5 text-[9.5px] sm:text-[10.5px] font-bold tracking-wide text-white shadow-xs">
+              <Flame className="h-3 w-3 fill-white text-white" />
+              {destination.packageCount} Trips
             </span>
           </div>
+
+          {/* Card Body Details */}
+          <div className="relative z-[3] flex flex-1 flex-col justify-between p-3 sm:p-3.5">
+            <div className="flex flex-col justify-start">
+              <h3 className="font-sans text-[13px] sm:text-[14px] font-semibold leading-[1.25] tracking-tight text-ink line-clamp-2 min-h-[34px] sm:min-h-[38px] flex items-center transition-colors group-hover:text-canopy">
+                {destination.name}
+              </h3>
+
+              <div className="mt-1 flex items-center gap-1 text-[10.5px] sm:text-[11px] font-medium text-ink-muted">
+                <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0 text-canopy" />
+                <span className="truncate">{destination.state}, India</span>
+              </div>
+            </div>
+
+            {/* Footer Row */}
+            <div className="mt-2.5 flex items-center justify-between gap-2 border-t border-border/60 pt-2">
+              <div className="flex min-w-0 items-baseline gap-1 overflow-hidden whitespace-nowrap">
+                <span className="shrink-0 text-[15px] sm:text-[16px] font-bold leading-none text-ink">
+                  {formatPrice(destination.fromPrice)}
+                </span>
+                <span className="shrink-0 text-[10px] font-medium leading-none text-gray-400">
+                  /person
+                </span>
+              </div>
+
+              <div className="flex shrink-0 items-center gap-0.5 text-[11px] sm:text-[12px] font-bold text-ink">
+                <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-amber-400 text-amber-400" />
+                <span>4.8</span>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </article>
     </Link>
   );
 }

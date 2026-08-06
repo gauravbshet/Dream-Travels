@@ -44,7 +44,7 @@ export default async function PackagesListPage() {
                 ) : (
                     <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                         {packages.map((pkg) => (
-                            <PackageCard key={pkg.id} pkg={pkg} />
+                            <PackageCard key={pkg.id} pkg={pkg} className="w-full" />
                         ))}
                     </div>
                 )}
