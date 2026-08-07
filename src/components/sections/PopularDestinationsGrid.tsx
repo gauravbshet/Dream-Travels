@@ -41,7 +41,7 @@ export function PopularDestinationsGrid({
               <Link
                 key={destination.id}
                 href={`/destinations/${destination.slug ?? destination.id}`}
-                className="group w-[72%] shrink-0 snap-start overflow-hidden rounded-[20px] border border-border bg-surface transition-shadow duration-300 hover:shadow-xl xs:w-[62%] sm:w-[42%] lg:w-full"
+                className="group w-[47%] shrink-0 snap-start overflow-hidden rounded-[20px] border border-border bg-surface transition-shadow duration-300 hover:shadow-xl sm:w-[46%] lg:w-full"
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
                   <Image
