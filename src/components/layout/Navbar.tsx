@@ -162,13 +162,8 @@ export function Navbar() {
                         ? "text-[#3F8C02] font-bold"
                         : "text-white font-bold"
                       : scrolled
-<<<<<<< HEAD
-                        ? "text-ink-muted hover:text-ink"
-                        : "text-white/80 hover:text-white"
-=======
-                      ? "text-[#20221F]/80 hover:text-[#3F8C02] hover:bg-[#3F8C02]/5"
-                      : "text-white/80 hover:text-white hover:bg-white/10"
->>>>>>> 735be9a4ecf853c014f503fd4537f7b9558859e6
+                        ? "text-[#20221F]/80 hover:text-[#3F8C02] hover:bg-[#3F8C02]/5"
+                        : "text-white/80 hover:text-white hover:bg-white/10"
                   )}
                 >
                   {link.label}

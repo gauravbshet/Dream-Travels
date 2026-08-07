@@ -170,6 +170,23 @@ export function PackagesManager() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    if (!showForm || loadingDays) return;
+
+    const count = parseDayCountFromDuration(form.duration);
+    if (!count) return;
+
+    setDays((prev) => {
+      if (count === prev.length) return prev;
+
+      if (count > prev.length) {
+        return [...prev, ...Array.from({ length: count - prev.length }, () => ({ ...emptyDay }))];
+      }
+
+      return prev.slice(0, count);
+    });
+  }, [showForm, form.duration, loadingDays]);
+
   function openCreateForm() {
     setEditingId(null);
     setForm(emptyForm);
@@ -470,11 +487,10 @@ export function PackagesManager() {
                   key={tab.key}
                   type="button"
                   onClick={() => setActiveTab(tab.key)}
-                  className={`-mb-px border-b-2 px-4 py-2 text-sm font-semibold transition-colors ${
-                    activeTab === tab.key
+                  className={`-mb-px border-b-2 px-4 py-2 text-sm font-semibold transition-colors ${activeTab === tab.key
                       ? "border-admin-accent text-admin-accent"
                       : "border-transparent text-admin-ink-muted hover:text-admin-ink"
-                  }`}
+                    }`}
                 >
                   {tab.label}
                 </button>
@@ -753,8 +769,8 @@ export function PackagesManager() {
                 <div>
                   <h4 className="font-semibold text-admin-ink">Day-wise itinerary</h4>
                   <p className="mt-1 text-sm text-admin-ink-muted">
-                    Add each day of the trip — title, description, stay, and meals. This is what renders as
-                    the timeline on the public package page. Saved together with the package.
+                    Add each day of the trip — title, description, stay, and meals. The day entries automatically
+                    follow the package duration, so entering a 5-day trip creates 5 day blocks for you.
                   </p>
                 </div>
                 <button
