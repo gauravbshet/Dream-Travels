@@ -67,7 +67,7 @@ export function Carousel({
         aria-label={label}
         tabIndex={0}
         className={cn(
-          "no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth px-4 pb-2 sm:gap-4 sm:px-6 lg:gap-5 lg:px-8",
+          "no-scrollbar flex items-stretch snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth px-4 pb-2 sm:gap-4 sm:px-6 lg:gap-5 lg:px-8",
           itemClassName
         )}
       >

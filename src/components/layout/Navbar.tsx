@@ -22,12 +22,26 @@ export function Navbar() {
   const [supabase] = useState(() => createBrowserSupabaseClient());
 
   useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 24);
+    let ticking = false;
+
+    function handleScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const y = window.scrollY;
+          setScrolled((prev) => {
+            if (!prev && y > 100) return true;
+            if (prev && y < 40) return false;
+            return prev;
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
     }
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -106,24 +120,27 @@ export function Navbar() {
 
   return (
     <>
-      <header
-        data-tone={scrolled ? "light" : "dark"}
-        className={cn(
-          "fixed inset-x-0 top-0 z-[200] transition-all duration-300 ease-in-out",
-          scrolled
-            ? "border-b border-border/80 bg-surface/95 backdrop-blur-xl shadow-xs text-ink"
-            : "bg-gradient-to-b from-black/70 via-black/30 to-transparent border-transparent text-white"
-        )}
-      >
-        <Container className="flex h-[72px] lg:h-[80px] items-center justify-between gap-4 lg:gap-8">
+      {/* Outer Shell: persistently fixed, 100% width, stable coordinates */}
+      <header className="fixed inset-x-0 top-0 z-[200] w-full pointer-events-none">
+        {/* Inner Morphing Container: single persistent element smoothly contracting into floating pill */}
+        <div
+          data-tone={scrolled ? "light" : "dark"}
+          className={cn(
+            "pointer-events-auto mx-auto flex items-center justify-between gap-4 lg:gap-8",
+            "transition-[width,max-width,height,margin-top,border-radius,background-color,border-color,box-shadow,padding] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+            scrolled
+              ? "w-full h-[72px] px-4 sm:px-6 lg:mt-4.5 lg:h-[64px] lg:w-[calc(100%-2.5rem)] lg:max-w-[960px] xl:max-w-[1040px] lg:rounded-full lg:border lg:border-[rgba(32,34,31,0.08)] lg:bg-[rgba(250,250,247,0.94)] lg:shadow-[0_8px_30px_rgba(20,40,25,0.08)] lg:backdrop-blur-md lg:px-6 text-ink lg:text-[#20221F] bg-surface/95 border-b border-border/80"
+              : "w-full max-w-7xl h-[72px] lg:h-[80px] mt-0 rounded-none border-transparent bg-gradient-to-b from-black/70 via-black/30 to-transparent shadow-none px-4 sm:px-6 lg:px-8 text-white"
+          )}
+        >
           <Link href="/" className="flex min-h-11 items-center gap-2.5 shrink-0">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-white font-semibold text-base shadow-sm">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3F8C02] text-white font-semibold text-base shadow-xs">
               D
             </span>
             <span
               className={cn(
-                "font-semibold text-[17px] tracking-[-0.01em] hidden xs:inline transition-colors",
-                scrolled ? "text-ink" : "text-white"
+                "font-semibold text-[17px] tracking-[-0.01em] hidden xs:inline transition-colors duration-300",
+                scrolled ? "text-ink lg:text-[#20221F]" : "text-white"
               )}
             >
               Dream Travels
@@ -139,19 +156,24 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "relative px-3.5 py-2 text-[14.5px] font-medium transition-colors",
+                    "relative px-3.5 py-2 text-[14.5px] font-medium transition-colors duration-300 rounded-full",
                     active
                       ? scrolled
-                        ? "text-primary"
+                        ? "text-[#3F8C02] font-bold"
                         : "text-white font-bold"
                       : scrolled
+<<<<<<< HEAD
                         ? "text-ink-muted hover:text-ink"
                         : "text-white/80 hover:text-white"
+=======
+                      ? "text-[#20221F]/80 hover:text-[#3F8C02] hover:bg-[#3F8C02]/5"
+                      : "text-white/80 hover:text-white hover:bg-white/10"
+>>>>>>> 735be9a4ecf853c014f503fd4537f7b9558859e6
                   )}
                 >
                   {link.label}
                   {active && (
-                    <span className="absolute left-3.5 right-3.5 -bottom-[1px] h-[2px] rounded-full bg-canopy" />
+                    <span className="absolute left-3.5 right-3.5 -bottom-[1px] h-[2px] rounded-full bg-[#3F8C02]" />
                   )}
                 </a>
               );
@@ -159,7 +181,7 @@ export function Navbar() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-2">
-            <IconButton label="Search" className={scrolled ? "" : "text-white hover:bg-white/10"}>
+            <IconButton label="Search" className={scrolled ? "text-[#20221F] hover:bg-[#20221F]/5" : "text-white hover:bg-white/10"}>
               <Search className="h-[18px] w-[18px]" />
             </IconButton>
             {session ? (
@@ -167,9 +189,9 @@ export function Navbar() {
                 <Link
                   href="/dashboard"
                   className={cn(
-                    "rounded-[10px] px-4 py-2 text-sm font-medium transition-colors",
+                    "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
                     scrolled
-                      ? "text-ink/80 hover:bg-sage-100"
+                      ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"
                   )}
                 >
@@ -178,9 +200,9 @@ export function Navbar() {
                 <Link
                   href="/dashboard#wishlist"
                   className={cn(
-                    "rounded-[10px] px-4 py-2 text-sm font-medium transition-colors",
+                    "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
                     scrolled
-                      ? "text-ink/80 hover:bg-sage-100"
+                      ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"
                   )}
                 >
@@ -189,7 +211,7 @@ export function Navbar() {
                 {userRole === "admin" && (
                   <Link
                     href="/admin"
-                    className="rounded-[10px] px-4 py-2 text-sm font-medium bg-canopy text-white hover:bg-canopy-hover transition-colors shadow-xs"
+                    className="rounded-full px-4 py-2 text-sm font-medium bg-[#3F8C02] text-white hover:bg-[#347402] transition-colors duration-300 shadow-xs"
                   >
                     Admin Portal
                   </Link>
@@ -198,9 +220,9 @@ export function Navbar() {
                   type="button"
                   onClick={handleSignOut}
                   className={cn(
-                    "rounded-[10px] px-4 py-2 text-sm font-medium transition-colors",
+                    "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
                     scrolled
-                      ? "text-ink/80 hover:bg-sage-100"
+                      ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"
                   )}
                 >
@@ -212,9 +234,9 @@ export function Navbar() {
                 <Link
                   href="/login"
                   className={cn(
-                    "rounded-[10px] px-4 py-2 text-sm font-medium transition-colors",
+                    "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
                     scrolled
-                      ? "text-ink/80 hover:bg-sage-100"
+                      ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"
                   )}
                 >
@@ -222,7 +244,7 @@ export function Navbar() {
                 </Link>
                 <Link
                   href="/login"
-                  className="rounded-[10px] bg-canopy px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-canopy-hover shadow-xs"
+                  className="rounded-full bg-[#3F8C02] px-5 py-2.5 text-sm font-semibold text-white transition-colors duration-300 hover:bg-[#347402] shadow-xs"
                 >
                   Sign Up
                 </Link>
@@ -235,7 +257,7 @@ export function Navbar() {
             <button
               aria-label="Search destinations"
               className={cn(
-                "flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] transition-colors border shadow-xs",
+                "flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] transition-colors duration-300 border shadow-xs",
                 scrolled
                   ? "border-border/60 bg-white/95 text-ink"
                   : "border-white/20 bg-black/30 text-white backdrop-blur-md"
@@ -247,7 +269,7 @@ export function Navbar() {
               aria-label="Open menu"
               onClick={() => setMenuOpen(true)}
               className={cn(
-                "flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border transition-colors",
+                "flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border transition-colors duration-300",
                 scrolled
                   ? "border-border text-ink"
                   : "border-white/20 text-white bg-black/30 backdrop-blur-md"
@@ -256,7 +278,7 @@ export function Navbar() {
               <Menu className="h-5 w-5" />
             </button>
           </div>
-        </Container>
+        </div>
       </header>
 
       <AnimatePresence>
@@ -265,7 +287,7 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[300] bg-[oklch(0.1_0.016_158/0.72)] backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-[300] bg-black/40 backdrop-blur-sm lg:hidden"
             onClick={() => setMenuOpen(false)}
           >
             <motion.div
@@ -273,45 +295,60 @@ export function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 260 }}
-              data-tone="dark"
-              className="absolute right-0 top-0 flex h-full w-[84%] max-w-sm flex-col border-l border-border bg-bg-deep p-6"
+              data-tone="light"
+              className="absolute right-0 top-0 flex h-full w-[84%] max-w-sm flex-col border-l border-border bg-white p-6 text-ink shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-8">
-                <span className="font-semibold text-lg">Menu</span>
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-canopy text-white font-semibold text-sm shadow-xs">
+                    D
+                  </span>
+                  <span className="font-bold text-lg text-ink">Menu</span>
+                </div>
                 <button
                   aria-label="Close menu"
                   onClick={() => setMenuOpen(false)}
-                  className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-sage-100 text-ink"
+                  className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-sage-100 text-ink hover:bg-sage-200 transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
-              <nav className="flex flex-col gap-1">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="px-3 py-3 rounded-[10px] text-base font-medium text-ink/80 hover:bg-sage-100 hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+
+              <nav className="flex flex-col gap-1.5">
+                {navLinks.map((link) => {
+                  const active = pathname === link.href;
+                  return (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className={cn(
+                        "px-4 py-3 rounded-[12px] text-base font-semibold transition-colors",
+                        active
+                          ? "bg-canopy/10 text-canopy border border-canopy/20"
+                          : "text-ink/80 hover:bg-sage-100 hover:text-ink"
+                      )}
+                    >
+                      {link.label}
+                    </a>
+                  );
+                })}
               </nav>
-              <div className="mt-6 flex flex-col gap-3">
+
+              <div className="mt-auto pt-6 border-t border-border flex flex-col gap-3">
                 {session ? (
                   <>
                     <Link
                       href="/dashboard"
-                      className="rounded-[12px] bg-canopy px-4 py-3 text-center text-sm font-semibold text-white"
+                      className="rounded-[12px] bg-canopy hover:bg-canopy-hover px-4 py-3 text-center text-sm font-semibold text-white shadow-xs transition-colors"
                       onClick={() => setMenuOpen(false)}
                     >
                       Dashboard
                     </Link>
                     <Link
                       href="/dashboard#wishlist"
-                      className="rounded-[12px] border border-border px-4 py-3 text-center text-sm font-semibold text-ink"
+                      className="rounded-[12px] border border-border bg-white hover:bg-sage-100 px-4 py-3 text-center text-sm font-semibold text-ink transition-colors"
                       onClick={() => setMenuOpen(false)}
                     >
                       Wishlist
@@ -319,7 +356,7 @@ export function Navbar() {
                     {userRole === "admin" && (
                       <Link
                         href="/admin"
-                        className="rounded-[12px] border border-border px-4 py-3 text-center text-sm font-semibold text-ink"
+                        className="rounded-[12px] bg-canopy hover:bg-canopy-hover px-4 py-3 text-center text-sm font-semibold text-white transition-colors"
                         onClick={() => setMenuOpen(false)}
                       >
                         Admin Portal
@@ -327,8 +364,11 @@ export function Navbar() {
                     )}
                     <button
                       type="button"
-                      onClick={handleSignOut}
-                      className="rounded-[12px] bg-sage-100 px-4 py-3 text-center text-sm font-semibold text-ink"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        handleSignOut();
+                      }}
+                      className="rounded-[12px] bg-rose-50 hover:bg-rose-100 border border-rose-200 px-4 py-3 text-center text-sm font-semibold text-rose-700 transition-colors"
                     >
                       Sign Out
                     </button>
@@ -337,14 +377,14 @@ export function Navbar() {
                   <>
                     <Link
                       href="/login"
-                      className="rounded-[12px] border border-border px-4 py-3 text-center text-sm font-semibold text-ink"
+                      className="rounded-[12px] border border-border bg-white hover:bg-sage-100 px-4 py-3 text-center text-sm font-semibold text-ink transition-colors"
                       onClick={() => setMenuOpen(false)}
                     >
                       Login
                     </Link>
                     <Link
                       href="/login"
-                      className="rounded-[12px] bg-canopy px-4 py-3 text-center text-sm font-semibold text-white"
+                      className="rounded-[12px] bg-canopy hover:bg-canopy-hover px-4 py-3 text-center text-sm font-semibold text-white shadow-xs transition-colors"
                       onClick={() => setMenuOpen(false)}
                     >
                       Sign Up

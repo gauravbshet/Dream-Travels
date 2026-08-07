@@ -59,89 +59,75 @@ function RatedPackageCard({ pkg, rank }: { pkg: Package; rank: number }) {
   return (
     <Link
       href={`/packages/${pkg.slug ?? pkg.id}`}
-      className="group block w-[160px] xs:w-[175px] sm:w-[220px] lg:w-[245px] shrink-0 snap-start premium-card-wrapper"
+      className="group flex flex-col h-full shrink-0 w-[200px] sm:w-[225px] snap-start"
     >
-      <article className="h-full">
+      <article className="flex flex-col h-full flex-1">
         <div
           ref={ref}
           onPointerMove={onPointerMove}
-          className="spotlight lit-edge flex h-full flex-col overflow-hidden rounded-[16px] border border-border/80 bg-surface shadow-xs transition-shadow duration-300 hover:shadow-md premium-card-container"
+          className="spotlight lit-edge flex h-full flex-1 flex-col overflow-hidden rounded-[16px] border border-border/70 bg-surface shadow-2xs transition-all duration-300 hover:shadow-md hover:border-canopy/30"
         >
           {/* Image & Overlay Badges Header */}
-          <div data-tone="dark" className="relative aspect-[4/3] w-full overflow-hidden premium-card-img-container">
+          <div data-tone="dark" className="relative h-[135px] w-full overflow-hidden rounded-t-[16px] shrink-0 sm:h-[150px]">
             <Image
               src={pkg.image}
               alt={pkg.title}
               fill
-              sizes="(max-width: 640px) 80vw, 310px"
-              className="object-cover transition-transform duration-[700ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+              sizes="(max-width: 640px) 200px, 250px"
+              className="object-cover transition-transform duration-[620ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/20" />
 
-            {/* Rank badge top left */}
-            <span className="absolute left-2.5 top-2.5 z-[3] flex h-6 min-w-6 items-center justify-center rounded-md bg-canopy/90 px-1.5 text-[10px] font-extrabold text-white backdrop-blur-md shadow-2xs">
-              #{rank}
-            </span>
-
-            {/* Category tag right next to rank */}
-            <span className="absolute left-10 top-2.5 z-[3] rounded-md bg-black/40 px-1.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-md premium-card-category-offset">
-              {pkg.category}
-            </span>
+            {/* Rank badge + category top left */}
+            <div className="absolute left-2.5 top-2.5 z-[3] flex items-center gap-1">
+              <span className="flex h-5 items-center justify-center rounded-md bg-canopy px-1.5 text-[9.5px] sm:text-[10px] font-extrabold text-white shadow-2xs">
+                #{rank}
+              </span>
+              <span className="rounded-md bg-black/50 px-1.5 py-0.5 text-[9.5px] sm:text-[10px] font-semibold text-white backdrop-blur-md">
+                {pkg.category}
+              </span>
+            </div>
 
             {/* Wishlist Heart */}
-            <WishlistButton className="absolute right-2.5 top-2.5 z-[3] rounded-full bg-black/30 p-1.5 text-white backdrop-blur-md hover:bg-black/50" />
+            <WishlistButton className="absolute right-2.5 top-2.5 z-[3] rounded-full bg-black/30 p-1 sm:p-1.5 text-white backdrop-blur-md hover:bg-black/50" />
 
-            {/* Bottom Left: Duration Pill */}
-            <span className="absolute bottom-2.5 left-2.5 z-[3] rounded-xs bg-black/75 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white backdrop-blur-md">
+            {/* Bottom Left: Duration Badge Overlay */}
+            <span className="absolute bottom-2.5 left-2.5 z-[3] flex items-center gap-1 rounded-full bg-canopy px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold tracking-wide text-white shadow-xs">
+              <Flame className="h-3 w-3 fill-white text-white" />
               {pkg.duration}
             </span>
           </div>
 
-          {/* Brand Emblem Icon */}
-          <div className="relative -mt-3 ml-3 z-[4] flex h-6 w-6 items-center justify-center rounded-full bg-canopy text-white shadow-sm ring-2 ring-surface premium-card-flame">
-            <Flame className="h-3.5 w-3.5 fill-white text-white" />
-          </div>
-
           {/* Card Body Details */}
-          <div className="relative z-[3] flex flex-1 flex-col justify-between p-3 pt-1 premium-card-body">
-            <div>
-              <h3 className="font-sans text-[13.5px] sm:text-[14px] font-bold leading-snug tracking-tight text-ink line-clamp-2 group-hover:text-canopy transition-colors premium-card-title">
+          <div className="relative z-[3] flex flex-1 flex-col justify-between p-3 sm:p-3.5">
+            <div className="flex flex-col justify-start">
+              <h3 className="font-sans text-[14px] sm:text-[15px] font-bold tracking-tight text-ink truncate transition-colors group-hover:text-canopy">
                 {pkg.title}
               </h3>
 
-              <div className="mt-1.5 flex items-center gap-1 text-[11px] font-medium text-ink-muted premium-card-location">
-                <MapPin className="h-3 w-3 text-canopy shrink-0" />
+              <div className="mt-1 flex items-center gap-1 text-[11px] sm:text-[11.5px] font-medium text-ink-muted">
+                <MapPin className="h-3 w-3 shrink-0 text-canopy" />
                 <span className="truncate">{pkg.location}</span>
-              </div>
-
-              <div className="mt-1 flex items-center justify-between gap-1 text-[11px] font-medium text-ink-muted premium-card-meta">
-                <div className="flex items-center gap-1 truncate">
-                  <Calendar className="h-3 w-3 text-amber-500 shrink-0" />
-                  <span className="truncate">{pkg.dates}</span>
-                </div>
-                <span className="shrink-0 rounded bg-amber-500/10 px-1 py-0.5 text-[9.5px] font-bold text-amber-600 dark:bg-amber-500/20 dark:text-amber-400">
-                  +4 Batches
-                </span>
               </div>
             </div>
 
             {/* Footer Row */}
-            <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-2.5 premium-card-footer">
-              <div className="flex items-baseline gap-0.5 premium-card-price-container">
+            <div className="mt-2.5 flex items-center justify-between gap-2 border-t border-border/60 pt-2">
+              <div className="flex min-w-0 items-baseline gap-1 overflow-hidden whitespace-nowrap">
                 {original && original > pkg.price && (
-                  <span className="text-[11px] text-ink-muted line-through mr-0.5">
+                  <span className="text-[10px] sm:text-[11px] font-medium leading-none text-gray-400 line-through">
                     {formatPrice(original)}
                   </span>
                 )}
-                <span className="text-[15px] font-extrabold text-ink premium-card-price">
+                <span className="shrink-0 text-[15px] sm:text-[16px] font-extrabold leading-none text-ink">
                   {formatPrice(pkg.price)}
                 </span>
-                <span className="text-[10px] font-normal text-ink-muted premium-card-price-slash">
+                <span className="shrink-0 text-[10px] font-medium leading-none text-gray-400">
                   /person
                 </span>
               </div>
 
-              <div className="flex items-center gap-0.5 text-[11px] font-bold text-ink premium-card-rating">
+              <div className="flex shrink-0 items-center gap-0.5 text-[11px] sm:text-[12px] font-bold text-ink">
                 <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                 <span>{pkg.rating.toFixed(1)}</span>
               </div>

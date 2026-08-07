@@ -25,7 +25,7 @@ export function RecommendedDestinations({
             <DestinationCard
               key={d.id}
               destination={d}
-              className="w-[155px] xs:w-[170px] sm:w-[210px] lg:w-[235px] shrink-0 snap-start"
+              className="snap-start"
             />
           ))}
         </Carousel>
