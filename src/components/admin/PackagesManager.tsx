@@ -9,7 +9,7 @@ import { Modal } from "./Modal";
 import { ImageUploadField } from "./ImageUploadField";
 import { TagListInput } from "./TagListInput";
 import { FaqBuilder, type FaqItem } from "./FaqBuilder";
-import { DayItineraryBuilder, type DayFormItem } from "./DayItineraryBuilder";
+import { DayItineraryBuilder, emptyDay, type DayFormItem } from "./DayItineraryBuilder";
 import { AdminBadge, AdminButton, AdminCard, AdminField, AdminIconButton, AdminPageHeader, AdminTableState } from "./ui";
 
 type PackageRow = {
@@ -115,6 +115,15 @@ const emptyForm: FormState = {
   accommodation: "",
   meals: "",
 };
+
+// Pulls the day count out of a duration string like "5D / 4N", "5 Days 4 Nights",
+// or just "5". Returns null if nothing recognizable is found.
+function parseDayCountFromDuration(duration: string): number | null {
+  const match = duration.match(/(\d+)\s*D/i) ?? duration.match(/(\d+)/);
+  if (!match) return null;
+  const count = Number(match[1]);
+  return Number.isFinite(count) && count > 0 ? count : null;
+}
 
 const PACKAGE_COLUMNS =
   "id,slug,title,duration,price,original_price,overview,image,additional_images,destination_id,location,category,pickup,drop_point,dates,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals";
@@ -232,6 +241,37 @@ export function PackagesManager() {
       );
     }
     setLoadingDays(false);
+  }
+
+  function syncDaysWithDuration() {
+    const count = parseDayCountFromDuration(form.duration);
+    if (!count) {
+      showToast('Enter a duration first, e.g. "5D / 4N".', "error");
+      return;
+    }
+
+    if (count === days.length) return;
+
+    if (count < days.length) {
+      const removed = days.length - count;
+      if (
+        !window.confirm(
+          `Duration says ${count} day(s), but you have ${days.length}. Remove the last ${removed} day(s)?`
+        )
+      ) {
+        return;
+      }
+      onChangeDaysTrim(count);
+      return;
+    }
+
+    const toAdd = count - days.length;
+    setDays((prev) => [...prev, ...Array.from({ length: toAdd }, () => ({ ...emptyDay }))]);
+    showToast(`Added ${toAdd} day${toAdd > 1 ? "s" : ""} to match the ${count}-day duration.`);
+  }
+
+  function onChangeDaysTrim(count: number) {
+    setDays((prev) => prev.slice(0, count));
   }
 
   async function uploadPackageImage(file: File | null) {
@@ -709,12 +749,21 @@ export function PackagesManager() {
             </div>
 
             <div className={activeTab === "itinerary" ? "" : "hidden"}>
-              <div className="mb-3">
-                <h4 className="font-semibold text-admin-ink">Day-wise itinerary</h4>
-                <p className="mt-1 text-sm text-admin-ink-muted">
-                  Add each day of the trip — title, description, stay, and meals. This is what renders as
-                  the timeline on the public package page. Saved together with the package.
-                </p>
+              <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h4 className="font-semibold text-admin-ink">Day-wise itinerary</h4>
+                  <p className="mt-1 text-sm text-admin-ink-muted">
+                    Add each day of the trip — title, description, stay, and meals. This is what renders as
+                    the timeline on the public package page. Saved together with the package.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={syncDaysWithDuration}
+                  className="whitespace-nowrap rounded-full border border-admin-border px-4 py-2 text-xs font-semibold text-admin-ink hover:bg-admin-surface-2"
+                >
+                  Match days to duration{form.duration ? ` (${form.duration})` : ""}
+                </button>
               </div>
               {loadingDays ? (
                 <p className="text-sm text-admin-ink-muted">Loading itinerary...</p>
