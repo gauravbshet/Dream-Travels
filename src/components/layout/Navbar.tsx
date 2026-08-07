@@ -175,7 +175,7 @@ export function Navbar() {
             })}
           </nav>
 
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-4 pr-1 md:gap-6 md:pr-2">
             <IconButton label="Search" className={scrolled ? "text-[#20221F] hover:bg-[#20221F]/5" : "text-white hover:bg-white/10"}>
               <Search className="h-[18px] w-[18px]" />
             </IconButton>
@@ -184,7 +184,7 @@ export function Navbar() {
                 <Link
                   href="/dashboard"
                   className={cn(
-                    "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
+                    "inline-flex items-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
                     scrolled
                       ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"
@@ -195,7 +195,7 @@ export function Navbar() {
                 <Link
                   href="/dashboard#wishlist"
                   className={cn(
-                    "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
+                    "inline-flex items-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
                     scrolled
                       ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"
@@ -206,7 +206,7 @@ export function Navbar() {
                 {userRole === "admin" && (
                   <Link
                     href="/admin"
-                    className="rounded-full px-4 py-2 text-sm font-medium bg-[#3F8C02] text-white hover:bg-[#347402] transition-colors duration-300 shadow-xs"
+                    className="inline-flex items-center whitespace-nowrap rounded-full bg-[#3F8C02] px-4 py-2 text-sm font-medium text-white shadow-xs transition-colors duration-300 hover:bg-[#347402]"
                   >
                     Admin Portal
                   </Link>
@@ -215,7 +215,7 @@ export function Navbar() {
                   type="button"
                   onClick={handleSignOut}
                   className={cn(
-                    "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
+                    "inline-flex items-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
                     scrolled
                       ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"

@@ -67,10 +67,14 @@ export function ExploreByMap() {
 
         <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr] lg:gap-6">
           {/* Map plate */}
-          <div className="relative overflow-hidden rounded-[14px] border border-border bg-[#F5F5EE] p-3 sm:p-5">
+          <div className="relative overflow-hidden rounded-[22px] border border-border/70 bg-[linear-gradient(135deg,#f8f6eb_0%,#eef5e5_100%)] p-3 shadow-[0_24px_70px_-28px_rgba(22,55,40,0.28)] sm:p-5">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(76,135,87,0.16),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(251,190,60,0.16),transparent_38%)]" />
+            <div className="absolute left-4 top-4 h-24 w-24 rounded-full border border-white/60 bg-white/35 blur-3xl" />
+            <div className="absolute bottom-6 right-6 h-28 w-28 rounded-full border border-canopy/10 bg-canopy/10 blur-3xl" />
+
             <svg
               viewBox={`0 0 ${MAP_VIEWBOX.width} ${MAP_VIEWBOX.height}`}
-              className="mx-auto h-auto w-full max-w-[520px]"
+              className="relative mx-auto h-auto w-full max-w-[520px]"
               role="img"
               aria-label="Map of India showing Dream Travels destinations"
             >
@@ -85,21 +89,23 @@ export function ExploreByMap() {
                     d="M50 0 L0 0 0 50"
                     fill="none"
                     stroke="var(--canopy)"
-                    strokeOpacity="0.06"
+                    strokeOpacity="0.07"
                     strokeWidth="1"
                   />
                 </pattern>
                 <radialGradient id="map-glow" cx="50%" cy="45%" r="60%">
-                  <stop
-                    offset="0%"
-                    stopColor="var(--canopy)"
-                    stopOpacity="0.08"
-                  />
+                  <stop offset="0%" stopColor="var(--canopy)" stopOpacity="0.1" />
                   <stop offset="100%" stopColor="var(--canopy)" stopOpacity="0" />
                 </radialGradient>
+                <linearGradient id="landmass-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#e7efd9" />
+                  <stop offset="100%" stopColor="#dce8ca" />
+                </linearGradient>
+                <filter id="pin-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="8" stdDeviation="8" floodColor="rgba(16, 24, 20, 0.2)" />
+                </filter>
               </defs>
 
-              {/* Graticule behind the landmass */}
               <rect
                 width={MAP_VIEWBOX.width}
                 height={MAP_VIEWBOX.height}
@@ -113,9 +119,9 @@ export function ExploreByMap() {
 
               <path
                 d={INDIA_OUTLINE}
-                fill="#E5EEDC"
+                fill="url(#landmass-gradient)"
                 stroke="var(--canopy)"
-                strokeOpacity="0.55"
+                strokeOpacity="0.66"
                 strokeWidth="2.5"
                 strokeLinejoin="round"
               />
@@ -130,33 +136,51 @@ export function ExploreByMap() {
                     onMouseEnter={() => setActiveId(pin.id)}
                   >
                     {isActive && (
-                      <circle
-                        r="34"
-                        fill="var(--canopy)"
-                        fillOpacity="0.12"
-                        className="pointer-events-none"
-                      />
+                      <>
+                        <circle
+                          r="37"
+                          fill="var(--canopy)"
+                          fillOpacity="0.14"
+                          className="pointer-events-none"
+                        />
+                        <circle
+                          r="29"
+                          fill="none"
+                          stroke="var(--canopy)"
+                          strokeOpacity="0.32"
+                          strokeWidth="2"
+                          className="pointer-events-none animate-pulse"
+                        />
+                      </>
                     )}
-                    {/* Generous invisible hit area for touch */}
                     <circle
                       r="30"
                       fill="transparent"
                       onClick={() => setActiveId(pin.id)}
                     />
                     <circle
-                      r={isActive ? 11 : 7}
+                      r={isActive ? 13 : 8.5}
                       fill={isActive ? "var(--canopy-hover)" : "var(--canopy)"}
-                      stroke="#F5F5EE"
-                      strokeWidth="3"
+                      stroke="#F9F7EE"
+                      strokeWidth="3.5"
+                      filter="url(#pin-shadow)"
                       className="pointer-events-none transition-all duration-300"
                     />
+                    {isActive && (
+                      <circle
+                        r="17"
+                        fill="none"
+                        stroke="rgba(255,255,255,0.85)"
+                        strokeWidth="1.5"
+                        className="pointer-events-none animate-pulse"
+                      />
+                    )}
                   </g>
                 );
               })}
             </svg>
 
-            {/* Pins are decorative-only for AT; the list below is the real control. */}
-            <p className="mt-2 text-center text-[11px] text-text-dark-secondary">
+            <p className="relative mt-2 text-center text-[11px] text-text-dark-secondary">
               Hover or tap a pin — full list below
             </p>
           </div>
