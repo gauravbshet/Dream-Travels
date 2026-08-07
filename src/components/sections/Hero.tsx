@@ -47,6 +47,37 @@ export function Hero() {
         <div className="absolute inset-0 bg-radial-vignette opacity-40" />
       </motion.div>
 
+      {/* Oversized background wordmark — decorative, sits behind the copy */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-[14%] z-[5] select-none overflow-hidden text-center sm:bottom-[18%]"
+      >
+        <span className="font-display text-[18vw] font-extrabold uppercase leading-none tracking-tight text-white/10 sm:text-[14vw]">
+          Dream Travels
+        </span>
+      </div>
+
+      {/* Rotating circular badge — echoes a classic "stamp" travel-brand mark */}
+      <div className="absolute right-4 top-28 z-30 hidden h-24 w-24 sm:block lg:right-8 lg:h-28 lg:w-28">
+        <svg
+          viewBox="0 0 200 200"
+          className={reduced ? "h-full w-full" : "h-full w-full animate-spin"}
+          style={reduced ? undefined : { animationDuration: "18s" }}
+        >
+          <defs>
+            <path id="hero-badge-path" d="M100,100 m-82,0 a82,82 0 1,1 164,0 a82,82 0 1,1 -164,0" />
+          </defs>
+          <text fill="white" fontSize="13" letterSpacing="2" className="uppercase">
+            <textPath href="#hero-badge-path" startOffset="0%">
+              Dream Travels • Book your next trip •
+            </textPath>
+          </text>
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Star className="h-6 w-6 fill-amber text-amber" />
+        </div>
+      </div>
+
       {/* Hero Content Container */}
       <div className="container-app relative z-20 pt-24 pb-28 sm:pb-32 lg:pb-36 flex flex-col justify-between h-full max-w-6xl">
         <div>
@@ -100,6 +131,12 @@ export function Hero() {
               >
                 Explore All Trips
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+              <a
+                href="/destinations"
+                className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-6 sm:px-7 py-3 sm:py-3.5 text-xs sm:text-sm font-bold text-white backdrop-blur-md transition-all duration-300 hover:bg-white/20 hover:-translate-y-0.5"
+              >
+                View Destinations
               </a>
             </motion.div>
           </motion.div>

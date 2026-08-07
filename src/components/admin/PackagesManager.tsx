@@ -9,6 +9,7 @@ import { Modal } from "./Modal";
 import { ImageUploadField } from "./ImageUploadField";
 import { TagListInput } from "./TagListInput";
 import { FaqBuilder, type FaqItem } from "./FaqBuilder";
+import { DayItineraryBuilder, type DayFormItem } from "./DayItineraryBuilder";
 import { AdminBadge, AdminButton, AdminCard, AdminField, AdminIconButton, AdminPageHeader, AdminTableState } from "./ui";
 
 type PackageRow = {
@@ -128,8 +129,11 @@ export function PackagesManager() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
+  const [days, setDays] = useState<DayFormItem[]>([]);
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [loadingDays, setLoadingDays] = useState(false);
+  const [activeTab, setActiveTab] = useState<"details" | "content" | "itinerary">("details");
 
   async function loadData() {
     setLoading(true);
@@ -160,11 +164,15 @@ export function PackagesManager() {
   function openCreateForm() {
     setEditingId(null);
     setForm(emptyForm);
+    setDays([]);
+    setActiveTab("details");
     setShowForm(true);
   }
 
-  function openEditForm(pkg: PackageRow) {
+  async function openEditForm(pkg: PackageRow) {
     setEditingId(pkg.id);
+    setDays([]);
+    setActiveTab("details");
     setForm({
       title: pkg.title ?? "",
       slug: pkg.slug ?? "",
@@ -199,6 +207,31 @@ export function PackagesManager() {
       meals: pkg.meals ?? "",
     });
     setShowForm(true);
+
+    setLoadingDays(true);
+    const { data, error } = await supabase
+      .from("itineraries")
+      .select("id,day,title,description,stay_location,stay_type,meals,image,optional_note")
+      .eq("package_id", pkg.id)
+      .order("day", { ascending: true });
+
+    if (error) {
+      showToast(`Failed to load itinerary days: ${error.message}`, "error");
+    } else {
+      setDays(
+        (data ?? []).map((row) => ({
+          id: row.id,
+          title: row.title ?? "",
+          description: row.description ?? "",
+          stay_location: row.stay_location ?? "",
+          stay_type: row.stay_type ?? "",
+          meals: row.meals ?? "",
+          image: row.image ?? "",
+          optional_note: row.optional_note ?? "",
+        }))
+      );
+    }
+    setLoadingDays(false);
   }
 
   async function uploadPackageImage(file: File | null) {
@@ -293,21 +326,62 @@ export function PackagesManager() {
       meals: form.meals.trim() || null,
     };
 
-    const { error } = editingId
-      ? await supabase.from("packages").update(payload).eq("id", editingId)
-      : await supabase.from("packages").insert([payload]);
+    const { data: savedPackage, error } = editingId
+      ? await supabase.from("packages").update(payload).eq("id", editingId).select("id").single()
+      : await supabase.from("packages").insert([payload]).select("id").single();
 
-    setSaving(false);
-
-    if (error) {
-      showToast(`Failed to save package: ${error.message}`, "error");
+    if (error || !savedPackage) {
+      setSaving(false);
+      showToast(`Failed to save package: ${error?.message ?? "Unknown error"}`, "error");
       return;
     }
 
+    // Itinerary days live in a separate table. Simplest consistent approach:
+    // replace all days for this package with whatever is currently in the
+    // form, in order — avoids diffing inserts/updates/deletes by hand.
+    const validDays = days.filter(
+      (day) => day.title.trim() || day.description.trim() || day.stay_location.trim()
+    );
+
+    const { error: deleteError } = await supabase
+      .from("itineraries")
+      .delete()
+      .eq("package_id", savedPackage.id);
+
+    if (deleteError) {
+      setSaving(false);
+      showToast(`Package saved, but itinerary update failed: ${deleteError.message}`, "error");
+      return;
+    }
+
+    if (validDays.length > 0) {
+      const { error: itineraryError } = await supabase.from("itineraries").insert(
+        validDays.map((day, index) => ({
+          package_id: savedPackage.id,
+          day: index + 1,
+          title: day.title.trim() || `Day ${index + 1}`,
+          description: day.description.trim() || null,
+          stay_location: day.stay_location.trim() || null,
+          stay_type: day.stay_type.trim() || null,
+          meals: day.meals.trim() || null,
+          image: day.image.trim() || null,
+          optional_note: day.optional_note.trim() || null,
+        }))
+      );
+
+      if (itineraryError) {
+        setSaving(false);
+        showToast(`Package saved, but itinerary update failed: ${itineraryError.message}`, "error");
+        return;
+      }
+    }
+
+    setSaving(false);
     showToast(editingId ? "Package updated." : "Package created.");
     setShowForm(false);
     setEditingId(null);
     setForm(emptyForm);
+    setDays([]);
     loadData();
   }
 
@@ -343,8 +417,31 @@ export function PackagesManager() {
           description="Everything here feeds the public package page directly — no code changes needed."
           onClose={() => setShowForm(false)}
         >
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="grid gap-4 sm:grid-cols-2">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex gap-2 border-b border-admin-border">
+              {(
+                [
+                  { key: "details", label: "Details" },
+                  { key: "content", label: "Content" },
+                  { key: "itinerary", label: `Itinerary${days.length ? ` (${days.length})` : ""}` },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`-mb-px border-b-2 px-4 py-2 text-sm font-semibold transition-colors ${
+                    activeTab === tab.key
+                      ? "border-admin-accent text-admin-accent"
+                      : "border-transparent text-admin-ink-muted hover:text-admin-ink"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            <div className={activeTab === "details" ? "grid gap-4 sm:grid-cols-2" : "hidden"}>
               <AdminField label="Destination Mapping">
                 <select
                   value={form.destination_id}
@@ -580,7 +677,7 @@ export function PackagesManager() {
               </AdminField>
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className={activeTab === "content" ? "grid gap-6 sm:grid-cols-2" : "hidden"}>
               <div>
                 <p className="mb-2 text-sm font-medium text-admin-ink">Highlights</p>
                 <TagListInput
@@ -609,6 +706,21 @@ export function PackagesManager() {
                 <p className="mb-2 text-sm font-medium text-admin-ink">FAQs</p>
                 <FaqBuilder items={form.faq} onChange={(items) => setForm((f) => ({ ...f, faq: items }))} />
               </div>
+            </div>
+
+            <div className={activeTab === "itinerary" ? "" : "hidden"}>
+              <div className="mb-3">
+                <h4 className="font-semibold text-admin-ink">Day-wise itinerary</h4>
+                <p className="mt-1 text-sm text-admin-ink-muted">
+                  Add each day of the trip — title, description, stay, and meals. This is what renders as
+                  the timeline on the public package page. Saved together with the package.
+                </p>
+              </div>
+              {loadingDays ? (
+                <p className="text-sm text-admin-ink-muted">Loading itinerary...</p>
+              ) : (
+                <DayItineraryBuilder days={days} onChange={setDays} />
+              )}
             </div>
 
             <AdminButton type="submit" disabled={saving}>

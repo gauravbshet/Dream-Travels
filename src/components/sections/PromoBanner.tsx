@@ -1,70 +1,48 @@
 "use client";
 
-import { useRef } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Section } from "@/components/ui/Section";
-import { cn } from "@/lib/utils";
-import { promos } from "@/data/promos";
-
-const MotionLink = motion.create(Link);
-
-function PromoCard({ promo }: { promo: (typeof promos)[number] }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
-
-  return (
-    <motion.div
-      ref={ref}      transition={{ duration: 0.6 }}
-      className="relative h-72 lg:h-80 overflow-hidden rounded-[24px]"
-    >
-      <motion.div style={{ y }} className="absolute inset-0 -top-8 -bottom-8">
-        <Image
-          src={promo.image}
-          alt={promo.title}
-          fill
-          sizes="(max-width: 1024px) 100vw, 50vw"
-          className="object-cover"
-        />
-      </motion.div>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e12]/45 via-[#0a1e12]/10 to-transparent" />
-      <div className="relative z-10 flex h-full flex-col justify-end p-6 lg:p-8">
-        <h3 className="font-display text-xl lg:text-2xl font-semibold text-white tracking-[-0.02em]">{promo.title}</h3>
-        <p className="mt-1.5 max-w-sm text-sm text-white/80">{promo.description}</p>
-        <MotionLink
-          href="#experiences"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.97 }}
-          className={cn(
-            "mt-4 w-fit inline-flex items-center justify-center gap-2 rounded-[12px] px-6 py-3 text-sm font-semibold transition-colors",
-            "bg-[oklch(0.19_0.024_158/0.82)] backdrop-blur-md text-ink hover:bg-surface"
-          )}
-        >
-          Customize Your Trip
-        </MotionLink>
-      </div>
-    </motion.div>
-  );
-}
+import { Reveal } from "@/components/ui/Reveal";
+import { unsplash, IMG } from "@/data/images";
 
 export function PromoBanner() {
   return (
-    <Section tone="image" id="experiences">
+    <section className="py-6 sm:py-8 lg:py-12" data-tone="light">
       <Container>
-        <SectionHeading title="New Attractions" />
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
-          {promos.map((promo) => (
-            <PromoCard key={promo.id} promo={promo} />
-          ))}
-        </div>
+        <Reveal className="relative overflow-hidden rounded-[24px] sm:rounded-[28px]">
+          <div className="relative h-[340px] w-full sm:h-[380px] lg:h-[420px]">
+            <Image
+              src={unsplash(IMG.roadtrip, 1800)}
+              alt="Plan your next adventure with Dream Travels"
+              fill
+              sizes="100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10" />
+          </div>
+
+          <div className="absolute inset-0 flex flex-col justify-center px-6 sm:px-12 lg:px-16">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber sm:text-sm">
+              Limited-time offer
+            </p>
+            <h2 className="display-section mt-3 max-w-lg text-2xl text-white sm:text-4xl">
+              Take your longest holiday yet
+            </h2>
+            <p className="mt-3 max-w-md text-sm text-white/80 sm:text-base">
+              Book any 5-day+ package this month and get a free airport transfer, on us.
+            </p>
+            <Link
+              href="#packages"
+              className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-ink shadow-lg transition-all duration-300 hover:-translate-y-0.5"
+            >
+              Book Now
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </Reveal>
       </Container>
-    </Section>
+    </section>
   );
 }

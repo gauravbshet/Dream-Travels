@@ -217,150 +217,150 @@ export default function LoginPage() {
                             </div>
 
                             <form className="space-y-3.5" onSubmit={handleSubmit}>
-                                    {mode === "signUp" && (
-                                        <div className="grid gap-4 sm:grid-cols-2">
-                                            <InputField
-                                                icon={<User className="h-4 w-4" />}
-                                                type="text"
-                                                placeholder="Full name"
-                                                value={fullName}
-                                                onChange={setFullName}
-                                            />
-                                            <InputField
-                                                icon={<Phone className="h-4 w-4" />}
-                                                type="tel"
-                                                placeholder="Phone number"
-                                                value={phone}
-                                                onChange={setPhone}
-                                            />
-                                        </div>
-                                    )}
+                                {mode === "signUp" && (
+                                    <div className="grid gap-4 sm:grid-cols-2">
+                                        <InputField
+                                            icon={<User className="h-4 w-4" />}
+                                            type="text"
+                                            placeholder="Full name"
+                                            value={fullName}
+                                            onChange={setFullName}
+                                        />
+                                        <InputField
+                                            icon={<Phone className="h-4 w-4" />}
+                                            type="tel"
+                                            placeholder="Phone number"
+                                            value={phone}
+                                            onChange={setPhone}
+                                        />
+                                    </div>
+                                )}
 
-                                    <InputField
-                                        icon={<Mail className="h-4 w-4" />}
-                                        type="email"
-                                        placeholder="Email address"
-                                        value={email}
-                                        onChange={setEmail}
-                                    />
+                                <InputField
+                                    icon={<Mail className="h-4 w-4" />}
+                                    type="email"
+                                    placeholder="Email address"
+                                    value={email}
+                                    onChange={setEmail}
+                                />
 
+                                <InputField
+                                    icon={<Lock className="h-4 w-4" />}
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={setPassword}
+                                    trailing={
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword((s) => !s)}
+                                            className="text-ink-muted transition-colors hover:text-ink"
+                                            aria-label={showPassword ? "Hide password" : "Show password"}
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="h-4 w-4" />
+                                            ) : (
+                                                <Eye className="h-4 w-4" />
+                                            )}
+                                        </button>
+                                    }
+                                />
+
+                                {mode === "signUp" && (
                                     <InputField
                                         icon={<Lock className="h-4 w-4" />}
                                         type={showPassword ? "text" : "password"}
-                                        placeholder="Password"
-                                        value={password}
-                                        onChange={setPassword}
-                                        trailing={
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowPassword((s) => !s)}
-                                                className="text-ink-muted transition-colors hover:text-ink"
-                                                aria-label={showPassword ? "Hide password" : "Show password"}
-                                            >
-                                                {showPassword ? (
-                                                    <EyeOff className="h-4 w-4" />
-                                                ) : (
-                                                    <Eye className="h-4 w-4" />
-                                                )}
-                                            </button>
-                                        }
+                                        placeholder="Confirm password"
+                                        value={confirmPassword}
+                                        onChange={setConfirmPassword}
                                     />
+                                )}
 
-                                    {mode === "signUp" && (
-                                        <InputField
-                                            icon={<Lock className="h-4 w-4" />}
-                                            type={showPassword ? "text" : "password"}
-                                            placeholder="Confirm password"
-                                            value={confirmPassword}
-                                            onChange={setConfirmPassword}
-                                        />
+                                {mode === "signIn" && (
+                                    <div className="text-right">
+                                        <button
+                                            type="button"
+                                            className="text-xs font-semibold text-canopy hover:underline"
+                                        >
+                                            Forgot password?
+                                        </button>
+                                    </div>
+                                )}
+
+                                <AnimatePresence>
+                                    {error && (
+                                        <motion.p
+                                            role="alert"
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: "auto" }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="overflow-hidden rounded-[11px] border border-[oklch(0.55_0.18_25)] bg-[oklch(0.55_0.18_25/0.12)] px-4 py-3 text-sm text-[oklch(0.4_0.18_25)]"
+                                        >
+                                            {error}
+                                        </motion.p>
                                     )}
-
-                                    {mode === "signIn" && (
-                                        <div className="text-right">
-                                            <button
-                                                type="button"
-                                                className="text-xs font-semibold text-canopy hover:underline"
-                                            >
-                                                Forgot password?
-                                            </button>
-                                        </div>
+                                    {message && (
+                                        <motion.p
+                                            role="status"
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: "auto" }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="overflow-hidden rounded-[11px] border border-canopy-deep bg-[oklch(0.55_0.12_150/0.12)] px-4 py-3 text-sm text-[oklch(0.35_0.1_150)]"
+                                        >
+                                            {message}
+                                        </motion.p>
                                     )}
+                                </AnimatePresence>
 
-                                    <AnimatePresence>
-                                        {error && (
-                                            <motion.p
-                                                role="alert"
-                                                initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: "auto" }}
-                                                exit={{ opacity: 0, height: 0 }}
-                                                className="overflow-hidden rounded-[11px] border border-[oklch(0.55_0.18_25)] bg-[oklch(0.55_0.18_25/0.12)] px-4 py-3 text-sm text-[oklch(0.4_0.18_25)]"
-                                            >
-                                                {error}
-                                            </motion.p>
-                                        )}
-                                        {message && (
-                                            <motion.p
-                                                role="status"
-                                                initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: "auto" }}
-                                                exit={{ opacity: 0, height: 0 }}
-                                                className="overflow-hidden rounded-[11px] border border-canopy-deep bg-[oklch(0.55_0.12_150/0.12)] px-4 py-3 text-sm text-[oklch(0.35_0.1_150)]"
-                                            >
-                                                {message}
-                                            </motion.p>
-                                        )}
-                                    </AnimatePresence>
+                                <motion.button
+                                    whileTap={{ scale: 0.98 }}
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full rounded-[11px] bg-canopy px-6 py-4 text-sm font-semibold text-white transition-colors duration-[180ms] hover:bg-canopy-hover disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                    {loading
+                                        ? mode === "signIn"
+                                            ? "Signing in..."
+                                            : "Creating account..."
+                                        : mode === "signIn"
+                                            ? "Sign in"
+                                            : "Create account"}
+                                </motion.button>
+                            </form>
 
-                                    <motion.button
-                                        whileTap={{ scale: 0.98 }}
-                                        type="submit"
-                                        disabled={loading}
-                                        className="w-full rounded-[11px] bg-canopy px-6 py-4 text-sm font-semibold text-white transition-colors duration-[180ms] hover:bg-canopy-hover disabled:cursor-not-allowed disabled:opacity-60"
-                                    >
-                                        {loading
-                                            ? mode === "signIn"
-                                                ? "Signing in..."
-                                                : "Creating account..."
-                                            : mode === "signIn"
-                                                ? "Sign in"
-                                                : "Create account"}
-                                    </motion.button>
-                                </form>
-
-                                <p className="mt-7 text-center text-sm text-ink-muted">
-                                    {mode === "signIn" ? (
-                                        <>
-                                            New to Dream Travels?{" "}
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setMode("signUp");
-                                                    setError(null);
-                                                    setMessage(null);
-                                                }}
-                                                className="font-semibold text-canopy hover:underline"
-                                            >
-                                                Create an account
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            Already have an account?{" "}
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setMode("signIn");
-                                                    setError(null);
-                                                    setMessage(null);
-                                                }}
-                                                className="font-semibold text-canopy hover:underline"
-                                            >
-                                                Sign in instead
-                                            </button>
-                                        </>
-                                    )}
-                                </p>
+                            <p className="mt-7 text-center text-sm text-ink-muted">
+                                {mode === "signIn" ? (
+                                    <>
+                                        New to Dream Travels?{" "}
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setMode("signUp");
+                                                setError(null);
+                                                setMessage(null);
+                                            }}
+                                            className="font-semibold text-canopy hover:underline"
+                                        >
+                                            Create an account
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        Already have an account?{" "}
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setMode("signIn");
+                                                setError(null);
+                                                setMessage(null);
+                                            }}
+                                            className="font-semibold text-canopy hover:underline"
+                                        >
+                                            Sign in instead
+                                        </button>
+                                    </>
+                                )}
+                            </p>
                         </motion.div>
                     </AnimatePresence>
                 </div>
@@ -391,14 +391,14 @@ function InputField({
     trailing?: React.ReactNode;
 }) {
     return (
-        <div className="flex items-center gap-3 rounded-[11px] border border-border bg-surface px-4 py-3.5 transition-colors duration-[180ms] focus-within:border-canopy">
+        <div className="flex items-center gap-3 rounded-[11px] border border-border bg-surface px-4 py-3.5 transition-colors duration-[180ms] focus-within:border-canopy focus-within:outline-none focus-within:ring-0">
             <span className="text-ink-muted">{icon}</span>
             <input
                 type={type}
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
                 placeholder={placeholder}
-                className="w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-ink-muted"
+                className="w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-ink-muted focus:outline-none focus:ring-0"
             />
             {trailing}
         </div>

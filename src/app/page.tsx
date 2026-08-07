@@ -1,16 +1,14 @@
 import { Hero } from "@/components/sections/Hero";
+import { PopularDestinationsGrid } from "@/components/sections/PopularDestinationsGrid";
+import { FeaturedPackagesGrid } from "@/components/sections/FeaturedPackagesGrid";
+import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
+import { ReviewCarousel } from "@/components/sections/ReviewCarousel";
+import { PromoBanner } from "@/components/sections/PromoBanner";
+import { LatestArticles } from "@/components/sections/LatestArticles";
 import { CategorySlider } from "@/components/sections/CategorySlider";
-import { TrendingTrips } from "@/components/sections/TrendingTrips";
-import { TrendingDestinations } from "@/components/sections/TrendingDestinations";
-import { TopRatedPackages } from "@/components/sections/TopRatedPackages";
 import { ExploreByMap } from "@/components/sections/ExploreByMap";
-import { RecommendedDestinations } from "@/components/sections/RecommendedDestinations";
-import { InterestingDestinations } from "@/components/sections/InterestingDestinations";
-import { TopPicks } from "@/components/sections/TopPicks";
 import { BudgetCards } from "@/components/sections/BudgetCards";
 import { Statistics } from "@/components/sections/Statistics";
-import { ReviewCarousel } from "@/components/sections/ReviewCarousel";
-import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
 import { PopularExperiences } from "@/components/sections/PopularExperiences";
 import { SeasonalCollections } from "@/components/sections/SeasonalCollections";
 import { EventsSection } from "@/components/sections/EventsSection";
@@ -156,12 +154,12 @@ async function fetchFeaturedData() {
 
   const budgetTiers: BudgetTier[] = budgetTiersData?.length
     ? budgetTiersData.map((tier) => ({
-        id: tier.id,
-        title: tier.title,
-        emoji: tier.emoji,
-        limit: String(tier.price_limit),
-        count: prices.filter((price) => price <= tier.price_limit).length,
-      }))
+      id: tier.id,
+      title: tier.title,
+      emoji: tier.emoji,
+      limit: String(tier.price_limit),
+      count: prices.filter((price) => price <= tier.price_limit).length,
+    }))
     : staticBudgetTiers;
 
   return {
@@ -180,9 +178,7 @@ async function fetchFeaturedData() {
 export default async function Home() {
   const {
     featuredDestinations,
-    interestingDestinations,
     featuredPackages,
-    topPicks,
     reviews,
     events,
     experiences,
@@ -198,18 +194,16 @@ export default async function Home() {
       />
       <main className="flex-1">
         <Hero />
+        <PopularDestinationsGrid destinations={featuredDestinations} packages={featuredPackages} />
+        <FeaturedPackagesGrid packages={featuredPackages} />
+        <WhyChooseUs />
+        <ReviewCarousel reviews={reviews} />
+        <PromoBanner />
         <CategorySlider />
-        <TrendingTrips packages={featuredPackages} />
-        <TrendingDestinations />
-        <RecommendedDestinations destinations={featuredDestinations} />
-        <InterestingDestinations destinations={interestingDestinations} />
-        <TopRatedPackages packages={featuredPackages} />
-        <TopPicks packages={topPicks} />
         <BudgetCards tiers={budgetTiers} />
         <Statistics />
         <ExploreByMap />
-        <ReviewCarousel reviews={reviews} />
-        <WhyChooseUs />
+        <LatestArticles packages={featuredPackages} />
         <PopularExperiences experiences={experiences} />
         <SeasonalCollections collections={collections} />
         <EventsSection events={events} />

@@ -389,21 +389,15 @@ body {
   z-index: var(--z-base);
   pointer-events: none;
   background:
-    radial-gradient(
-      42rem 32rem at var(--mx) var(--my),
+    radial-gradient(42rem 32rem at var(--mx) var(--my),
       color-mix(in oklch, var(--canopy) 20%, transparent) 0%,
-      transparent 68%
-    ),
-    radial-gradient(
-      28rem 24rem at calc(100% - var(--mx)) calc(var(--my) + 22%),
+      transparent 68%),
+    radial-gradient(28rem 24rem at calc(100% - var(--mx)) calc(var(--my) + 22%),
       color-mix(in oklch, var(--amber) 11%, transparent) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      60rem 40rem at 50% 0%,
+      transparent 70%),
+    radial-gradient(60rem 40rem at 50% 0%,
       color-mix(in oklch, var(--canopy) 9%, transparent) 0%,
-      transparent 72%
-    );
+      transparent 72%);
   transition: background-position var(--dur-component) linear;
 }
 
@@ -415,11 +409,9 @@ body {
   z-index: var(--z-base);
   pointer-events: none;
   opacity: 0.5;
-  background: radial-gradient(
-    38rem 30rem at 30% 40%,
-    color-mix(in oklch, var(--canopy) 14%, transparent) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(38rem 30rem at 30% 40%,
+      color-mix(in oklch, var(--canopy) 14%, transparent) 0%,
+      transparent 70%);
   animation: aurora-drift 34s var(--ease-out-quart) infinite alternate;
 }
 
@@ -427,9 +419,11 @@ body {
   0% {
     transform: translate3d(-6%, -3%, 0) scale(1);
   }
+
   50% {
     transform: translate3d(8%, 5%, 0) scale(1.12);
   }
+
   100% {
     transform: translate3d(-2%, 8%, 0) scale(1.04);
   }
@@ -452,6 +446,7 @@ body {
   from {
     transform: translate3d(0, 0, 0);
   }
+
   to {
     transform: translate3d(-80px, -40px, 0);
   }
@@ -475,11 +470,9 @@ body {
   pointer-events: none;
   opacity: 0;
   transition: opacity var(--dur-component) var(--ease-out-quart);
-  background: radial-gradient(
-    18rem 18rem at var(--sx, 50%) var(--sy, 50%),
-    color-mix(in oklch, var(--canopy) 22%, transparent) 0%,
-    transparent 62%
-  );
+  background: radial-gradient(18rem 18rem at var(--sx, 50%) var(--sy, 50%),
+      color-mix(in oklch, var(--canopy) 22%, transparent) 0%,
+      transparent 62%);
 }
 
 .spotlight:hover::before,
@@ -558,6 +551,7 @@ body {
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-50%);
   }
@@ -609,6 +603,7 @@ body {
    Premium Mobile Cards (max-width: 768px only)
    ========================================================================== */
 @media (max-width: 768px) {
+
   /* Section spacing: 32px top/bottom padding */
   section:not(.flush-section) {
     padding-top: 32px !important;
@@ -616,7 +611,8 @@ body {
   }
 
   /* Force the Carousel and ResponsiveScroller to have 16px horizontal padding and gap, snap scrolling */
-  .no-scrollbar, [role="region"] {
+  .no-scrollbar,
+  [role="region"] {
     padding-left: 16px !important;
     padding-right: 16px !important;
     gap: 16px !important;

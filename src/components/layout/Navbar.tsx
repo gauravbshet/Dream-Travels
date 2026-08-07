@@ -145,8 +145,8 @@ export function Navbar() {
                         ? "text-primary"
                         : "text-white font-bold"
                       : scrolled
-                      ? "text-ink-muted hover:text-ink"
-                      : "text-white/80 hover:text-white"
+                        ? "text-ink-muted hover:text-ink"
+                        : "text-white/80 hover:text-white"
                   )}
                 >
                   {link.label}
