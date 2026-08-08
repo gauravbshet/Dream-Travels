@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 import { createStoragePath, slugify } from "@/lib/utils";
+import { categories as travelCategories } from "@/data/categories";
 import { useToast } from "./Toast";
 import { Modal } from "./Modal";
 import { ImageUploadField } from "./ImageUploadField";
@@ -342,6 +343,11 @@ export function PackagesManager() {
       return;
     }
 
+    if (!form.category) {
+      showToast("Please select a travel category for this package.", "error");
+      return;
+    }
+
     setSaving(true);
 
     const payload = {
@@ -546,13 +552,20 @@ export function PackagesManager() {
                   placeholder="e.g. Paris, France"
                 />
               </AdminField>
-              <AdminField label="Category">
-                <input
+              <AdminField label="Travel Category">
+                <select
                   value={form.category}
                   onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
                   className="admin-input"
-                  placeholder="e.g. Honeymoon, Family, Adventure"
-                />
+                  required
+                >
+                  <option value="">Select a category</option>
+                  {travelCategories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.label}
+                    </option>
+                  ))}
+                </select>
               </AdminField>
               <AdminField label="Travel type">
                 <input

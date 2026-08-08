@@ -194,12 +194,12 @@ export default async function Home() {
       />
       <main className="flex-1">
         <Hero />
+        <CategorySlider />
         <PopularDestinationsGrid destinations={featuredDestinations} packages={featuredPackages} />
         <FeaturedPackagesGrid packages={featuredPackages} />
         <WhyChooseUs />
         <ReviewCarousel reviews={reviews} />
         <PromoBanner />
-        <CategorySlider />
         <BudgetCards tiers={budgetTiers} />
         <Statistics />
         <ExploreByMap />
