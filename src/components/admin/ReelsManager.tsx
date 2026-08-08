@@ -382,73 +382,75 @@ export function ReelsManager() {
         </Modal>
       )}
 
-      <AdminCard className="mt-6 overflow-x-auto" padded={false}>
-        <table className="w-full min-w-[min(100%,960px)] text-left text-sm">
-          <thead>
-            <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
-              <th className="px-5 py-4">Title</th>
-              <th className="px-5 py-4">Destination</th>
-              <th className="px-5 py-4">Category</th>
-              <th className="px-5 py-4">Order</th>
-              <th className="px-5 py-4">Status</th>
-              <th className="px-5 py-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <AdminTableState colSpan={6}>Loading reels...</AdminTableState>
-            ) : reels.length === 0 ? (
-              <AdminTableState colSpan={6}>No reels yet — add your first one.</AdminTableState>
-            ) : (
-              reels.map((reel) => (
-                <tr key={reel.id} className="border-b border-admin-border last:border-0">
-                  <td className="px-5 py-4 font-semibold text-admin-ink">{reel.title}</td>
-                  <td className="px-5 py-4 text-admin-ink-2">{reel.destination ?? "—"}</td>
-                  <td className="px-5 py-4 text-admin-ink-2">{categoryLabel(reel.category)}</td>
-                  <td className="px-5 py-4 text-admin-ink-2">{reel.display_order ?? 0}</td>
-                  <td className="px-5 py-4">
-                    <button type="button" onClick={() => handleToggleActive(reel)}>
-                      <AdminBadge
-                        className={
-                          reel.is_active
-                            ? undefined
-                            : "bg-admin-danger-soft text-admin-danger"
-                        }
-                      >
-                        {reel.is_active ? "Active" : "Inactive"}
-                      </AdminBadge>
-                    </button>
-                  </td>
-                  <td className="px-5 py-4">
-                    <div className="flex items-center justify-end gap-2">
-                      {normalizeUrl(reel.instagram_url ?? "") && (
-                        <a
-                          href={normalizeUrl(reel.instagram_url ?? "")!}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          aria-label="Open on Instagram"
-                          className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-admin-surface-2 text-admin-ink transition hover:bg-admin-primary-soft hover:text-admin-primary"
+      <AdminCard className="mt-4 flex-1 overflow-hidden" padded={false}>
+        <div className="max-h-[calc(100vh-175px)] overflow-y-auto">
+          <table className="w-full min-w-[min(100%,960px)] text-left text-xs sm:text-sm">
+            <thead className="sticky top-0 z-10 bg-admin-surface-2 border-b border-admin-border">
+              <tr className="text-[11px] font-bold uppercase tracking-wider text-admin-ink-muted">
+                <th className="px-4 py-3">Title</th>
+                <th className="px-4 py-3">Destination</th>
+                <th className="px-4 py-3">Category</th>
+                <th className="px-4 py-3">Order</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-admin-border">
+              {loading ? (
+                <AdminTableState colSpan={6}>Loading reels...</AdminTableState>
+              ) : reels.length === 0 ? (
+                <AdminTableState colSpan={6}>No reels yet — add your first one.</AdminTableState>
+              ) : (
+                reels.map((reel) => (
+                  <tr key={reel.id} className="hover:bg-admin-surface-2/40 transition">
+                    <td className="px-4 py-2.5 font-semibold text-admin-ink">{reel.title}</td>
+                    <td className="px-4 py-2.5 text-admin-ink-2">{reel.destination ?? "—"}</td>
+                    <td className="px-4 py-2.5 text-admin-ink-2">{categoryLabel(reel.category)}</td>
+                    <td className="px-4 py-2.5 text-admin-ink-2">{reel.display_order ?? 0}</td>
+                    <td className="px-4 py-2.5">
+                      <button type="button" onClick={() => handleToggleActive(reel)}>
+                        <AdminBadge
+                          className={
+                            reel.is_active
+                              ? undefined
+                              : "bg-admin-danger-soft text-admin-danger"
+                          }
                         >
-                          <ExternalLink className="h-4 w-4" />
-                        </a>
-                      )}
-                      <AdminIconButton onClick={() => openEditForm(reel)} aria-label="Edit">
-                        <Pencil className="h-4 w-4" />
-                      </AdminIconButton>
-                      <AdminIconButton
-                        variant="danger"
-                        onClick={() => handleDelete(reel.id)}
-                        aria-label="Delete"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </AdminIconButton>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                          {reel.is_active ? "Active" : "Inactive"}
+                        </AdminBadge>
+                      </button>
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <div className="flex items-center justify-end gap-1.5">
+                        {normalizeUrl(reel.instagram_url ?? "") && (
+                          <a
+                            href={normalizeUrl(reel.instagram_url ?? "")!}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Open on Instagram"
+                            className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-admin-surface-2 text-admin-ink transition hover:bg-admin-primary-soft hover:text-admin-primary"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        <AdminIconButton onClick={() => openEditForm(reel)} aria-label="Edit">
+                          <Pencil className="h-3.5 w-3.5" />
+                        </AdminIconButton>
+                        <AdminIconButton
+                          variant="danger"
+                          onClick={() => handleDelete(reel.id)}
+                          aria-label="Delete"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </AdminIconButton>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </AdminCard>
     </div>
   );

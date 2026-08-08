@@ -299,64 +299,66 @@ export function DestinationsManager() {
         </Modal>
       )}
 
-      <AdminCard className="mt-6 overflow-x-auto" padded={false}>
-        <table className="w-full min-w-[min(100%,720px)] text-left text-sm">
-          <thead>
-            <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
-              <th className="px-5 py-4">Name</th>
-              <th className="px-5 py-4">Price</th>
-              <th className="px-5 py-4">Rating</th>
-              <th className="px-5 py-4">Featured</th>
-              <th className="px-5 py-4">Image</th>
-              <th className="px-5 py-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <AdminTableState colSpan={6}>Loading destinations...</AdminTableState>
-            ) : destinations.length === 0 ? (
-              <AdminTableState colSpan={6}>No destinations yet.</AdminTableState>
-            ) : (
-              destinations.map((destination) => (
-                <tr key={destination.id} className="border-b border-admin-border last:border-0">
-                  <td className="px-5 py-4 font-semibold text-admin-ink">{destination.name}</td>
-                  <td className="px-5 py-4 text-admin-ink-2">
-                    {destination.price != null ? `₹${destination.price}` : "—"}
-                  </td>
-                  <td className="px-5 py-4 text-admin-ink-2">{destination.rating ?? "—"}</td>
-                  <td className="px-5 py-4">
-                    {destination.is_featured ? <AdminBadge>Featured</AdminBadge> : "—"}
-                  </td>
-                  <td className="px-5 py-4">
-                    {destination.image ? (
-                      <img
-                        src={destination.image}
-                        alt={destination.name}
-                        className="h-16 w-24 rounded-[14px] object-cover"
-                      />
-                    ) : (
-                      <span className="text-admin-ink-muted">No image</span>
-                    )}
-                  </td>
-                  <td className="px-5 py-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <AdminIconButton onClick={() => openEditForm(destination)} aria-label="Edit">
-                        <Pencil className="h-4 w-4" />
-                      </AdminIconButton>
-                      <AdminIconButton
-                        variant="danger"
-                        onClick={() => handleDelete(destination.id)}
-                        aria-label="Delete"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </AdminIconButton>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <AdminCard className="mt-4 flex-1 overflow-hidden" padded={false}>
+        <div className="max-h-[calc(100vh-175px)] overflow-y-auto">
+          <table className="w-full min-w-[min(100%,720px)] text-left text-xs sm:text-sm">
+            <thead className="sticky top-0 z-10 bg-admin-surface-2 border-b border-admin-border">
+              <tr className="text-[11px] font-bold uppercase tracking-wider text-admin-ink-muted">
+                <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Price</th>
+                <th className="px-4 py-3">Rating</th>
+                <th className="px-4 py-3">Featured</th>
+                <th className="px-4 py-3">Image</th>
+                <th className="px-4 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-admin-border">
+              {loading ? (
+                <AdminTableState colSpan={6}>Loading destinations...</AdminTableState>
+              ) : destinations.length === 0 ? (
+                <AdminTableState colSpan={6}>No destinations yet.</AdminTableState>
+              ) : (
+                destinations.map((destination) => (
+                  <tr key={destination.id} className="hover:bg-admin-surface-2/40 transition">
+                    <td className="px-4 py-2.5 font-semibold text-admin-ink">{destination.name}</td>
+                    <td className="px-4 py-2.5 text-admin-ink-2">
+                      {destination.price != null ? `₹${destination.price}` : "—"}
+                    </td>
+                    <td className="px-4 py-2.5 text-admin-ink-2">{destination.rating ?? "—"}</td>
+                    <td className="px-4 py-2.5">
+                      {destination.is_featured ? <AdminBadge>Featured</AdminBadge> : "—"}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      {destination.image ? (
+                        <img
+                          src={destination.image}
+                          alt={destination.name}
+                          className="h-10 w-16 rounded-lg object-cover"
+                        />
+                      ) : (
+                        <span className="text-xs text-admin-ink-muted">No image</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <AdminIconButton onClick={() => openEditForm(destination)} aria-label="Edit">
+                          <Pencil className="h-3.5 w-3.5" />
+                        </AdminIconButton>
+                        <AdminIconButton
+                          variant="danger"
+                          onClick={() => handleDelete(destination.id)}
+                          aria-label="Delete"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </AdminIconButton>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </AdminCard>
     </div>
   );

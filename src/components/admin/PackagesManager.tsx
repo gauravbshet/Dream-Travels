@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 import { createStoragePath, slugify } from "@/lib/utils";
-import { categories as travelCategories } from "@/data/categories";
+import { categories as travelCategories, categoryLabels, isCategorySlug } from "@/data/categories";
 import { useToast } from "./Toast";
 import { Modal } from "./Modal";
 import { ImageUploadField } from "./ImageUploadField";
@@ -132,6 +133,13 @@ const PACKAGE_COLUMNS =
 export function PackagesManager() {
   const supabase = createBrowserSupabaseClient();
   const { showToast } = useToast();
+  const searchParams = useSearchParams();
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fromUrl = searchParams.get("category");
+    setCategoryFilter(fromUrl && isCategorySlug(fromUrl) ? fromUrl : null);
+  }, [searchParams]);
 
   const [packages, setPackages] = useState<PackageRow[]>([]);
   const [destinations, setDestinations] = useState<DestinationOption[]>([]);
@@ -462,6 +470,11 @@ export function PackagesManager() {
     loadData();
   }
 
+  const filteredPackages = useMemo(
+    () => (categoryFilter ? packages.filter((pkg) => pkg.category === categoryFilter) : packages),
+    [packages, categoryFilter]
+  );
+
   return (
     <div>
       <AdminPageHeader
@@ -473,6 +486,21 @@ export function PackagesManager() {
           </AdminButton>
         }
       />
+
+      {categoryFilter && (
+        <div className="mt-4 flex items-center gap-2">
+          <span className="text-sm text-admin-ink-2">
+            Filtering by <strong className="text-admin-ink">{categoryLabels[categoryFilter as keyof typeof categoryLabels]}</strong>
+          </span>
+          <button
+            type="button"
+            onClick={() => setCategoryFilter(null)}
+            className="flex items-center gap-1 rounded-full border border-admin-border bg-admin-surface px-2.5 py-1 text-xs font-semibold text-admin-ink-muted hover:bg-admin-surface-2"
+          >
+            <X className="h-3 w-3" /> Clear
+          </button>
+        </div>
+      )}
 
       {showForm && (
         <Modal
@@ -808,64 +836,68 @@ export function PackagesManager() {
         </Modal>
       )}
 
-      <AdminCard className="mt-6 overflow-x-auto" padded={false}>
-        <table className="w-full min-w-[min(100%,960px)] text-left text-sm">
-          <thead>
-            <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
-              <th className="px-5 py-4">Title</th>
-              <th className="px-5 py-4">Destination</th>
-              <th className="px-5 py-4">Location</th>
-              <th className="px-5 py-4">Duration</th>
-              <th className="px-5 py-4">Price</th>
-              <th className="px-5 py-4">Status</th>
-              <th className="px-5 py-4">Top pick</th>
-              <th className="px-5 py-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <AdminTableState colSpan={8}>Loading packages...</AdminTableState>
-            ) : packages.length === 0 ? (
-              <AdminTableState colSpan={8}>No packages yet.</AdminTableState>
-            ) : (
-              packages.map((pkg) => (
-                <tr key={pkg.id} className="border-b border-admin-border last:border-0">
-                  <td className="px-5 py-4 font-semibold text-admin-ink">{pkg.title}</td>
-                  <td className="px-5 py-4 text-admin-ink-2">
-                    {destinations.find((d) => d.id === pkg.destination_id)?.name ?? "—"}
-                  </td>
-                  <td className="px-5 py-4 text-admin-ink-2">{pkg.location ?? "—"}</td>
-                  <td className="px-5 py-4 text-admin-ink-2">{pkg.duration ?? "—"}</td>
-                  <td className="px-5 py-4 text-admin-ink-2">
-                    {pkg.price != null ? `₹${pkg.price}` : "—"}
-                  </td>
-                  <td className="px-5 py-4">
-                    <AdminBadge className={pkg.status === "draft" ? "bg-admin-accent-soft text-admin-accent" : undefined}>
-                      {pkg.status === "draft" ? "Draft" : "Published"}
-                    </AdminBadge>
-                  </td>
-                  <td className="px-5 py-4">
-                    {pkg.is_top_pick ? <AdminBadge>Top pick</AdminBadge> : "—"}
-                  </td>
-                  <td className="px-5 py-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <AdminIconButton onClick={() => openEditForm(pkg)} aria-label="Edit">
-                        <Pencil className="h-4 w-4" />
-                      </AdminIconButton>
-                      <AdminIconButton
-                        variant="danger"
-                        onClick={() => handleDelete(pkg.id)}
-                        aria-label="Delete"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </AdminIconButton>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <AdminCard className="mt-4 flex-1 overflow-hidden" padded={false}>
+        <div className="max-h-[calc(100vh-175px)] overflow-y-auto">
+          <table className="w-full min-w-[min(100%,960px)] text-left text-xs sm:text-sm">
+            <thead className="sticky top-0 z-10 bg-admin-surface-2 border-b border-admin-border">
+              <tr className="text-[11px] font-bold uppercase tracking-wider text-admin-ink-muted">
+                <th className="px-4 py-3">Title</th>
+                <th className="px-4 py-3">Destination</th>
+                <th className="px-4 py-3">Location</th>
+                <th className="px-4 py-3">Duration</th>
+                <th className="px-4 py-3">Price</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Top pick</th>
+                <th className="px-4 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-admin-border">
+              {loading ? (
+                <AdminTableState colSpan={8}>Loading packages...</AdminTableState>
+              ) : filteredPackages.length === 0 ? (
+                <AdminTableState colSpan={8}>
+                  {categoryFilter ? "No packages in this category." : "No packages yet."}
+                </AdminTableState>
+              ) : (
+                filteredPackages.map((pkg) => (
+                  <tr key={pkg.id} className="hover:bg-admin-surface-2/40 transition">
+                    <td className="px-4 py-2.5 font-semibold text-admin-ink">{pkg.title}</td>
+                    <td className="px-4 py-2.5 text-admin-ink-2">
+                      {destinations.find((d) => d.id === pkg.destination_id)?.name ?? "—"}
+                    </td>
+                    <td className="px-4 py-2.5 text-admin-ink-2">{pkg.location ?? "—"}</td>
+                    <td className="px-4 py-2.5 text-admin-ink-2">{pkg.duration ?? "—"}</td>
+                    <td className="px-4 py-2.5 text-admin-ink-2">
+                      {pkg.price != null ? `₹${pkg.price}` : "—"}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <AdminBadge className={pkg.status === "draft" ? "bg-admin-accent-soft text-admin-accent" : undefined}>
+                        {pkg.status === "draft" ? "Draft" : "Published"}
+                      </AdminBadge>
+                    </td>
+                    <td className="px-4 py-2.5">
+                      {pkg.is_top_pick ? <AdminBadge>Top pick</AdminBadge> : "—"}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <AdminIconButton onClick={() => openEditForm(pkg)} aria-label="Edit">
+                          <Pencil className="h-3.5 w-3.5" />
+                        </AdminIconButton>
+                        <AdminIconButton
+                          variant="danger"
+                          onClick={() => handleDelete(pkg.id)}
+                          aria-label="Delete"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </AdminIconButton>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </AdminCard>
     </div>
   );

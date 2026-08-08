@@ -88,83 +88,85 @@ export function CustomersManager() {
 
     return (
         <div>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
                 <div>
-                    <h3 className="text-xl font-semibold text-admin-ink">Customers</h3>
-                    <p className="mt-1 text-sm text-admin-ink-muted">
+                    <h3 className="text-lg font-bold text-admin-ink">Customers</h3>
+                    <p className="text-xs text-admin-ink-muted">
                         View customer profiles, contact details, and their package interests.
                     </p>
                 </div>
-                <label className="relative block w-full max-w-sm">
-                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-ink-muted" />
+                <label className="relative block w-full max-w-xs">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-admin-ink-muted" />
                     <input
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Search by name or email"
-                        className="admin-input pl-11 pr-12"
+                        placeholder="Search name or email..."
+                        className="admin-input !pl-9 !pr-8 text-xs"
                     />
                     {search && (
                         <button
                             type="button"
                             onClick={() => setSearch("")}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-admin-ink-muted hover:text-admin-ink"
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-admin-ink-muted hover:text-admin-ink"
                         >
-                            <X className="h-4 w-4" />
+                            <X className="h-3.5 w-3.5" />
                         </button>
                     )}
                 </label>
             </div>
 
-            <AdminCard className="mt-6 overflow-x-auto" padded={false}>
-                <table className="w-full min-w-[min(100%,720px)] text-left text-sm">
-                    <thead>
-                        <tr className="border-b border-admin-border text-xs font-semibold uppercase tracking-wide text-admin-ink-muted">
-                            <th className="px-5 py-4">Customer ID</th>
-                            <th className="px-5 py-4">Full Name</th>
-                            <th className="px-5 py-4">Email</th>
-                            <th className="px-5 py-4">Phone</th>
-                            <th className="px-5 py-4">Date Joined</th>
-                            <th className="px-5 py-4">Total Bookings</th>
-                            <th className="px-5 py-4 text-right">Profile</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
-                            <AdminTableState colSpan={7}>Loading customers...</AdminTableState>
-                        ) : filteredCustomers.length === 0 ? (
-                            <AdminTableState colSpan={7}>No customers match your search.</AdminTableState>
-                        ) : (
-                            filteredCustomers.map((customer) => (
-                                <tr key={customer.id} className="border-b border-admin-border last:border-0">
-                                    <td className="px-5 py-4 text-admin-ink-2">{customer.id}</td>
-                                    <td className="px-5 py-4 font-semibold text-admin-ink">{customer.full_name ?? "—"}</td>
-                                    <td className="px-5 py-4 text-admin-ink-2">{customer.email}</td>
-                                    <td className="px-5 py-4 text-admin-ink-2">{customer.phone ?? "—"}</td>
-                                    <td className="px-5 py-4 text-admin-ink-2">
-                                        {customer.created_at ? new Date(customer.created_at).toLocaleDateString() : "—"}
-                                    </td>
-                                    <td className="px-5 py-4 text-admin-ink-2">
-                                        {bookings[customer.id]?.length ?? 0}
-                                    </td>
-                                    <td className="px-5 py-4 text-right">
-                                        <button
-                                            type="button"
-                                            onClick={async () => {
-                                                setSelectedCustomer(customer);
-                                                if (!bookings[customer.id]) {
-                                                    await loadCustomerBookings(customer.id);
-                                                }
-                                            }}
-                                            className="rounded-[10px] border border-admin-border bg-admin-primary-soft px-4 py-2 text-sm font-semibold text-admin-primary transition hover:bg-admin-primary-soft/70"
-                                        >
-                                            <Eye className="mr-2 inline h-4 w-4" /> Profile
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+            <AdminCard className="mt-3 flex-1 overflow-hidden" padded={false}>
+                <div className="max-h-[calc(100vh-175px)] overflow-y-auto">
+                    <table className="w-full min-w-[min(100%,720px)] text-left text-xs sm:text-sm">
+                        <thead className="sticky top-0 z-10 bg-admin-surface-2 border-b border-admin-border">
+                            <tr className="text-[11px] font-bold uppercase tracking-wider text-admin-ink-muted">
+                                <th className="px-4 py-3">Customer ID</th>
+                                <th className="px-4 py-3">Full Name</th>
+                                <th className="px-4 py-3">Email</th>
+                                <th className="px-4 py-3">Phone</th>
+                                <th className="px-4 py-3">Date Joined</th>
+                                <th className="px-4 py-3">Total Bookings</th>
+                                <th className="px-4 py-3 text-right">Profile</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-admin-border">
+                            {loading ? (
+                                <AdminTableState colSpan={7}>Loading customers...</AdminTableState>
+                            ) : filteredCustomers.length === 0 ? (
+                                <AdminTableState colSpan={7}>No customers match your search.</AdminTableState>
+                            ) : (
+                                filteredCustomers.map((customer) => (
+                                    <tr key={customer.id} className="hover:bg-admin-surface-2/40 transition">
+                                        <td className="px-4 py-2.5 text-xs text-admin-ink-muted font-mono">{customer.id.slice(0, 8)}...</td>
+                                        <td className="px-4 py-2.5 font-semibold text-admin-ink">{customer.full_name ?? "—"}</td>
+                                        <td className="px-4 py-2.5 text-admin-ink-2">{customer.email}</td>
+                                        <td className="px-4 py-2.5 text-admin-ink-2">{customer.phone ?? "—"}</td>
+                                        <td className="px-4 py-2.5 text-admin-ink-2">
+                                            {customer.created_at ? new Date(customer.created_at).toLocaleDateString() : "—"}
+                                        </td>
+                                        <td className="px-4 py-2.5 text-admin-ink-2 font-semibold">
+                                            {bookings[customer.id]?.length ?? 0}
+                                        </td>
+                                        <td className="px-4 py-2.5 text-right">
+                                            <button
+                                                type="button"
+                                                onClick={async () => {
+                                                    setSelectedCustomer(customer);
+                                                    if (!bookings[customer.id]) {
+                                                        await loadCustomerBookings(customer.id);
+                                                    }
+                                                }}
+                                                className="inline-flex items-center justify-center rounded-lg border border-admin-border bg-admin-primary-soft px-3 py-1.5 text-xs font-semibold text-admin-primary transition hover:bg-admin-primary-soft/70"
+                                            >
+                                                <Eye className="mr-1.5 h-3.5 w-3.5" /> Profile
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </AdminCard>
 
             {selectedCustomer && (

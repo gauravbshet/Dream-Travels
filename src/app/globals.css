@@ -522,11 +522,12 @@ body {
    instead of silently losing to this shorthand `padding` declaration. */
 :where(.admin-input) {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid var(--admin-border);
   background: var(--admin-surface);
-  padding: 0.75rem 1rem;
-  font-size: 0.9375rem;
+  padding-block: 0.45rem;
+  padding-inline: 0.75rem;
+  font-size: 0.875rem;
   color: var(--admin-ink);
   outline: none;
   transition:

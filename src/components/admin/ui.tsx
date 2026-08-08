@@ -15,8 +15,8 @@ export function AdminCard({
   return (
     <div
       className={cn(
-        "rounded-[18px] border border-admin-border bg-admin-surface shadow-admin-card",
-        padded && "p-6",
+        "rounded-[16px] border border-admin-border bg-admin-surface shadow-admin-card",
+        padded && "p-4 sm:p-5",
         className
       )}
     >
@@ -35,10 +35,10 @@ export function AdminPageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4 shrink-0">
       <div>
-        <h3 className="text-xl font-semibold text-admin-ink tracking-[-0.01em]">{title}</h3>
-        {description ? <p className="mt-1 text-sm text-admin-ink-muted">{description}</p> : null}
+        <h3 className="text-lg font-bold text-admin-ink tracking-[-0.01em]">{title}</h3>
+        {description ? <p className="text-xs text-admin-ink-muted">{description}</p> : null}
       </div>
       {action}
     </div>
@@ -59,7 +59,7 @@ export function AdminButton({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-[12px] px-5 py-3 text-sm font-semibold transition disabled:opacity-60",
+        "inline-flex items-center justify-center gap-1.5 rounded-[10px] px-3.5 py-2 text-xs sm:text-sm font-semibold transition disabled:opacity-60",
         buttonVariants[variant],
         className
       )}
@@ -81,7 +81,7 @@ export function AdminIconButton({
   return (
     <button
       className={cn(
-        "flex h-9 w-9 items-center justify-center rounded-[10px] transition",
+        "flex h-8 w-8 items-center justify-center rounded-[8px] transition",
         iconButtonVariants[variant],
         className
       )}
@@ -94,7 +94,7 @@ export function AdminBadge({ children, className }: { children: ReactNode; class
   return (
     <span
       className={cn(
-        "rounded-full bg-admin-primary-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-admin-primary",
+        "rounded-full bg-admin-primary-soft px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-admin-primary",
         className
       )}
     >
@@ -113,8 +113,8 @@ export function AdminField({
   children: ReactNode;
 }) {
   return (
-    <label className={cn("space-y-2 text-sm text-admin-ink-2", full && "sm:col-span-2")}>
-      <span className="font-medium text-admin-ink">{label}</span>
+    <label className={cn("space-y-1 text-xs sm:text-sm text-admin-ink-2", full && "sm:col-span-2")}>
+      <span className="font-semibold text-admin-ink text-xs">{label}</span>
       {children}
     </label>
   );
@@ -123,9 +123,10 @@ export function AdminField({
 export function AdminTableState({ colSpan, children }: { colSpan: number; children: ReactNode }) {
   return (
     <tr>
-      <td colSpan={colSpan} className="px-5 py-6 text-admin-ink-muted">
+      <td colSpan={colSpan} className="px-4 py-4 text-center text-xs sm:text-sm text-admin-ink-muted">
         {children}
       </td>
     </tr>
   );
 }
+

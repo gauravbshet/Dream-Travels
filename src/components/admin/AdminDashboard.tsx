@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ToastProvider } from "./Toast";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminOverview } from "./AdminOverview";
@@ -15,6 +15,15 @@ export type AdminSection = "overview" | "destinations" | "packages" | "reels" | 
 export function AdminDashboard({ userEmail }: { userEmail?: string | null }) {
   const [activeSection, setActiveSection] = useState<AdminSection>("overview");
   const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const navigate = useCallback(
+    (section: AdminSection) => {
+      setActiveSection(section);
+      router.push(`/admin?section=${section}`);
+    },
+    [router]
+  );
 
   useEffect(() => {
     const section = searchParams.get("section");
@@ -31,11 +40,11 @@ export function AdminDashboard({ userEmail }: { userEmail?: string | null }) {
 
   return (
     <ToastProvider>
-      <div className="flex min-h-screen w-full flex-col bg-admin-bg text-admin-ink lg:flex-row">
+      <div className="flex h-screen w-full overflow-hidden bg-admin-bg text-admin-ink flex-col lg:flex-row">
         <AdminSidebar active={activeSection} onChange={setActiveSection} userEmail={userEmail} />
 
-        <main className="flex-1 overflow-y-auto px-4 py-8 sm:px-8 lg:px-10">
-          {activeSection === "overview" && <AdminOverview />}
+        <main className="flex-1 flex flex-col h-full overflow-y-auto px-4 py-4 sm:px-6 lg:px-8">
+          {activeSection === "overview" && <AdminOverview onNavigate={navigate} />}
           {activeSection === "destinations" && <DestinationsManager />}
           {activeSection === "packages" && <PackagesManager />}
           {activeSection === "reels" && <ReelsManager />}
