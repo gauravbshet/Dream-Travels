@@ -35,12 +35,24 @@ export function ReelsShowcase({ reels = staticReels }: { reels?: Reel[] }) {
       } else {
         set.delete(id);
       }
-      // The active (auto-playing) reel is the first visible one in display
-      // order, so only a single video ever plays at once.
-      const next = filtered.find((reel) => set.has(reel.id))?.id ?? null;
-      setActiveId(next);
+
+      setActiveId((current) => {
+        // Keep whatever is currently active (auto-picked or user-selected)
+        // as long as it's still on screen -- only reassign when it scrolls
+        // out of view, so a manual pick isn't stomped on by every
+        // intersection event from neighboring cards.
+        if (current && set.has(current)) return current;
+        return filtered.find((reel) => set.has(reel.id))?.id ?? null;
+      });
     },
     [filtered]
+  );
+
+  const handlePlayRequest = useCallback((id: string) => setActiveId(id), []);
+
+  const handlePauseRequest = useCallback(
+    (id: string) => setActiveId((current) => (current === id ? null : current)),
+    []
   );
 
   if (reels.length === 0) return null;
@@ -83,6 +95,8 @@ export function ReelsShowcase({ reels = staticReels }: { reels?: Reel[] }) {
                 reel={reel}
                 isActive={activeId === reel.id}
                 onVisibilityChange={handleVisibilityChange}
+                onPlayRequest={handlePlayRequest}
+                onPauseRequest={handlePauseRequest}
                 onOpen={() => setOpenIndex(index)}
               />
             ))}

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
-import { createStoragePath } from "@/lib/utils";
+import { createStoragePath, normalizeUrl } from "@/lib/utils";
 import { categories as travelCategories } from "@/data/categories";
 import { useToast } from "./Toast";
 import { Modal } from "./Modal";
@@ -191,6 +191,15 @@ export function ReelsManager() {
       return;
     }
 
+    let instagramUrl: string | null = null;
+    if (form.instagram_url.trim()) {
+      instagramUrl = normalizeUrl(form.instagram_url);
+      if (!instagramUrl) {
+        showToast("That Instagram URL doesn't look valid — check it and try again.", "error");
+        return;
+      }
+    }
+
     setSaving(true);
 
     const payload = {
@@ -199,7 +208,7 @@ export function ReelsManager() {
       description: form.description.trim() || null,
       video_url: form.video_url.trim(),
       thumbnail_url: form.thumbnail_url.trim() || null,
-      instagram_url: form.instagram_url.trim() || null,
+      instagram_url: instagramUrl,
       category: form.category || null,
       is_active: form.is_active,
       display_order: form.display_order ? Number(form.display_order) : 0,
@@ -412,9 +421,9 @@ export function ReelsManager() {
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center justify-end gap-2">
-                      {reel.instagram_url && (
+                      {normalizeUrl(reel.instagram_url ?? "") && (
                         <a
-                          href={reel.instagram_url}
+                          href={normalizeUrl(reel.instagram_url ?? "")!}
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label="Open on Instagram"

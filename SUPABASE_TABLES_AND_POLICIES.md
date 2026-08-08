@@ -314,6 +314,7 @@ For these tables, allow public reads and restrict writes to admins:
 - `popular_experiences`
 - `seasonal_collections`
 - `budget_tiers`
+- `reels`
 
 Public SELECT policy:
 ```sql

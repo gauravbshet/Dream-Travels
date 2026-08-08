@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { Reel } from "@/data/reels";
 import { InstagramGlyph } from "./InstagramGlyph";
+import { normalizeUrl } from "@/lib/utils";
 
 export function ReelViewerModal({
   reels,
@@ -117,9 +118,9 @@ export function ReelViewerModal({
           {reel.description && (
             <p className="mt-1 line-clamp-2 text-xs text-white/70">{reel.description}</p>
           )}
-          {reel.instagramUrl && (
+          {normalizeUrl(reel.instagramUrl ?? "") && (
             <a
-              href={reel.instagramUrl}
+              href={normalizeUrl(reel.instagramUrl ?? "")!}
               target="_blank"
               rel="noopener noreferrer"
               className="pointer-events-auto mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/25"

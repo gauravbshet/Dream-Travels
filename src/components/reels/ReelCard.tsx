@@ -4,25 +4,28 @@ import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 import { InstagramGlyph } from "./InstagramGlyph";
 import { useInView } from "@/lib/useInView";
-import { cn } from "@/lib/utils";
+import { cn, normalizeUrl } from "@/lib/utils";
 import type { Reel } from "@/data/reels";
 
 export function ReelCard({
   reel,
   isActive,
   onVisibilityChange,
+  onPlayRequest,
+  onPauseRequest,
   onOpen,
   className,
 }: {
   reel: Reel;
   isActive: boolean;
   onVisibilityChange: (id: string, inView: boolean) => void;
+  onPlayRequest: (id: string) => void;
+  onPauseRequest: (id: string) => void;
   onOpen: () => void;
   className?: string;
 }) {
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: [0, 0.6] });
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [manuallyPaused, setManuallyPaused] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
   useEffect(() => {
@@ -37,7 +40,10 @@ export function ReelCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reel.id]);
 
-  const shouldPlay = isActive && inView && !manuallyPaused && !videoError;
+  // Playback is fully controlled by the parent's activeId: exactly one card
+  // is ever "active" at a time, whether picked automatically (most-visible)
+  // or by the visitor clicking Play on a specific card.
+  const shouldPlay = isActive && inView && !videoError;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -55,8 +61,20 @@ export function ReelCard({
 
   function togglePlayback(event: React.MouseEvent) {
     event.stopPropagation();
-    setManuallyPaused((prev) => !prev);
+    if (shouldPlay) {
+      onPauseRequest(reel.id);
+    } else {
+      onPlayRequest(reel.id);
+    }
   }
+
+  const instagramUrl = normalizeUrl(reel.instagramUrl ?? "");
+  // No admin-provided thumbnail: ask the browser to decode a frame slightly
+  // into the clip (via the #t= media fragment) and eagerly fetch enough to
+  // render it, so the card still shows *something* instead of a blank tile.
+  // Cards that already have a poster stay fully lazy (preload="none").
+  const hasThumbnail = Boolean(reel.thumbnailUrl);
+  const videoSrc = hasThumbnail || !reel.videoUrl ? reel.videoUrl : `${reel.videoUrl}#t=0.5`;
 
   return (
     <div
@@ -89,12 +107,12 @@ export function ReelCard({
         ) : (
           <video
             ref={videoRef}
-            src={reel.videoUrl}
+            src={videoSrc}
             poster={reel.thumbnailUrl ?? undefined}
             muted
             loop
             playsInline
-            preload="none"
+            preload={hasThumbnail ? "none" : "metadata"}
             className="h-full w-full object-cover"
             onError={() => setVideoError(true)}
           />
@@ -103,9 +121,9 @@ export function ReelCard({
 
       <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-black/70 via-black/5 to-black/25" />
 
-      {reel.instagramUrl && (
+      {instagramUrl && (
         <a
-          href={reel.instagramUrl}
+          href={instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
           onClick={(event) => event.stopPropagation()}

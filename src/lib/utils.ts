@@ -21,6 +21,21 @@ export function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+/** Normalizes a user-entered URL (trims, adds a scheme if missing) and
+ * returns null if the result still isn't a valid absolute URL. */
+export function normalizeUrl(value: string): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+
+  const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+
+  try {
+    return new URL(withScheme).toString();
+  } catch {
+    return null;
+  }
+}
+
 export function createStoragePath(folder: string, file: File) {
   const rawFileName = file.name.replace(/\\/g, "/").split("/").pop() ?? file.name;
   const extension = rawFileName.split(".").pop()?.toLowerCase() ?? "";
