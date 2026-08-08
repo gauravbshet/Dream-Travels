@@ -6,8 +6,8 @@ import { Calendar, MapPin, Star, Flame } from "lucide-react";
 import { WishlistButton } from "@/components/ui/WishlistButton";
 import { Rating } from "@/components/ui/Rating";
 import { useSpotlight } from "@/lib/useSpotlight";
-import { formatPrice } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { formatPrice, cn } from "@/lib/utils";
+import { categoryLabels, type CategorySlug } from "@/data/categories";
 import type { Package } from "@/data/packages";
 
 export function PackageCard({
@@ -55,7 +55,7 @@ export function PackageCard({
 
             {/* Top Left: Category Badge */}
             <span className="absolute left-2.5 top-2.5 z-[3] rounded-md bg-canopy px-2 py-0.5 text-[9.5px] sm:text-[10px] font-semibold text-white shadow-2xs">
-              {isCompact ? "Destination" : pkg.category}
+              {isCompact ? "Destination" : (categoryLabels[pkg.category as CategorySlug] ?? pkg.category)}
             </span>
 
             {/* Top Right: Floating Wishlist Heart */}

@@ -8,8 +8,9 @@ import { AdminOverview } from "./AdminOverview";
 import { DestinationsManager } from "./DestinationsManager";
 import { PackagesManager } from "./PackagesManager";
 import { CustomersManager } from "./CustomersManager";
+import { ReelsManager } from "./ReelsManager";
 
-export type AdminSection = "overview" | "destinations" | "packages" | "customers";
+export type AdminSection = "overview" | "destinations" | "packages" | "reels" | "customers";
 
 export function AdminDashboard({ userEmail }: { userEmail?: string | null }) {
   const [activeSection, setActiveSection] = useState<AdminSection>("overview");
@@ -21,6 +22,7 @@ export function AdminDashboard({ userEmail }: { userEmail?: string | null }) {
       section === "overview" ||
       section === "destinations" ||
       section === "packages" ||
+      section === "reels" ||
       section === "customers"
     ) {
       setActiveSection(section);
@@ -36,6 +38,7 @@ export function AdminDashboard({ userEmail }: { userEmail?: string | null }) {
           {activeSection === "overview" && <AdminOverview />}
           {activeSection === "destinations" && <DestinationsManager />}
           {activeSection === "packages" && <PackagesManager />}
+          {activeSection === "reels" && <ReelsManager />}
           {activeSection === "customers" && <CustomersManager />}
         </main>
       </div>

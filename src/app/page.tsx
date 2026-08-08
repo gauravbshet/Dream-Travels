@@ -12,10 +12,12 @@ import { Statistics } from "@/components/sections/Statistics";
 import { PopularExperiences } from "@/components/sections/PopularExperiences";
 import { SeasonalCollections } from "@/components/sections/SeasonalCollections";
 import { EventsSection } from "@/components/sections/EventsSection";
+import { ReelsShowcase } from "@/components/sections/ReelsShowcase";
 import { heroBadge } from "@/data/site";
 import { createServerSupabaseClient } from "@/lib/supabase.server";
 import { Destination, MasonryDestination, BudgetTier } from "@/data/destinations";
 import { Package } from "@/data/packages";
+import { reels as staticReels, type Reel } from "@/data/reels";
 import {
   recommendedDestinations,
   interestingDestinations as staticInterestingDestinations,
@@ -62,6 +64,7 @@ async function fetchFeaturedData() {
     { data: collectionsData },
     { data: budgetTiersData },
     { data: destinationPrices },
+    { data: reelsData },
   ] = await Promise.all([
     supabase
       .from("destinations")
@@ -94,6 +97,11 @@ async function fetchFeaturedData() {
     supabase.from("seasonal_collections").select("id,title,image").order("created_at", { ascending: false }),
     supabase.from("budget_tiers").select("id,title,emoji,price_limit").order("price_limit", { ascending: true }),
     supabase.from("destinations").select("price"),
+    supabase
+      .from("reels")
+      .select("id,title,destination,description,video_url,thumbnail_url,instagram_url,category,is_active,display_order")
+      .eq("is_active", true)
+      .order("display_order", { ascending: true }),
   ]);
 
   const mapPackage = (pkg: Record<string, unknown>): Package => ({
@@ -162,6 +170,21 @@ async function fetchFeaturedData() {
     }))
     : staticBudgetTiers;
 
+  const reels: Reel[] = (reelsData?.length ? reelsData : staticReels).map((reel) =>
+    "video_url" in reel
+      ? {
+          id: reel.id,
+          title: reel.title,
+          destination: reel.destination,
+          description: reel.description,
+          videoUrl: reel.video_url,
+          thumbnailUrl: reel.thumbnail_url,
+          instagramUrl: reel.instagram_url,
+          category: reel.category,
+        }
+      : reel
+  );
+
   return {
     featuredDestinations,
     interestingDestinations,
@@ -172,6 +195,7 @@ async function fetchFeaturedData() {
     experiences,
     collections,
     budgetTiers,
+    reels,
   };
 }
 
@@ -184,6 +208,7 @@ export default async function Home() {
     experiences,
     collections,
     budgetTiers,
+    reels,
   } = await fetchFeaturedData();
 
   return (
@@ -197,6 +222,7 @@ export default async function Home() {
         <CategorySlider />
         <PopularDestinationsGrid destinations={featuredDestinations} packages={featuredPackages} />
         <FeaturedPackagesGrid packages={featuredPackages} />
+        <ReelsShowcase reels={reels} />
         <WhyChooseUs />
         <ReviewCarousel reviews={reviews} />
         <PromoBanner />

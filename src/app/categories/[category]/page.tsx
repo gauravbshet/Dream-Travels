@@ -6,31 +6,40 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PackageCard } from "@/components/cards/PackageCard";
 import { createServerSupabaseClient } from "@/lib/supabase.server";
 import { categoryLabels, isCategorySlug, type CategorySlug } from "@/data/categories";
-import type { Package } from "@/data/packages";
+import { packages as staticPackages, type Package } from "@/data/packages";
 
 async function getPackagesByCategory(category: CategorySlug): Promise<Package[]> {
-  const supabase = createServerSupabaseClient();
-  const { data, error } = await supabase
-    .from("packages")
-    .select(
-      "id,slug,title,location,image,category,duration,pickup,dates,rating,reviews,price,original_price,destination_id"
-    )
-    .eq("status", "published")
-    .eq("category", category)
-    .order("created_at", { ascending: false });
+  try {
+    const supabase = createServerSupabaseClient();
+    const { data } = await supabase
+      .from("packages")
+      .select(
+        "id,slug,title,location,image,category,duration,pickup,dates,rating,reviews,price,original_price,destination_id"
+      )
+      .eq("status", "published")
+      .eq("category", category)
+      .order("created_at", { ascending: false });
 
-  if (error) throw new Error(error.message);
+    if (data && data.length > 0) {
+      return data.map((pkg) => ({
+        ...pkg,
+        location: pkg.location ?? "",
+        category: pkg.category ?? category,
+        duration: pkg.duration ?? "",
+        pickup: pkg.pickup ?? "",
+        dates: pkg.dates ?? "Flexible",
+        rating: pkg.rating ?? 0,
+        reviews: pkg.reviews ?? 0,
+      }));
+    }
+  } catch (err) {
+    console.error("Error fetching category packages from Supabase:", err);
+  }
 
-  return (data ?? []).map((pkg) => ({
-    ...pkg,
-    location: pkg.location ?? "",
-    category: pkg.category ?? category,
-    duration: pkg.duration ?? "",
-    pickup: pkg.pickup ?? "",
-    dates: pkg.dates ?? "Flexible",
-    rating: pkg.rating ?? 0,
-    reviews: pkg.reviews ?? 0,
-  }));
+  // Fallback to static demo packages matching the category
+  return staticPackages.filter(
+    (pkg) => pkg.category.toLowerCase() === category.toLowerCase()
+  );
 }
 
 export default async function CategoryPage({

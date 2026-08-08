@@ -43,7 +43,7 @@ values
       'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80',
       'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80'
     ],
-    'Beach', '4D / 3N', 'Goa Airport (GOI) pickup included', 'Available year-round',
+    'group', '4D / 3N', 'Goa Airport (GOI) pickup included', 'Available year-round',
     9999, 12999, 4.6, 214,
     'Four days of beach-hopping between Baga, Anjuna, and Palolem, with a sunset cruise and a night out in Tito''s Lane.',
     true
@@ -56,7 +56,7 @@ values
     array[
       'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=80'
     ],
-    'Hill Station', '5D / 4N', 'Cochin Airport (COK) pickup included', 'Best Sep-Mar',
+    'family', '5D / 4N', 'Cochin Airport (COK) pickup included', 'Best Sep-Mar',
     12999, 15999, 4.7, 189,
     'Wake up to tea-estate views, walk through spice plantations, and catch the mist roll over Eravikulam National Park.',
     true
@@ -69,7 +69,7 @@ values
     array[
       'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=1200&q=80'
     ],
-    'Nature', '4D / 3N', 'Bangalore pickup available', 'Available year-round',
+    'family', '4D / 3N', 'Bangalore pickup available', 'Available year-round',
     13999, null, 4.7, 132,
     'Coffee estate walks, Abbey Falls, and a homestay evening with Kodava cuisine.',
     false
@@ -82,7 +82,7 @@ values
     array[
       'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=1200&q=80'
     ],
-    'Wildlife', '3D / 2N', 'Kozhikode Airport (CCJ) pickup included', 'Best Oct-May',
+    'solo', '3D / 2N', 'Kozhikode Airport (CCJ) pickup included', 'Best Oct-May',
     11999, 13999, 4.6, 97,
     'Edakkal Caves, a wildlife safari, and a sunset at Chembra Peak.',
     false
@@ -96,7 +96,7 @@ values
       'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80',
       'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=1200&q=80'
     ],
-    'Adventure', '5D / 4N', 'Bhuntar Airport (KUU) pickup included', 'Best Mar-Jun, Oct-Feb',
+    'group', '5D / 4N', 'Bhuntar Airport (KUU) pickup included', 'Best Mar-Jun, Oct-Feb',
     15999, 18999, 4.8, 276,
     'Solang Valley, Rohtang Pass (season permitting), and a riverside camping night with bonfire and local music.',
     true
@@ -109,7 +109,7 @@ values
     array[
       'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=1200&q=80'
     ],
-    'Beach', '6D / 5N', 'Veer Savarkar Airport (IXZ) pickup included', 'Best Oct-May',
+    'international', '6D / 5N', 'Veer Savarkar Airport (IXZ) pickup included', 'Best Oct-May',
     28999, 34999, 4.9, 158,
     'Radhanagar Beach, scuba diving at Havelock, and a light-and-sound show at Cellular Jail.',
     true
