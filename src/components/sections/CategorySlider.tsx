@@ -12,7 +12,7 @@ export function CategorySlider() {
   const pathname = usePathname();
 
   return (
-    <Section tone="light" flush className="pt-6 pb-2 lg:py-10">
+    <Section tone="light" flush className="pt-4 pb-1 lg:pt-5 lg:pb-3">
       <Container>
         <div
           className="grid gap-3 xs:gap-4 sm:gap-6 lg:gap-8"

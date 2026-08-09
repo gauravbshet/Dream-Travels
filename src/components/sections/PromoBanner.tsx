@@ -9,7 +9,7 @@ import { unsplash, IMG } from "@/data/images";
 
 export function PromoBanner() {
   return (
-    <section className="py-6 sm:py-8 lg:py-12" data-tone="light">
+    <section className="py-4 sm:py-5 lg:py-6" data-tone="light">
       <Container>
         <Reveal className="relative overflow-hidden rounded-[24px] sm:rounded-[28px]">
           <div className="relative h-[340px] w-full sm:h-[380px] lg:h-[420px]">

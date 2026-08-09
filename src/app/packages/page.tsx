@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+import Link from "next/link";
+import { X } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { createServerSupabaseClient } from "@/lib/supabase.server";
@@ -26,24 +28,78 @@ async function getPackages(): Promise<Package[]> {
     }));
 }
 
-export default async function PackagesListPage() {
-    const packages = await getPackages();
+export default async function PackagesListPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ q?: string; category?: string; guests?: string }>;
+}) {
+    const params = await searchParams;
+    const allPackages = await getPackages();
+    const query = params?.q?.toLowerCase().trim();
+    const category = params?.category?.toLowerCase().trim();
+
+    const filteredPackages = allPackages.filter((pkg) => {
+        let matchesQuery = true;
+        let matchesCategory = true;
+
+        if (query) {
+            matchesQuery =
+                pkg.title.toLowerCase().includes(query) ||
+                pkg.location.toLowerCase().includes(query) ||
+                pkg.category.toLowerCase().includes(query);
+        }
+
+        if (category && category !== "all types") {
+            matchesCategory = pkg.category.toLowerCase().includes(category);
+        }
+
+        return matchesQuery && matchesCategory;
+    });
+
+    const isFiltered = Boolean(query || (category && category !== "all types"));
 
     return (
-        <main data-tone="light" className="flex-1 bg-canvas py-16">
+        <main data-tone="light" className="flex-1 bg-canvas py-8">
             <Container>
                 <SectionHeading
-                    title="All packages"
-                    description="Browse every curated trip currently open for booking."
+                    title={isFiltered ? "Search Results" : "All packages"}
+                    description={
+                        isFiltered
+                            ? `Showing trips matching your search criteria.`
+                            : "Browse every curated trip currently open for booking."
+                    }
                 />
 
-                {packages.length === 0 ? (
-                    <p className="mt-10 text-center text-sm text-ink-muted">
-                        No packages are published yet — check back soon.
-                    </p>
+                {isFiltered && (
+                    <div className="mt-4 flex items-center gap-3">
+                        <span className="inline-flex items-center gap-2 rounded-full bg-canopy/10 px-4 py-1.5 text-xs font-bold text-canopy border border-canopy/20">
+                            Search: {query ? `"${params.q}"` : ""}{query && category ? " • " : ""}{category ? `Category: ${params.category}` : ""}
+                        </span>
+                        <Link
+                            href="/packages"
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-ink-muted hover:text-ink transition-colors"
+                        >
+                            <X className="h-3.5 w-3.5" /> Clear Filters
+                        </Link>
+                    </div>
+                )}
+
+                {filteredPackages.length === 0 ? (
+                    <div className="mt-10 text-center py-12 rounded-[20px] border border-border bg-surface p-8">
+                        <p className="text-base font-bold text-ink">No matching packages found</p>
+                        <p className="mt-1 text-sm text-ink-muted">
+                            Try searching for a different destination or category.
+                        </p>
+                        <Link
+                            href="/packages"
+                            className="mt-4 inline-flex items-center gap-2 rounded-full bg-canopy px-5 py-2 text-xs font-bold text-white hover:bg-canopy-hover transition-colors"
+                        >
+                            View All Packages
+                        </Link>
+                    </div>
                 ) : (
-                    <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                        {packages.map((pkg) => (
+                    <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                        {filteredPackages.map((pkg) => (
                             <PackageCard key={pkg.id} pkg={pkg} className="w-full" />
                         ))}
                     </div>

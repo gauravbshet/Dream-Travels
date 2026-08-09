@@ -42,7 +42,7 @@ export function Section({
       id={id}
       data-tone={toneDataAttr[tone]}
       className={cn(
-        !flush && "py-6 sm:py-8 lg:py-12",
+        !flush && "py-4 sm:py-5 lg:py-6",
         toneClassName[tone],
         className
       )}

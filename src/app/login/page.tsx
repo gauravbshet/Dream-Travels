@@ -174,10 +174,12 @@ export default function LoginPage() {
                     href="/"
                     className="mb-7 flex items-center justify-center gap-2.5 text-ink"
                 >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-white">
-                        <Plane className="h-4 w-4" />
-                    </span>
-                    <span className="font-display text-[19px] tracking-[-0.02em]">
+                    <img
+                        src="/logo.png"
+                        alt="Dream Travels Logo"
+                        className="h-10 w-10 object-contain rounded-full bg-white/40 p-0.5 shadow-xs"
+                    />
+                    <span className="font-display text-[19px] tracking-[-0.02em] font-bold">
                         Dream Travels
                     </span>
                 </Link>

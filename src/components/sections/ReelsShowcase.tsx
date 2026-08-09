@@ -58,7 +58,7 @@ export function ReelsShowcase({ reels = staticReels }: { reels?: Reel[] }) {
   if (reels.length === 0) return null;
 
   return (
-    <Section tone="light" id="reels">
+    <Section tone="light" id="reels" className="pt-2.5 sm:pt-4 lg:pt-6">
       <Container>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeading

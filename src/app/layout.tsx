@@ -31,6 +31,11 @@ export const metadata: Metadata = {
     "adventure travel",
     "Dream Travels",
   ],
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
     type: "website",
     siteName: "Dream Travels",

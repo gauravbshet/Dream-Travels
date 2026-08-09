@@ -20,7 +20,7 @@ export function FeaturedPackagesGrid({
   if (featured.length === 0) return null;
 
   return (
-    <Section tone="sage" id="featured-packages">
+    <Section tone="sage" id="featured-packages" className="pt-2.5 sm:pt-4 lg:pt-6">
       <Container>
         <SectionHeading
           title="Featured Packages"

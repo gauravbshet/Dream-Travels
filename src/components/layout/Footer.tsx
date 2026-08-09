@@ -55,7 +55,7 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer id="contact" data-tone="dark" className="relative mt-10 overflow-hidden bg-surface-dark-deep border-t border-border pb-28 pt-16 lg:pb-16 lg:pt-24 text-ink-muted">
+    <footer id="contact" data-tone="dark" className="relative mt-4 overflow-hidden bg-surface-dark-deep border-t border-border pb-20 pt-8 lg:pb-12 lg:pt-12 text-ink-muted">
       <span
         aria-hidden
         className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9rem] lg:text-[13rem] font-semibold tracking-tight text-ink/[0.03] select-none"
@@ -65,11 +65,13 @@ export function Footer() {
       <Container className="relative">
         <div className="grid gap-y-14 lg:grid-cols-[minmax(220px,1.9fr)_repeat(4,minmax(90px,0.7fr))_minmax(180px,1.3fr)] lg:items-start lg:gap-x-6 xl:gap-x-8">
           <div>
-            <Link href="/" className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-canopy text-white font-semibold text-base">
-                D
-              </span>
-              <span className="text-lg font-semibold text-ink">Dream Travels</span>
+            <Link href="/" className="flex items-center gap-3">
+              <img
+                src="/logo.png"
+                alt="Dream Travels Logo"
+                className="h-11 w-11 object-contain rounded-full bg-white/10 p-0.5"
+              />
+              <span className="text-xl font-bold text-white tracking-tight">Dream Travels</span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed max-w-xs">
               Premium, curated travel experiences designed for the modern

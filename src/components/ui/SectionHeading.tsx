@@ -17,7 +17,7 @@ export function SectionHeading({
   return (
     <Reveal
       className={cn(
-        "mb-4 sm:mb-5 lg:mb-6",
+        "mb-3 sm:mb-4 lg:mb-4",
         align === "center" && "mx-auto max-w-2xl text-center",
         className
       )}

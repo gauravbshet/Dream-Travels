@@ -31,7 +31,7 @@ export default async function BookingPage({
     }
 
     return (
-        <main className="flex-1 py-16">
+        <main className="flex-1 py-8">
             <Container className="max-w-3xl">
                 <p className="text-sm font-semibold uppercase tracking-wide text-primary">Complete your enquiry</p>
                 <h1 className="display-section mt-2 text-3xl text-ink">Book {pkg.title}</h1>

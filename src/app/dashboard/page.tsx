@@ -40,7 +40,7 @@ export default async function DashboardPage() {
     const { user, wishlist } = await getUserData();
 
     return (
-        <main data-tone="light" className="flex-1 bg-canvas py-20">
+        <main data-tone="light" className="flex-1 bg-canvas py-10">
             <Container>
                 <SectionHeading
                     title={`Hi, ${user.user_metadata?.full_name ?? user.email ?? "Traveller"}`}

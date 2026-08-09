@@ -122,25 +122,36 @@ export function Navbar() {
     <>
       {/* Outer Shell: persistently fixed, 100% width, stable coordinates */}
       <header className="fixed inset-x-0 top-0 z-[200] w-full pointer-events-none">
+        {/* Full-width top gradient fade: edge-to-edge backdrop when not scrolled */}
+        <div
+          aria-hidden="true"
+          className={cn(
+            "pointer-events-none absolute inset-x-0 top-0 h-28 sm:h-32 bg-gradient-to-b from-black/80 via-black/40 to-transparent transition-opacity duration-500",
+            scrolled ? "opacity-0" : "opacity-100"
+          )}
+        />
+
         {/* Inner Morphing Container: single persistent element smoothly contracting into floating pill */}
         <div
           data-tone={scrolled ? "light" : "dark"}
           className={cn(
-            "pointer-events-auto mx-auto flex items-center justify-between gap-4 lg:gap-8",
+            "pointer-events-auto relative mx-auto flex items-center justify-between gap-4 lg:gap-8",
             "transition-[width,max-width,height,margin-top,border-radius,background-color,border-color,box-shadow,padding] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
             scrolled
               ? "w-full h-[72px] px-4 sm:px-6 lg:mt-4.5 lg:h-[64px] lg:w-[calc(100%-2.5rem)] lg:max-w-[960px] xl:max-w-[1040px] lg:rounded-full lg:border lg:border-[rgba(32,34,31,0.08)] lg:bg-[rgba(250,250,247,0.94)] lg:shadow-[0_8px_30px_rgba(20,40,25,0.08)] lg:backdrop-blur-md lg:px-6 text-ink lg:text-[#20221F] bg-surface/95 border-b border-border/80"
-              : "w-full max-w-7xl h-[72px] lg:h-[80px] mt-0 rounded-none border-transparent bg-gradient-to-b from-black/70 via-black/30 to-transparent shadow-none px-4 sm:px-6 lg:px-8 text-white"
+              : "w-full max-w-7xl h-[72px] lg:h-[80px] mt-0 rounded-none border-transparent bg-transparent shadow-none px-4 sm:px-6 lg:px-8 text-white"
           )}
         >
           <Link href="/" className="flex min-h-11 items-center gap-2.5 shrink-0">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3F8C02] text-white font-semibold text-base shadow-xs">
-              D
-            </span>
+            <img
+              src="/logo.png"
+              alt="Dream Travels Logo"
+              className="h-10 w-10 sm:h-11 sm:w-11 object-contain rounded-full bg-white/20 p-0.5 shadow-xs transition-transform duration-300 hover:scale-105"
+            />
             <span
               className={cn(
-                "font-semibold text-[17px] tracking-[-0.01em] hidden xs:inline transition-colors duration-300",
-                scrolled ? "text-ink lg:text-[#20221F]" : "text-white"
+                "font-bold text-[18px] tracking-tight hidden xs:inline transition-colors duration-300",
+                scrolled ? "text-ink lg:text-[#20221F]" : "text-white drop-shadow-sm"
               )}
             >
               Dream Travels

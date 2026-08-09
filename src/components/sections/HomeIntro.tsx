@@ -19,7 +19,7 @@ export function HomeIntro() {
   return (
     <>
       {/* Block 1 — light, headline + floating photo collage */}
-      <section className="relative overflow-hidden bg-surface-sage py-16 sm:py-20 lg:py-28">
+      <section className="relative overflow-hidden bg-surface-sage py-6 sm:py-8 lg:py-10">
         <Container className="relative">
           <Reveal className="mx-auto max-w-3xl text-center">
             <h2 className="display-hero text-ink">

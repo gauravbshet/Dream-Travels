@@ -46,10 +46,12 @@ export function AdminSidebar({
     <>
       <div className="flex items-center justify-between border-b border-admin-border bg-admin-surface px-4 py-3 lg:hidden">
         <div className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-admin-primary text-sm font-semibold text-white">
-            D
-          </span>
-          <span className="text-base font-semibold tracking-[-0.01em] text-admin-ink">
+          <img
+            src="/logo.png"
+            alt="Dream Travels Logo"
+            className="h-8 w-8 object-contain rounded-full bg-admin-primary-soft p-0.5"
+          />
+          <span className="text-base font-bold tracking-tight text-admin-ink">
             Dream<span className="text-admin-primary">Travels</span>
           </span>
         </div>
@@ -80,14 +82,16 @@ export function AdminSidebar({
       >
         <div>
           <div className="flex items-center justify-between px-2">
-            <div className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-admin-primary text-base font-semibold text-white">
-                D
-              </span>
-              <span className="text-lg font-semibold tracking-[-0.01em] text-admin-ink">
+            <div className="flex items-center gap-2.5">
+              <img
+                src="/logo.png"
+                alt="Dream Travels Logo"
+                className="h-9 w-9 object-contain rounded-full bg-admin-primary-soft p-0.5"
+              />
+              <span className="text-lg font-bold tracking-tight text-admin-ink">
                 Dream<span className="text-admin-primary">Travels</span>
               </span>
-              <span className="ml-1 rounded-full bg-admin-surface-2 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-admin-ink-muted">
+              <span className="ml-0.5 rounded-full bg-admin-surface-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-admin-ink-muted">
                 Admin
               </span>
             </div>

@@ -57,7 +57,7 @@ export default async function CategoryPage({
   const packages = await getPackagesByCategory(category);
 
   return (
-    <main data-tone="light" className="flex-1 bg-canvas py-16">
+    <main data-tone="light" className="flex-1 bg-canvas py-8">
       <Container>
         <SectionHeading
           title={`Explore ${label}`}
