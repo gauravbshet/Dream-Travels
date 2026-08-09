@@ -47,10 +47,10 @@ export function ExploreByMap() {
     <Section tone="light" id="map">
       <Container>
         <Reveal>
-          <div className="mb-8 flex flex-wrap items-end justify-between gap-4 lg:mb-12">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3 lg:mb-6">
             <div>
               <h2 className="display-section text-ink">Explore by map</h2>
-              <p className="prose-measure mt-3 text-base text-ink-muted lg:text-lg">
+              <p className="prose-measure mt-1.5 text-base text-ink-muted lg:text-lg">
                 Tap a pin to see what we run there. {totalPackages} curated
                 departures across {mapDestinations.length} destinations.
               </p>

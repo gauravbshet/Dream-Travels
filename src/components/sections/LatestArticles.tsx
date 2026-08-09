@@ -32,8 +32,8 @@ export function LatestArticles({
       <Container>
         <SectionHeading title="The Latest" description="Travel tips, guides, and stories from our team." />
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:gap-10">
-          <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 lg:grid-cols-[1fr_320px] lg:gap-6">
+          <div className="grid gap-3.5 sm:grid-cols-2">
             {blogs.map((post) => (
               <article
                 key={post.id}

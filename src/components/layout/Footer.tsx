@@ -55,7 +55,7 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer id="contact" data-tone="dark" className="relative mt-4 overflow-hidden bg-surface-dark-deep border-t border-border pb-20 pt-8 lg:pb-12 lg:pt-12 text-ink-muted">
+    <footer id="contact" data-tone="dark" className="relative mt-2 overflow-hidden bg-surface-dark-deep border-t border-border pb-10 pt-6 lg:pb-8 lg:pt-8 text-ink-muted">
       <span
         aria-hidden
         className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-[9rem] lg:text-[13rem] font-semibold tracking-tight text-ink/[0.03] select-none"
@@ -140,7 +140,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs sm:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-border pt-4 text-xs sm:flex-row">
           <p>© 2026 Dream Travels. All rights reserved.</p>
           <p>Designed for explorers, by explorers.</p>
         </div>

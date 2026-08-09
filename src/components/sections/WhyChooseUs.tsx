@@ -57,8 +57,8 @@ export function WhyChooseUs() {
           description="What makes travelling with us different."
         />
 
-        <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-14">
-          <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-2 lg:items-center lg:gap-8">
+          <div className="grid gap-4 sm:grid-cols-2">
             {whyPoints.map((point, index) => (
               <Reveal key={point.title} delay={index * 60} className="flex gap-3.5">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] bg-surface-sage text-canopy">

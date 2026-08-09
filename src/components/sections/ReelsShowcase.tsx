@@ -58,9 +58,9 @@ export function ReelsShowcase({ reels = staticReels }: { reels?: Reel[] }) {
   if (reels.length === 0) return null;
 
   return (
-    <Section tone="light" id="reels" className="pt-2.5 sm:pt-4 lg:pt-6">
+    <Section tone="light" id="reels" className="pt-1 sm:pt-2 lg:pt-3">
       <Container>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeading
             title="Travel Through Our Reels"
             description="See where our travelers are going."
@@ -81,12 +81,12 @@ export function ReelsShowcase({ reels = staticReels }: { reels?: Reel[] }) {
         </div>
 
         {filtered.length === 0 ? (
-          <p className="mt-10 text-center text-sm text-ink-muted">
+          <p className="mt-6 text-center text-sm text-ink-muted">
             No reels in this category yet — check back soon.
           </p>
         ) : (
           <ResponsiveScroller
-            className="mt-6"
+            className="mt-3 sm:mt-4"
             gridClassName="lg:grid-cols-4 xl:grid-cols-5 lg:gap-5"
           >
             {filtered.map((reel, index) => (

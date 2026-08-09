@@ -19,20 +19,20 @@ export function HomeIntro() {
   return (
     <>
       {/* Block 1 — light, headline + floating photo collage */}
-      <section className="relative overflow-hidden bg-surface-sage py-6 sm:py-8 lg:py-10">
+      <section className="relative overflow-hidden bg-surface-sage py-4 sm:py-5 lg:py-6">
         <Container className="relative">
           <Reveal className="mx-auto max-w-3xl text-center">
             <h2 className="display-hero text-ink">
               Discovering Wonder, Adventure, and Life-Long Journeys
             </h2>
-            <p className="prose-measure mx-auto mt-5 text-base text-ink-muted sm:text-lg">
+            <p className="prose-measure mx-auto mt-3 text-base text-ink-muted sm:text-lg">
               Every trip is a chance to explore new places, connect with fellow travellers, and
               come home with stories worth telling — curated by people who&apos;ve actually been
               there.
             </p>
             <Link
               href="#packages"
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-amber px-7 py-3.5 text-sm font-bold text-ink shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-amber/40"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-amber px-6 py-3 text-sm font-bold text-ink shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-amber/40"
             >
               Explore Our Trips
               <ArrowUpRight className="h-4 w-4" />

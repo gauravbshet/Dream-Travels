@@ -18,13 +18,13 @@ export function BudgetCards({ tiers = staticBudgetTiers }: { tiers?: BudgetTier[
         <SectionHeading
           title="Budget Friendly"
         />
-        <div className="flex flex-col gap-4 lg:grid lg:grid-cols-3 xl:grid-cols-4 lg:gap-6">
+        <div className="flex flex-col gap-3 lg:grid lg:grid-cols-3 xl:grid-cols-4 lg:gap-4">
           {tiers.map((tier) => (
             <MotionLink
               key={tier.id}
               href="#packages"
-              aria-label={`Browse ${tier.title} destinations`}              whileHover={{ y: -4 }}
-              className="group flex items-center gap-4 rounded-[14px] bg-surface p-5 border border-border text-left transition-colors hover:border-primary/30"
+              aria-label={`Browse ${tier.title} destinations`}              whileHover={{ y: -4 }}
+              className="group flex items-center gap-4 rounded-[14px] bg-surface p-3.5 sm:p-4 border border-border text-left transition-colors hover:border-primary/30"
             >
               <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] bg-sage-100 text-3xl">
                 {tier.emoji}

@@ -26,7 +26,7 @@ export function PopularDestinationsGrid({
   if (destinations.length === 0) return null;
 
   return (
-    <Section tone="light" className="pb-2 sm:pb-4 lg:pb-6">
+    <Section tone="light" className="pb-1 sm:pb-2 lg:pb-3">
       <Container>
         <SectionHeading
           title="Popular Destinations"

@@ -28,7 +28,7 @@ export function Hero() {
   const copyOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
   return (
-    <section ref={ref} className="relative w-full h-screen min-h-[680px] max-h-[1080px] overflow-hidden flex flex-col justify-center">
+    <section ref={ref} className="relative w-full h-[85vh] min-h-[540px] max-h-[780px] overflow-hidden flex flex-col justify-center">
       {/* Background Image Container spanning full screen */}
       <motion.div
         style={reduced ? undefined : { scale: imageScale, y: imageY }}
@@ -79,7 +79,7 @@ export function Hero() {
       </div>
 
       {/* Hero Content Container */}
-      <div className="container-app relative z-20 pt-24 pb-28 sm:pb-32 lg:pb-36 flex flex-col justify-between h-full max-w-6xl">
+      <div className="container-app relative z-20 pt-16 pb-16 sm:pb-20 lg:pb-24 flex flex-col justify-between h-full max-w-6xl">
         <div>
           <motion.div
             style={reduced ? undefined : { y: copyY, opacity: copyOpacity }}
@@ -90,7 +90,7 @@ export function Hero() {
               initial={{ y: 16, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-4 sm:mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-md shadow-md"
+              className="mb-3 sm:mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-md shadow-md"
             >
               <Star className="h-3.5 w-3.5 fill-amber text-amber" />
               <span>Rated 4.9 by 75,000+ happy travellers</span>
@@ -113,7 +113,7 @@ export function Hero() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.85, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-4 sm:mt-5 max-w-xl text-sm sm:text-lg text-gray-200 leading-relaxed drop-shadow-sm font-normal"
+              className="mt-3 sm:mt-4 max-w-xl text-sm sm:text-lg text-gray-200 leading-relaxed drop-shadow-sm font-normal"
             >
               Curated community trips, serene campsites, and luxury nature escapes designed for memories that last a lifetime.
             </motion.p>
@@ -123,7 +123,7 @@ export function Hero() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.85, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-6 sm:mt-8 flex flex-wrap items-center gap-4"
+              className="mt-4 sm:mt-5 flex flex-wrap items-center gap-4"
             >
               <a
                 href="#packages"
@@ -147,7 +147,7 @@ export function Hero() {
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.85, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-30 mt-6 sm:mt-8 mx-auto w-full max-w-full px-4 sm:px-6 lg:max-w-5xl -translate-y-4 sm:-translate-y-6 lg:-translate-y-8"
+          className="relative z-30 mt-4 sm:mt-5 mx-auto w-full max-w-full px-4 sm:px-6 lg:max-w-5xl -translate-y-2 sm:-translate-y-4 lg:-translate-y-4"
         >
           <div className="hidden sm:block">
             <HeroSearch />

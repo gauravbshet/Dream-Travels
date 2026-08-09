@@ -14,10 +14,5 @@ export function RouteAwareNavbar() {
 }
 
 export function RouteAwareBottomNav() {
-    const pathname = usePathname();
-    if (pathname?.startsWith("/admin")) {
-        return null;
-    }
-
-    return <BottomNav />;
+    return null;
 }

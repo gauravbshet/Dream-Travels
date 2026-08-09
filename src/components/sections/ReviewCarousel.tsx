@@ -17,9 +17,9 @@ export function ReviewCarousel({ reviews = staticReviews }: { reviews?: Review[]
         <div className="flex flex-wrap items-end justify-between gap-4">
           <SectionHeading
             title="Our Travellers' Experiences"
-            className="mb-4 lg:mb-8"
+            className="mb-2 lg:mb-3"
           />
-          <div className="mb-6 lg:mb-10 flex items-center gap-2 rounded-[14px] bg-surface px-4 py-3 border border-border">
+          <div className="mb-3 lg:mb-4 flex items-center gap-2 rounded-[14px] bg-surface px-4 py-3 border border-border">
             <span className="text-2xl font-semibold text-ink">4.9</span>
             <div>
               <div className="flex gap-0.5">
