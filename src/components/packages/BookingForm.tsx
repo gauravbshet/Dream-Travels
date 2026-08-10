@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MessageCircle } from "lucide-react";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 export function BookingForm({
     packageTitle,
@@ -30,8 +31,7 @@ export function BookingForm({
         const message = `Hello! I'd like to book *${packageTitle}*.\nName: ${name}\nPhone: ${phone}\nTravellers: ${travellers}${
             date ? `\nPreferred date: ${date}` : ""
         }`;
-        const whatsappUrl = `https://wa.me/${whatsappNumber ?? ""}?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+        window.open(buildWhatsAppLink(message, whatsappNumber), "_blank", "noopener,noreferrer");
     }
 
     if (submitted) {

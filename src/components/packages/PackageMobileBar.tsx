@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 export function PackageMobileBar({
   slug,
@@ -15,9 +16,10 @@ export function PackageMobileBar({
   price: number;
   whatsappNumber?: string;
 }) {
-  const whatsappHref = `https://wa.me/${whatsappNumber ?? ""}?text=${encodeURIComponent(
-    `Hello! I would like to enquire about *${title}*. Could you share availability and pricing?`
-  )}`;
+  const whatsappHref = buildWhatsAppLink(
+    `Hello! I would like to enquire about *${title}*. Could you share availability and pricing?`,
+    whatsappNumber
+  );
 
   return (
     <div className="fixed inset-x-3 bottom-3 z-[180] flex items-center justify-between gap-3 rounded-[16px] border border-border/80 bg-surface/95 px-4 py-3 shadow-xl backdrop-blur-xl lg:hidden">
