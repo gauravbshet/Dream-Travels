@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { categories } from "@/data/categories";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -21,7 +22,6 @@ export function CategorySlider() {
           {categories.map((cat, i) => {
             const href = `/categories/${cat.id}`;
             const isActive = pathname === href;
-            const Icon = cat.icon;
             return (
               <motion.div
                 key={cat.id}
@@ -31,22 +31,28 @@ export function CategorySlider() {
                 <Link
                   href={href}
                   aria-current={isActive ? "page" : undefined}
-                  className="flex min-w-0 flex-col items-center gap-2"
+                  className="group flex min-w-0 flex-col items-center gap-2 rounded-3xl transition-all duration-300 ease-in-out hover:-translate-y-[5px] hover:shadow-lg"
                 >
                   <span
                     className={cn(
-                      "flex h-12 w-12 xs:h-14 xs:w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border transition-all duration-300",
+                      "flex h-12 w-12 xs:h-14 xs:w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border bg-surface transition-all duration-300 ease-in-out",
                       isActive
-                        ? "bg-canopy border-primary text-white scale-105"
-                        : "bg-surface border-border text-ink-muted hover:border-primary/40 hover:text-primary"
+                        ? "border-primary text-white shadow-md"
+                        : "border-border text-ink-muted hover:border-primary/40"
                     )}
                   >
-                    <Icon className="h-4.5 w-4.5 xs:h-5 xs:w-5 sm:h-6 sm:w-6" />
+                    <Image
+                      src={cat.iconUrl}
+                      alt={cat.iconAlt}
+                      width={40}
+                      height={40}
+                      className="w-8 h-8 sm:w-10 sm:h-10 object-contain transition-transform duration-300 ease-in-out group-hover:scale-110"
+                    />
                   </span>
                   <span
                     className={cn(
-                      "w-full text-center text-[11px] sm:text-xs lg:text-[13px] font-medium leading-tight transition-colors text-balance",
-                      isActive ? "text-primary" : "text-ink-muted"
+                      "w-full text-center text-[11px] sm:text-xs lg:text-[13px] font-medium leading-tight transition-colors duration-300 ease-in-out",
+                      isActive ? "text-primary" : "text-ink-muted group-hover:text-primary"
                     )}
                   >
                     {cat.label}

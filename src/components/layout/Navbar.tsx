@@ -143,10 +143,23 @@ export function Navbar() {
           )}
         >
           <Link href="/" className="flex min-h-11 items-center gap-2.5 shrink-0">
-            <img
+            <motion.img
               src="/logo.png"
               alt="Dream Travels Logo"
-              className="h-10 w-10 sm:h-11 sm:w-11 object-contain rounded-full bg-white/20 p-0.5 shadow-xs transition-transform duration-300 hover:scale-105"
+              className="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-full bg-white/20 p-0.5 shadow-xs cursor-pointer"
+              animate={{ y: [0, -3, 0] }}
+              transition={{
+                y: {
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+                type: "spring",
+                stiffness: 300,
+                damping: 15
+              }}
+              whileHover={{ scale: 1.1, rotate: 8 }}
+              whileTap={{ scale: 0.9 }}
             />
             <span
               className={cn(

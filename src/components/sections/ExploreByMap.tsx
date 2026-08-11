@@ -227,17 +227,19 @@ export function ExploreByMap() {
             </article>
 
             {/* Where we run trips card */}
-            <div className="rounded-[14px] border border-border/80 bg-surface p-3 sm:p-3.5">
-              <h3 className="mb-2 text-[12px] font-bold text-ink tracking-tight">
-                Where we run trips
-              </h3>
-              <div className="flex flex-col gap-2 sm:gap-2.5">
+            <div className="flex h-full flex-col rounded-[22px] border border-border/80 bg-surface/50 p-5 shadow-sm backdrop-blur-xl sm:p-6">
+              <div className="mb-5 flex items-center justify-between border-b border-border/60 pb-3">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-ink/70">
+                  Where We Run Trips
+                </h3>
+              </div>
+              <div className="flex flex-col gap-5 overflow-y-auto pr-2 scrollbar-hide">
                 {byRegion.map((group) => (
-                  <div key={group.region}>
-                    <p className="mb-1 text-[10px] font-semibold text-ink-muted uppercase tracking-wider">
+                  <div key={group.region} className="group flex flex-col gap-2.5">
+                    <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-ink before:h-px before:w-4 before:bg-canopy/40">
                       {group.region}
                     </p>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-2 pl-6">
                       {group.items.map((d) => (
                         <RegionChip
                           key={d.id}
@@ -273,16 +275,25 @@ function RegionChip({
       onClick={onSelect}
       aria-pressed={active}
       className={cn(
-        "inline-flex min-h-[28px] sm:min-h-[30px] items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] sm:text-[11.5px] font-medium transition-colors duration-[180ms]",
+        "group relative flex items-center gap-2 overflow-hidden rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all duration-300",
         active
-          ? "border-canopy bg-canopy/15 text-ink font-semibold"
-          : "border-border/80 text-ink-muted hover:border-canopy/30 hover:text-ink-2"
+          ? "scale-[1.02] border-canopy bg-canopy text-white shadow-md shadow-canopy/20"
+          : "border-border/60 bg-surface text-ink-muted hover:scale-[1.02] hover:border-canopy/40 hover:bg-canopy/5 hover:text-ink"
       )}
     >
-      {destination.name}
-      <span className={cn("text-[9.5px]", active ? "text-canopy font-bold" : "text-ink-muted")}>
-        {destination.packageCount}
-      </span>
+      <span className="relative z-10">{destination.name}</span>
+      {destination.packageCount > 0 && (
+        <span
+          className={cn(
+            "relative z-10 flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold transition-colors",
+            active
+              ? "bg-white/20 text-white"
+              : "bg-ink/5 text-ink-muted group-hover:bg-canopy/10 group-hover:text-canopy"
+          )}
+        >
+          {destination.packageCount}
+        </span>
+      )}
     </button>
   );
 }

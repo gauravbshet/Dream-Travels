@@ -42,64 +42,36 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
     return (
         <main data-tone="light" className="flex-1 bg-canvas py-10">
             <Container>
-                <SectionHeading
-                    title={data.destination.name}
-                    description={data.destination.description ?? "Explore one of our featured destinations."}
-                />
-
-                <div className="grid gap-8 lg:grid-cols-2">
-                    <div className="overflow-hidden rounded-[24px] bg-surface border border-border">
-                        <div className="relative h-[320px] sm:h-[420px] w-full">
-                            <Image
-                                src={data.destination.cover_image ?? data.destination.image}
-                                alt={data.destination.name}
-                                fill
-                                sizes="100vw"
-                                className="object-cover"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="rounded-[24px] border border-border bg-surface p-8">
-                        <div className="space-y-4">
-                            <p className="text-sm text-text-secondary">Location overview</p>
-                            <div className="flex items-center gap-3 text-ink/80">
-                                <MapPin className="h-4 w-4" />
-                                <span>{data.destination.name}</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <PackageIcon className="h-4 w-4 text-primary" />
-                                <span className="font-semibold text-ink">Packages available</span>
-                            </div>
-                            <p className="text-sm text-ink/80">{data.packages.length} packages found for this destination.</p>
-                        </div>
-                    </div>
+                <div className="mb-8 pt-8">
+                    <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-ink">{data.destination.name}</h1>
                 </div>
 
-                <Section className="mt-14">
-                    <div className="grid gap-6 lg:grid-cols-3">
+                <Section>
+                    <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
                         {data.packages.map((pkg) => (
-                            <div key={pkg.id} className="rounded-[20px] border border-border bg-surface p-5">
-                                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[16px]">
-                                    <Image
-                                        src={pkg.image}
-                                        alt={pkg.title}
-                                        fill
-                                        sizes="100vw"
-                                        className="object-cover"
-                                    />
-                                </div>
-                                <div className="mt-4">
-                                    <p className="text-sm text-text-secondary">{pkg.category}</p>
-                                    <h3 className="mt-2 text-lg font-semibold text-ink tracking-[-0.01em]">{pkg.title}</h3>
-                                    <p className="mt-2 text-sm text-text-secondary">{pkg.duration}</p>
-                                    <p className="mt-3 font-semibold text-ink">{formatPrice(pkg.price)}</p>
+                            <div key={pkg.id} className="flex flex-col justify-between rounded-[16px] border border-border bg-surface p-3 sm:rounded-[20px] sm:p-5">
+                                <div>
+                                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[10px] sm:rounded-[16px]">
+                                        <Image
+                                            src={pkg.image}
+                                            alt={pkg.title}
+                                            fill
+                                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                            className="object-cover"
+                                        />
+                                    </div>
+                                    <div className="mt-3 sm:mt-4">
+                                        <p className="text-[10px] text-text-secondary sm:text-sm">{pkg.category}</p>
+                                        <h3 className="mt-1 line-clamp-2 text-sm font-semibold tracking-tight text-ink sm:mt-2 sm:text-lg">{pkg.title}</h3>
+                                        <p className="mt-1 text-[11px] text-text-secondary sm:mt-2 sm:text-sm">{pkg.duration}</p>
+                                        <p className="mt-1.5 text-sm font-bold text-ink sm:mt-3 sm:text-base">{formatPrice(pkg.price)}</p>
+                                    </div>
                                 </div>
                                 <a
                                     href={`/packages/${pkg.slug}`}
-                                    className="mt-5 inline-flex items-center justify-center rounded-[12px] bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-primary-dark"
+                                    className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-primary px-3 py-2 text-[11px] font-semibold text-white transition hover:bg-primary-dark sm:mt-5 sm:rounded-xl sm:px-4 sm:py-3 sm:text-sm"
                                 >
-                                    View package
+                                    View
                                 </a>
                             </div>
                         ))}

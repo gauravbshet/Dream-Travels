@@ -87,13 +87,18 @@ export function Hero() {
           >
             {/* Rating Pill */}
             <motion.div
-              initial={{ y: 16, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-3 sm:mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-md shadow-md"
+              animate={reduced ? undefined : { y: [0, -6, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             >
-              <Star className="h-3.5 w-3.5 fill-amber text-amber" />
-              <span>Rated 4.9 by 75,000+ happy travellers</span>
+              <motion.div
+                initial={{ y: 16, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="mb-3 sm:mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-md shadow-md"
+              >
+                <Star className="h-3.5 w-3.5 fill-amber text-amber" />
+                <span>Rated 4.9 by 75,000+ happy travellers</span>
+              </motion.div>
             </motion.div>
 
             {/* Display Heading */}
@@ -162,9 +167,9 @@ export function Hero() {
         <svg viewBox="0 0 1440 240" preserveAspectRatio="none" className="relative h-full w-full">
           <defs>
             <linearGradient id="hero-curve-gradient" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
-              <stop offset="28%" stopColor="#ffffff" stopOpacity="0.32" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
+              <stop offset="0%" stopColor="#fafaf7" stopOpacity="0" />
+              <stop offset="28%" stopColor="#fafaf7" stopOpacity="0.32" />
+              <stop offset="100%" stopColor="#fafaf7" stopOpacity="1" />
             </linearGradient>
             <filter id="hero-curve-shadow" x="-20%" y="-50%" width="140%" height="180%">
               <feDropShadow dx="0" dy="-8" stdDeviation="16" floodColor="#000000" floodOpacity="0.12" />
@@ -180,7 +185,7 @@ export function Hero() {
           <path
             className="hidden md:block"
             d="M0,86 C220,116 420,36 690,74 C930,112 1120,178 1440,126 L1440,240 L0,240 Z"
-            fill="#ffffff"
+            fill="#fafaf7"
           />
           <path
             className="block md:hidden"

@@ -320,8 +320,8 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                                     <MapPin className="h-4 w-4 text-canopy shrink-0" /> {pkg.location}
                                 </span>
                             )}
-                            <span className="rounded-full bg-black/50 px-3 py-1 text-white font-bold backdrop-blur-md border border-white/10">
-                                Starting {formatPrice(pkg.price)} <span className="font-normal text-white/70">/ person</span>
+                            <span className="rounded-full bg-black/50 px-4 py-1.5 text-base sm:text-lg text-white font-bold backdrop-blur-md border border-white/10">
+                                Starting {formatPrice(pkg.price)} <span className="text-sm sm:text-base font-normal text-white/70">/ person</span>
                             </span>
                         </div>
                     </div>
