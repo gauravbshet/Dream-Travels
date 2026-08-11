@@ -333,7 +333,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             <Container>
                 <div className="grid gap-8 lg:grid-cols-[1fr_380px] items-start">
-                    <div className="space-y-12">
+                    <div className="space-y-6 sm:space-y-8 lg:space-y-12">
                         {/* Gallery */}
                         {gallery.length > 1 && <PackageGallery images={gallery} title={pkg.title} />}
 

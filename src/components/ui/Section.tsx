@@ -42,7 +42,10 @@ export function Section({
       id={id}
       data-tone={toneDataAttr[tone]}
       className={cn(
-        !flush && "py-2.5 sm:py-3.5 lg:py-4.5",
+        // `flush-section` is the hook the mobile section-padding rule in
+        // globals.css excludes; without it a flush section still has the
+        // global padding forced back on below 768px.
+        flush ? "flush-section" : "py-2.5 sm:py-3.5 lg:py-4.5",
         toneClassName[tone],
         className
       )}

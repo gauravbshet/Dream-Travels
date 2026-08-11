@@ -622,10 +622,12 @@ select:focus-visible {
    ========================================================================== */
 @media (max-width: 768px) {
 
-  /* Section spacing: 32px top/bottom padding */
+  /* Section spacing. This stacks: one section's padding-bottom meets the
+     next section's padding-top, so the gap a reader actually sees between
+     two sections is double this value. 16px each => 32px between sections. */
   section:not(.flush-section) {
-    padding-top: 32px !important;
-    padding-bottom: 32px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
   }
 
   /* Force the Carousel and ResponsiveScroller to have 16px horizontal padding and gap, snap scrolling */
