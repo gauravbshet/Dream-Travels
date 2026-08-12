@@ -22,6 +22,28 @@
 -- "manali-mountain-adventure-5d4n" dummy package once this real one is
 -- live, so the site doesn't show both.
 --
+-- Prices corrected against a later business-provided list: Meghalaya
+-- 48999 -> 47899, Kashmir 54999 -> 59999, Sikkim & Darjeeling
+-- 44999 -> 36999 (destination and package rows both updated).
+--
+-- Section 4 adds six more real packages from that same list (Maharashtra,
+-- Maharashtra Adventure, Gangadikallu, Bandaje Falls Trek, Kurinjal Peak,
+-- Kedarnath) with their real names and prices, but NO day-by-day itinerary
+-- — only a title and price were provided, no route, duration, pickup point,
+-- or day plan, and inventing one would be fabricated content. They're
+-- inserted with status = 'draft' so they exist in the admin dashboard for
+-- editing but do NOT show on the public site until real details are added
+-- and they're switched to 'published'.
+--
+-- IMPORTANT before publishing any of the six: packages/[slug]/page.tsx
+-- currently falls back to a hardcoded fake 5-day "tea garden resort"
+-- itinerary (DUMMY_ITINERARY) for ANY package with zero real itinerary
+-- rows — including these. Publishing one of these six before it has a real
+-- itinerary in the `itineraries` table would show that fake content to
+-- customers. Flagging this now since it's directly relevant; happy to fix
+-- the fallback (show an honest "itinerary coming soon" state instead) if
+-- you'd like that done as a separate change.
+--
 -- Safe to run more than once -- every insert uses `on conflict (slug) do
 -- nothing`, so re-running just skips rows that already exist.
 --
@@ -39,7 +61,7 @@ values
     'Living root bridges, the wettest place on Earth, and Asia''s cleanest village -- waterfalls and misty hills across Shillong, Cherrapunji, and Dawki.',
     'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=2000&q=80',
     'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80',
-    48999, null, false
+    47899, null, false
   ),
   (
     'kashmir',
@@ -47,7 +69,7 @@ values
     'Snow-capped Gulmarg, Mughal gardens in Srinagar, and a Shikara ride on Dal Lake -- winter in India''s most photographed valley.',
     'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2000&q=80',
     'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80',
-    54999, null, false
+    59999, null, false
   ),
   (
     'arunachal-pradesh',
@@ -63,7 +85,7 @@ values
     'Tsomgo Lake, the Indo-China border at Nathula Pass, and a sunrise over Kanchenjunga from Tiger Hill -- monasteries, tea gardens, and the UNESCO toy train.',
     'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=2000&q=80',
     'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
-    44999, null, false
+    36999, null, false
   ),
   (
     'nagaland',
@@ -89,7 +111,7 @@ values
     'Meghalaya & Assam Explorer', 'Guwahati, Shillong, Cherrapunji, Dawki',
     'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80',
     'group', '6D / 5N', 'Guwahati Airport / Railway Station',
-    48999,
+    47899,
     'From Kaziranga''s one-horned rhinos to the Double Decker Living Root Bridge and Asia''s cleanest village, Mawlynnong -- six days through Assam''s wildlife and Meghalaya''s waterfalls, caves, and living-root-bridge country.',
     'published',
     array[
@@ -107,7 +129,7 @@ values
     'Kashmir Winter Wonderland', 'Srinagar, Gulmarg, Pahalgam',
     'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1200&q=80',
     'group', '7D / 6N', 'Srinagar Airport',
-    54999,
+    59999,
     'A December-to-March winter circuit through Gulmarg''s snow slopes, Pahalgam''s valleys, and Srinagar''s Mughal gardens, ending with a Shikara ride on Dal Lake and a night on a deluxe houseboat.',
     'published',
     array[
@@ -161,7 +183,7 @@ values
     'Sikkim & Darjeeling -- The Himalayan Escape', 'Gangtok, Darjeeling',
     'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80',
     'group', '6D / 5N', 'NJP Railway Station / Bagdogra Airport',
-    44999,
+    36999,
     'From Gangtok''s Tsomgo Lake and the Indo-China border at Nathula Pass to a Tiger Hill sunrise over Kanchenjunga and the UNESCO-listed Darjeeling toy train -- monasteries, tea gardens, and Himalayan views.',
     'published',
     array[
@@ -460,4 +482,100 @@ on conflict (package_id, day) do nothing;
 --   select package_id, count(*) as day_count
 --   from public.itineraries
 --   group by package_id;
+-- ----------------------------------------------------------------------------
+
+-- ============================================================================
+-- 4. Six more real packages -- names and prices only, no itinerary
+--
+-- See the note at the top of this file: no route, duration, pickup point,
+-- or day plan was provided for any of these, so none is invented here.
+-- Inserted as status = 'draft' -- visible in the admin dashboard for
+-- editing, hidden from the public site until switched to 'published' with
+-- real details filled in.
+-- ============================================================================
+
+insert into public.destinations (slug, name, description, cover_image, image, price, rating, is_featured)
+values
+  (
+    'maharashtra',
+    'Maharashtra',
+    null,
+    'https://images.unsplash.com/photo-1520962880247-cfaf541c8724?auto=format&fit=crop&w=2000&q=80',
+    'https://images.unsplash.com/photo-1520962880247-cfaf541c8724?auto=format&fit=crop&w=1200&q=80',
+    null, null, false
+  ),
+  (
+    'karnataka-western-ghats-treks',
+    'Karnataka Western Ghats Treks',
+    null,
+    'https://images.unsplash.com/photo-1580289142438-6470c4bab0e5?auto=format&fit=crop&w=2000&q=80',
+    'https://images.unsplash.com/photo-1580289142438-6470c4bab0e5?auto=format&fit=crop&w=1200&q=80',
+    null, null, false
+  ),
+  (
+    'kedarnath',
+    'Kedarnath',
+    null,
+    'https://images.unsplash.com/photo-1626016207565-1e42345e0710?auto=format&fit=crop&w=2000&q=80',
+    'https://images.unsplash.com/photo-1626016207565-1e42345e0710?auto=format&fit=crop&w=1200&q=80',
+    null, null, false
+  )
+on conflict (slug) do nothing;
+
+insert into public.packages (
+  destination_id, slug, title, location, image, category, price, status
+)
+values
+  (
+    (select id from public.destinations where slug = 'maharashtra'),
+    'maharashtra-7999',
+    'Maharashtra', 'Maharashtra',
+    'https://images.unsplash.com/photo-1520962880247-cfaf541c8724?auto=format&fit=crop&w=1200&q=80',
+    'group', 7999, 'draft'
+  ),
+  (
+    (select id from public.destinations where slug = 'karnataka-western-ghats-treks'),
+    'gangadikallu-3899',
+    'Gangadikallu', 'Karnataka',
+    'https://images.unsplash.com/photo-1580289142438-6470c4bab0e5?auto=format&fit=crop&w=1200&q=80',
+    'group', 3899, 'draft'
+  ),
+  (
+    (select id from public.destinations where slug = 'karnataka-western-ghats-treks'),
+    'bandaje-falls-trek-3899',
+    'Bandaje Falls Trek', 'Karnataka',
+    'https://images.unsplash.com/photo-1580289142438-6470c4bab0e5?auto=format&fit=crop&w=1200&q=80',
+    'group', 3899, 'draft'
+  ),
+  (
+    (select id from public.destinations where slug = 'karnataka-western-ghats-treks'),
+    'kurinjal-peak-3899',
+    'Kurinjal Peak', 'Karnataka',
+    'https://images.unsplash.com/photo-1580289142438-6470c4bab0e5?auto=format&fit=crop&w=1200&q=80',
+    'group', 3899, 'draft'
+  ),
+  (
+    (select id from public.destinations where slug = 'maharashtra'),
+    'maharashtra-adventure-8999',
+    'Maharashtra Adventure', 'Maharashtra',
+    'https://images.unsplash.com/photo-1520962880247-cfaf541c8724?auto=format&fit=crop&w=1200&q=80',
+    'group', 8999, 'draft'
+  ),
+  (
+    (select id from public.destinations where slug = 'kedarnath'),
+    'kedarnath-29999',
+    'Kedarnath', 'Uttarakhand',
+    'https://images.unsplash.com/photo-1626016207565-1e42345e0710?auto=format&fit=crop&w=1200&q=80',
+    'group', 29999, 'draft'
+  )
+on conflict (slug) do nothing;
+
+-- ----------------------------------------------------------------------------
+-- Once real itinerary/route details are available for these six, fill in
+-- duration/pickup/overview, add day rows to `itineraries` (see section 3
+-- above for the pattern), then:
+--   update public.packages set status = 'published' where slug in (
+--     'maharashtra-7999', 'gangadikallu-3899', 'bandaje-falls-trek-3899',
+--     'kurinjal-peak-3899', 'maharashtra-adventure-8999', 'kedarnath-29999'
+--   );
 -- ----------------------------------------------------------------------------
