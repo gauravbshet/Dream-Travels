@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   motion,
   useScroll,
@@ -10,7 +11,7 @@ import {
 } from "framer-motion";
 import { ArrowUpRight, Star } from "lucide-react";
 import { HeroSearch, HeroSearchCompact } from "./HeroSearch";
-import heroImage from "../../../media/hero.png";
+import heroImage from "../../../media/hero.jpg";
 
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null);
@@ -137,12 +138,12 @@ export function Hero() {
                 Explore All Trips
                 <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
-              <a
+              <Link
                 href="/destinations"
                 className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-6 sm:px-7 py-3 sm:py-3.5 text-xs sm:text-sm font-bold text-white backdrop-blur-md transition-all duration-300 hover:bg-white/20 hover:-translate-y-0.5"
               >
                 View Destinations
-              </a>
+              </Link>
             </motion.div>
           </motion.div>
         </div>

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { categories } from "@/data/categories";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -22,6 +21,7 @@ export function CategorySlider() {
           {categories.map((cat, i) => {
             const href = `/categories/${cat.id}`;
             const isActive = pathname === href;
+            const Icon = cat.icon;
             return (
               <motion.div
                 key={cat.id}
@@ -41,12 +41,9 @@ export function CategorySlider() {
                         : "border-border text-ink-muted hover:border-primary/40"
                     )}
                   >
-                    <Image
-                      src={cat.iconUrl}
-                      alt={cat.iconAlt}
-                      width={40}
-                      height={40}
-                      className="w-8 h-8 sm:w-10 sm:h-10 object-contain transition-transform duration-300 ease-in-out group-hover:scale-110"
+                    <Icon
+                      className="w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-300 ease-in-out group-hover:scale-110"
+                      strokeWidth={1.75}
                     />
                   </span>
                   <span

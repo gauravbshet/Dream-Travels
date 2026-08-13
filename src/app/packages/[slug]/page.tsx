@@ -165,67 +165,6 @@ export async function generateMetadata({
     };
 }
 
-// Next.js 16 passes `params` as a Promise for dynamic route segments — this
-// was the root cause of "Package not found" on every package: the previous
-// code read `params.slug` synchronously and always got `undefined`.
-const DUMMY_ITINERARY: ItineraryDay[] = [
-    {
-        id: "day-1",
-        day: 1,
-        title: "Arrival, Welcome & Scenic Tea Garden Sunset Walk",
-        description: "Arrive at the destination where our private transport representative welcomes you. Check into your luxury nature resort, relax, and head out for an enchanting evening walk through lush green tea gardens followed by a traditional welcome tea tasting session.",
-        stay_location: "Grand Nature Resort & Spa",
-        stay_type: "4-Star Luxury Resort",
-        meals: "Dinner Included",
-        image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80",
-        optional_note: "Welcome drink & evening campfire included at resort",
-    },
-    {
-        id: "day-2",
-        day: 2,
-        title: "Full Day Waterfall Trek & Spice Plantation Exploration",
-        description: "Wake up to fresh mountain air and enjoy a lavish buffet breakfast. Embark on a private guided excursion to famous waterfalls, misty viewpoints, and an authentic organic spice plantation with exotic flora and fauna.",
-        stay_location: "Grand Nature Resort & Spa",
-        stay_type: "4-Star Luxury Resort",
-        meals: "Breakfast & Dinner Included",
-        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
-        optional_note: "Comfortable trekking shoes recommended for waterfall path",
-    },
-    {
-        id: "day-3",
-        day: 3,
-        title: "High Altitude Peak Sunrise & Cultural Folk Performance",
-        description: "Early morning jeep safari to the highest peak viewpoint for a breathtaking sunrise above the clouds. Afternoon at leisure for shopping local handicraft souvenirs and tea leaves. In the evening, enjoy a live traditional cultural dance & martial arts show.",
-        stay_location: "Grand Nature Resort & Spa",
-        stay_type: "4-Star Luxury Resort",
-        meals: "Breakfast & Dinner Included",
-        image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-        optional_note: "Camera recommended for panoramic cloud bed sunrise photos",
-    },
-    {
-        id: "day-4",
-        day: 4,
-        title: "Lakeside Boating, Wildlife Sanctuary & Evening Campfire",
-        description: "Visit the serene lake for a private boat ride surrounded by dense forest hills. Spot wild elephants, deer, and rare birds along the lakeside. Return to the resort for a memorable outdoor campfire dinner under the stars.",
-        stay_location: "Grand Nature Resort & Spa",
-        stay_type: "4-Star Luxury Resort",
-        meals: "Breakfast & Campfire BBQ Dinner",
-        image: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=80",
-        optional_note: "BBQ & live acoustic music at the evening campfire",
-    },
-    {
-        id: "day-5",
-        day: 5,
-        title: "Leisure Morning, Souvenir Shopping & Departure",
-        description: "Enjoy a relaxed final breakfast overlooking the valley. Check out from the resort with unforgettable memories. Private transfer arranged back to the airport/railway station for your onward journey.",
-        stay_location: null,
-        stay_type: null,
-        meals: "Breakfast Included",
-        image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80",
-        optional_note: "Private vehicle transfer to airport/station",
-    },
-];
-
 export default async function PackagePage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const data = await getPackageData(slug);
@@ -234,8 +173,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
         notFound();
     }
 
-    const { pkg, itinerary: rawItinerary, related } = data;
-    const itinerary = rawItinerary && rawItinerary.length > 0 ? rawItinerary : DUMMY_ITINERARY;
+    const { pkg, itinerary, related } = data;
     const gallery = [pkg.image, ...(pkg.additional_images ?? [])].filter(
         (src): src is string => Boolean(src)
     );
@@ -333,7 +271,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
 
             <Container>
                 <div className="grid gap-8 lg:grid-cols-[1fr_380px] items-start">
-                    <div className="space-y-12">
+                    <div className="space-y-6 sm:space-y-8 lg:space-y-12">
                         {/* Gallery */}
                         {gallery.length > 1 && <PackageGallery images={gallery} title={pkg.title} />}
 

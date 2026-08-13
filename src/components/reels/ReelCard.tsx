@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Pause, Play } from "lucide-react";
+import { MessageCircle, Pause, Play } from "lucide-react";
 import { InstagramGlyph } from "./InstagramGlyph";
 import { useInView } from "@/lib/useInView";
 import { cn, normalizeUrl } from "@/lib/utils";
 import type { Reel } from "@/data/reels";
+
+// Same fallback the rest of the site uses when NEXT_PUBLIC_WHATSAPP_NUMBER
+// isn't set locally — keeps this card's CTA from silently linking nowhere.
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "916360941948";
 
 export function ReelCard({
   reel,
@@ -69,6 +73,9 @@ export function ReelCard({
   }
 
   const instagramUrl = normalizeUrl(reel.instagramUrl ?? "");
+  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    `Hello! I'm interested in the "${reel.title}"${reel.destination ? ` trip in ${reel.destination}` : " trip"}. Can you share more details?`
+  )}`;
   // No admin-provided thumbnail: ask the browser to decode a frame slightly
   // into the clip (via the #t= media fragment) and eagerly fetch enough to
   // render it, so the card still shows *something* instead of a blank tile.
@@ -144,11 +151,24 @@ export function ReelCard({
         {shouldPlay ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
       </button>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] p-3">
-        <h3 className="line-clamp-1 text-[13px] font-bold text-white">{reel.title}</h3>
-        {reel.destination && (
-          <p className="mt-0.5 line-clamp-1 text-[11px] font-medium text-white/80">{reel.destination}</p>
-        )}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[3] flex items-end justify-between gap-2 p-3">
+        <div className="min-w-0">
+          <h3 className="line-clamp-1 text-[13px] font-bold text-white">{reel.title}</h3>
+          {reel.destination && (
+            <p className="mt-0.5 line-clamp-1 text-[11px] font-medium text-white/80">{reel.destination}</p>
+          )}
+        </div>
+        <a
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(event) => event.stopPropagation()}
+          aria-label={`Enquire about ${reel.title} on WhatsApp`}
+          title="Enquire on WhatsApp"
+          className="pointer-events-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-[#25D366]"
+        >
+          <MessageCircle className="h-4 w-4" />
+        </a>
       </div>
     </div>
   );

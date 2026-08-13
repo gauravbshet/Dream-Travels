@@ -229,19 +229,19 @@ export function ExploreByMap() {
             </article>
 
             {/* Where we run trips card */}
-            <div className="flex flex-1 flex-col justify-between rounded-[20px] border border-border/80 bg-surface/50 p-4 sm:p-5 shadow-xs backdrop-blur-xl">
-              <div className="mb-3 flex items-center justify-between border-b border-border/60 pb-2">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-ink/70">
+            <div className="flex flex-1 flex-col justify-between rounded-[18px] border border-border/80 bg-surface/50 p-3 sm:p-4 shadow-xs backdrop-blur-xl">
+              <div className="mb-2 flex items-center justify-between border-b border-border/60 pb-1.5">
+                <h3 className="text-[11px] font-bold uppercase tracking-widest text-ink/70">
                   Where We Run Trips
                 </h3>
               </div>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2">
                 {byRegion.map((group) => (
-                  <div key={group.region} className="group flex flex-col gap-1.5">
-                    <p className="flex items-center gap-2 text-[10.5px] font-bold uppercase tracking-wider text-ink before:h-px before:w-3 before:bg-canopy/40">
+                  <div key={group.region} className="group flex flex-col gap-1">
+                    <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-ink before:h-px before:w-2.5 before:bg-canopy/40">
                       {group.region}
                     </p>
-                    <div className="flex flex-wrap gap-1.5 pl-4 sm:pl-5">
+                    <div className="flex flex-wrap gap-1.5 pl-3.5 sm:pl-4">
                       {group.items.map((d) => (
                         <RegionChip
                           key={d.id}
@@ -277,20 +277,21 @@ function RegionChip({
       onClick={onSelect}
       aria-pressed={active}
       className={cn(
-        "group relative flex items-center gap-2 overflow-hidden rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all duration-300",
+        "group relative flex items-center gap-1.5 overflow-hidden rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all duration-300",
         active
-          ? "scale-[1.02] border-canopy bg-canopy text-white shadow-md shadow-canopy/20"
-          : "border-border/60 bg-surface text-ink-muted hover:scale-[1.02] hover:border-canopy/40 hover:bg-canopy/5 hover:text-ink"
+          ? "-translate-y-0.5 border-canopy bg-gradient-to-b from-canopy to-canopy-hover text-white shadow-md shadow-canopy/30"
+          : "border-border/50 bg-gradient-to-b from-surface to-surface-sage/60 text-ink-muted shadow-xs hover:-translate-y-0.5 hover:border-canopy/40 hover:text-ink hover:shadow-sm"
       )}
     >
+      {active && <MapPin className="relative z-10 h-3 w-3 shrink-0 fill-white/20" />}
       <span className="relative z-10">{destination.name}</span>
       {destination.packageCount > 0 && (
         <span
           className={cn(
-            "relative z-10 flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold transition-colors",
+            "relative z-10 flex h-4 min-w-[17px] items-center justify-center rounded-full px-1 text-[9.5px] font-bold transition-colors",
             active
               ? "bg-white/20 text-white"
-              : "bg-ink/5 text-ink-muted group-hover:bg-canopy/10 group-hover:text-canopy"
+              : "bg-canopy/8 text-canopy/70 group-hover:bg-canopy/15 group-hover:text-canopy"
           )}
         >
           {destination.packageCount}
