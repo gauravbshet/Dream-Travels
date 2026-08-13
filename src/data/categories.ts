@@ -1,3 +1,11 @@
+import {
+  Backpack,
+  UsersRound,
+  Users,
+  Globe,
+  type LucideIcon,
+} from "lucide-react";
+
 // These ids are the canonical `packages.category` values stored in the
 // database — the admin dropdown, the API-less Supabase queries, and this
 // slider all key off the same four slugs.
@@ -6,35 +14,17 @@ export type CategorySlug = "solo" | "group" | "family" | "international";
 export type Category = {
   id: CategorySlug;
   label: string;
-  iconUrl: string;
-  iconAlt: string;
+  icon: LucideIcon;
 };
 
+// Each category needs a silhouette that reads differently at 24px — the
+// previous set was three near-identical person glyphs, and `Group` rendered
+// as an abstract dashed box that didn't read as people at all.
 export const categories: Category[] = [
-  {
-    id: "solo",
-    label: "Solo Trips",
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/10368/10368796.png",
-    iconAlt: "Solo travel icon",
-  },
-  {
-    id: "group",
-    label: "Group Trips",
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/201/201426.png",
-    iconAlt: "Hotel service icon",
-  },
-  {
-    id: "family",
-    label: "Family Trips",
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/9638/9638464.png",
-    iconAlt: "Tourism icon",
-  },
-  {
-    id: "international",
-    label: "International Trips",
-    iconUrl: "https://cdn-icons-png.flaticon.com/512/4540/4540365.png",
-    iconAlt: "International travel icon",
-  },
+  { id: "solo", label: "Solo Trips", icon: Backpack },
+  { id: "group", label: "Group Trips", icon: UsersRound },
+  { id: "family", label: "Family Trips", icon: Users },
+  { id: "international", label: "International Trips", icon: Globe },
 ];
 
 export const categoryLabels: Record<CategorySlug, string> = {
