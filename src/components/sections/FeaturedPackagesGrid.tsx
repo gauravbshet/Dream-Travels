@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
@@ -35,6 +37,15 @@ export function FeaturedPackagesGrid({
             />
           ))}
         </ResponsiveScroller>
+        <div className="mt-5 flex justify-center sm:mt-6">
+          <Link
+            href="/packages"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-canopy/30 hover:text-canopy"
+          >
+            View More Packages
+            <ArrowUpRight className="h-4 w-4" />
+          </Link>
+        </div>
       </Container>
     </Section>
   );
