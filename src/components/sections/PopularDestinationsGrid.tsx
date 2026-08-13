@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Star } from "lucide-react";
+import { ArrowRight, MapPin, Star } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
@@ -88,6 +88,15 @@ export function PopularDestinationsGrid({
               </Link>
             );
           })}
+        </div>
+        <div className="mt-6 flex justify-center sm:mt-8">
+          <Link
+            href="/destinations"
+            className="group inline-flex items-center gap-2 rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 hover:border-canopy/40 hover:text-canopy"
+          >
+            View All Destinations
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+          </Link>
         </div>
       </Container>
     </Section>

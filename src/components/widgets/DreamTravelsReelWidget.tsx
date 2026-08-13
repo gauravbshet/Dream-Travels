@@ -73,7 +73,46 @@ export function DreamTravelsReelWidget() {
 
   return (
     <>
-      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[180] font-sans">
+      {/* Mobile: always the compact pill — the expanded dual-pane card is
+          ~320px wide, which is most of a phone viewport and floats over
+          whatever content is scrolled behind it. Tapping it opens the
+          full-screen reel view instead of the floating card. */}
+      <div className="fixed bottom-4 right-4 z-[180] font-sans sm:hidden">
+        <button
+          type="button"
+          onClick={() => setIsExpandedModal(true)}
+          className="group flex items-center gap-3 rounded-full border border-border bg-surface/95 backdrop-blur-md px-4 py-2.5 shadow-2xl transition-all duration-300 active:scale-95"
+        >
+          <div className="relative h-9 w-9 overflow-hidden rounded-full border border-white/40 shadow-xs shrink-0">
+            {reel.thumbnailUrl ? (
+              <img
+                src={reel.thumbnailUrl}
+                alt={reel.title}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-canopy text-xs font-bold text-white">
+                🏕
+              </div>
+            )}
+            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border border-white bg-emerald-500 animate-pulse" />
+          </div>
+          <div className="text-left pr-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-bold text-canopy uppercase tracking-wider">
+                Featured Trip
+              </span>
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+            </div>
+            <p className="text-xs font-bold text-ink line-clamp-1">
+              {reel.title} • ₹{(reel.price ?? 2499).toLocaleString("en-IN")}
+            </p>
+          </div>
+        </button>
+      </div>
+
+      {/* Tablet/desktop: full expand/minimize widget */}
+      <div className="fixed bottom-4 right-4 z-[180] hidden font-sans sm:bottom-6 sm:right-6 sm:block">
         <AnimatePresence mode="wait">
           {isMinimized ? (
             /* Minimized Featured Package Badge Button */
