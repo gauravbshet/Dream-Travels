@@ -40,9 +40,9 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
     }
 
     return (
-        <main data-tone="light" className="flex-1 bg-canvas py-10">
+        <main data-tone="light" className="flex-1 bg-canvas pt-24 sm:pt-28 lg:pt-32 pb-12">
             <Container>
-                <div className="mb-8 pt-8">
+                <div className="mb-6">
                     <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-ink">{data.destination.name}</h1>
                 </div>
 

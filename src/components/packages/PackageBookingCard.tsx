@@ -88,7 +88,7 @@ export function PackageBookingCard({
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="mt-2 w-full rounded-[12px] border border-border/80 bg-surface px-4 py-2.5 text-sm text-ink outline-none focus:border-canopy focus:ring-1 focus:ring-canopy transition-all"
+            className="mt-2 w-full rounded-[12px] border border-border/80 bg-surface px-4 py-2.5 text-sm text-ink outline-none focus:border-canopy transition-all"
           />
         </div>
 

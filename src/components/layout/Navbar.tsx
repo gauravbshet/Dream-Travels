@@ -118,27 +118,32 @@ export function Navbar() {
     setUserRole(null);
   }
 
+  const isHomePage = pathname === "/";
+  const isScrolledOrInnerPage = scrolled || !isHomePage;
+
   return (
     <>
       {/* Outer Shell: persistently fixed, 100% width, stable coordinates */}
       <header className="fixed inset-x-0 top-0 z-[200] w-full pointer-events-none">
-        {/* Full-width top gradient fade: edge-to-edge backdrop when not scrolled */}
-        <div
-          aria-hidden="true"
-          className={cn(
-            "pointer-events-none absolute inset-x-0 top-0 h-28 sm:h-32 bg-gradient-to-b from-black/80 via-black/40 to-transparent transition-opacity duration-500",
-            scrolled ? "opacity-0" : "opacity-100"
-          )}
-        />
+        {/* Full-width top gradient fade: subtle backdrop on Home Page Hero only */}
+        {isHomePage && (
+          <div
+            aria-hidden="true"
+            className={cn(
+              "pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/50 to-transparent transition-opacity duration-500",
+              scrolled ? "opacity-0" : "opacity-100"
+            )}
+          />
+        )}
 
         {/* Inner Morphing Container: single persistent element smoothly contracting into floating pill */}
         <div
-          data-tone={scrolled ? "light" : "dark"}
+          data-tone={isScrolledOrInnerPage ? "light" : "dark"}
           className={cn(
             "pointer-events-auto relative mx-auto flex items-center justify-between gap-4 lg:gap-8",
             "transition-[width,max-width,height,margin-top,border-radius,background-color,border-color,box-shadow,padding] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
-            scrolled
-              ? "w-full h-[72px] px-4 sm:px-6 lg:mt-4.5 lg:h-[64px] lg:w-[calc(100%-2.5rem)] lg:max-w-[960px] xl:max-w-[1040px] lg:rounded-full lg:border lg:border-[rgba(32,34,31,0.08)] lg:bg-[rgba(250,250,247,0.94)] lg:shadow-[0_8px_30px_rgba(20,40,25,0.08)] lg:backdrop-blur-md lg:px-6 text-ink lg:text-[#20221F] bg-surface/95 border-b border-border/80"
+            isScrolledOrInnerPage
+              ? "w-full h-[72px] px-4 sm:px-6 lg:mt-3 lg:h-[60px] lg:w-[calc(100%-2.5rem)] lg:max-w-[960px] xl:max-w-[1040px] lg:rounded-full lg:border lg:border-[rgba(32,34,31,0.08)] lg:bg-[rgba(250,250,247,0.94)] lg:shadow-[0_8px_30px_rgba(20,40,25,0.08)] lg:backdrop-blur-md lg:px-6 text-ink lg:text-[#20221F] bg-surface/95 border-b border-border/80"
               : "w-full max-w-7xl h-[72px] lg:h-[80px] mt-0 rounded-none border-transparent bg-transparent shadow-none px-4 sm:px-6 lg:px-8 text-white"
           )}
         >
@@ -164,7 +169,7 @@ export function Navbar() {
             <span
               className={cn(
                 "font-bold text-[18px] tracking-tight hidden xs:inline transition-colors duration-300",
-                scrolled ? "text-ink lg:text-[#20221F]" : "text-white drop-shadow-sm"
+                isScrolledOrInnerPage ? "text-ink lg:text-[#20221F]" : "text-white drop-shadow-sm"
               )}
             >
               Dream Travels
@@ -182,10 +187,10 @@ export function Navbar() {
                   className={cn(
                     "relative px-3.5 py-2 text-[14.5px] font-medium transition-colors duration-300 rounded-full",
                     active
-                      ? scrolled
+                      ? isScrolledOrInnerPage
                         ? "text-[#3F8C02] font-bold"
                         : "text-white font-bold"
-                      : scrolled
+                      : isScrolledOrInnerPage
                         ? "text-[#20221F]/80 hover:text-[#3F8C02] hover:bg-[#3F8C02]/5"
                         : "text-white/80 hover:text-white hover:bg-white/10"
                   )}
@@ -200,7 +205,7 @@ export function Navbar() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-4 pr-1 md:gap-6 md:pr-2">
-            <IconButton label="Search" className={scrolled ? "text-[#20221F] hover:bg-[#20221F]/5" : "text-white hover:bg-white/10"}>
+            <IconButton label="Search" className={isScrolledOrInnerPage ? "text-[#20221F] hover:bg-[#20221F]/5" : "text-white hover:bg-white/10"}>
               <Search className="h-[18px] w-[18px]" />
             </IconButton>
             {session ? (
@@ -209,7 +214,7 @@ export function Navbar() {
                   href="/dashboard"
                   className={cn(
                     "inline-flex items-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
-                    scrolled
+                    isScrolledOrInnerPage
                       ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"
                   )}
@@ -220,7 +225,7 @@ export function Navbar() {
                   href="/dashboard#wishlist"
                   className={cn(
                     "inline-flex items-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
-                    scrolled
+                    isScrolledOrInnerPage
                       ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"
                   )}
@@ -240,7 +245,7 @@ export function Navbar() {
                   onClick={handleSignOut}
                   className={cn(
                     "inline-flex items-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
-                    scrolled
+                    isScrolledOrInnerPage
                       ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"
                   )}
@@ -254,7 +259,7 @@ export function Navbar() {
                   href="/login"
                   className={cn(
                     "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300",
-                    scrolled
+                    isScrolledOrInnerPage
                       ? "text-[#20221F]/80 hover:bg-[#20221F]/5"
                       : "text-white/90 hover:bg-white/15"
                   )}
@@ -277,7 +282,7 @@ export function Navbar() {
               aria-label="Search destinations"
               className={cn(
                 "flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] transition-colors duration-300 border shadow-xs",
-                scrolled
+                isScrolledOrInnerPage
                   ? "border-border/60 bg-white/95 text-ink"
                   : "border-white/20 bg-black/30 text-white backdrop-blur-md"
               )}
@@ -289,7 +294,7 @@ export function Navbar() {
               onClick={() => setMenuOpen(true)}
               className={cn(
                 "flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border transition-colors duration-300",
-                scrolled
+                isScrolledOrInnerPage
                   ? "border-border text-ink"
                   : "border-white/20 text-white bg-black/30 backdrop-blur-md"
               )}

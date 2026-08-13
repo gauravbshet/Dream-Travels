@@ -7,7 +7,7 @@ export function BudgetTiersManager() {
     <GenericManager
       table="budget_tiers"
       title="Budget tiers"
-      description="Manage the budget bands shown in the Budget Friendly section. Counts are computed live from destination prices at or below each limit."
+      description="Manage the budget bands shown in the Budget Friendly section. Counts are computed live from published package prices at or below each limit, and each card links to /packages filtered by that limit."
       createLabel="New budget tier"
       fields={[
         { key: "title", label: "Title", required: true },

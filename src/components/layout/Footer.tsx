@@ -127,7 +127,7 @@ export function Footer() {
               <input
                 type="email"
                 placeholder="Your email"
-                className="w-full min-w-0 rounded-[12px] border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted outline-none focus:ring-2 focus:ring-primary"
+                className="w-full min-w-0 rounded-[12px] border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted outline-none focus:border-canopy"
               />
               <button
                 type="submit"

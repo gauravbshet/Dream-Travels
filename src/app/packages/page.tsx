@@ -31,16 +31,19 @@ async function getPackages(): Promise<Package[]> {
 export default async function PackagesListPage({
     searchParams,
 }: {
-    searchParams: Promise<{ q?: string; category?: string; guests?: string }>;
+    searchParams: Promise<{ q?: string; category?: string; guests?: string; maxPrice?: string }>;
 }) {
     const params = await searchParams;
     const allPackages = await getPackages();
     const query = params?.q?.toLowerCase().trim();
     const category = params?.category?.toLowerCase().trim();
+    const maxPrice = params?.maxPrice ? Number(params.maxPrice) : undefined;
+    const isValidMaxPrice = typeof maxPrice === "number" && Number.isFinite(maxPrice);
 
     const filteredPackages = allPackages.filter((pkg) => {
         let matchesQuery = true;
         let matchesCategory = true;
+        let matchesBudget = true;
 
         if (query) {
             matchesQuery =
@@ -53,13 +56,17 @@ export default async function PackagesListPage({
             matchesCategory = pkg.category.toLowerCase().includes(category);
         }
 
-        return matchesQuery && matchesCategory;
+        if (isValidMaxPrice) {
+            matchesBudget = pkg.price <= maxPrice;
+        }
+
+        return matchesQuery && matchesCategory && matchesBudget;
     });
 
-    const isFiltered = Boolean(query || (category && category !== "all types"));
+    const isFiltered = Boolean(query || (category && category !== "all types") || isValidMaxPrice);
 
     return (
-        <main data-tone="light" className="flex-1 bg-canvas py-8">
+        <main data-tone="light" className="flex-1 bg-canvas pt-24 sm:pt-28 lg:pt-32 pb-12">
             <Container>
                 <SectionHeading
                     title={isFiltered ? "Search Results" : "All packages"}
@@ -73,7 +80,13 @@ export default async function PackagesListPage({
                 {isFiltered && (
                     <div className="mt-4 flex items-center gap-3">
                         <span className="inline-flex items-center gap-2 rounded-full bg-canopy/10 px-4 py-1.5 text-xs font-bold text-canopy border border-canopy/20">
-                            Search: {query ? `"${params.q}"` : ""}{query && category ? " • " : ""}{category ? `Category: ${params.category}` : ""}
+                            {[
+                                query ? `Search: "${params.q}"` : null,
+                                category ? `Category: ${params.category}` : null,
+                                isValidMaxPrice && maxPrice !== undefined ? `Under ₹${maxPrice.toLocaleString("en-IN")}` : null,
+                            ]
+                                .filter(Boolean)
+                                .join(" • ")}
                         </span>
                         <Link
                             href="/packages"

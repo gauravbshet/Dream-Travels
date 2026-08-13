@@ -296,10 +296,27 @@ body {
   color: var(--ink);
 }
 
-:focus-visible {
+:focus-visible:not(input):not(textarea):not(select) {
   outline: 2px solid var(--canopy);
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* Global form control focus reset: eliminate green outline rings on all text boxes */
+input,
+textarea,
+select {
+  outline: none !important;
+}
+
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* --------------------------------------------------------------------------

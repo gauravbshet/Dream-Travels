@@ -44,10 +44,10 @@ export type BudgetTier = {
 };
 
 export const budgetTiers: BudgetTier[] = [
-  { id: "under-2k", title: "Below ₹2,000", limit: "2000", count: 42, emoji: "🏕" },
-  { id: "under-5k", title: "Below ₹5,000", limit: "5000", count: 78, emoji: "🚐" },
-  { id: "under-10k", title: "Below ₹10,000", limit: "10000", count: 126, emoji: "🏞" },
-  { id: "under-20k", title: "Luxury Under ₹20,000", limit: "20000", count: 54, emoji: "✨" },
+  { id: "under-5k", title: "Under ₹5,000", limit: "5000", count: 2, emoji: "🏕" },
+  { id: "under-10k", title: "Under ₹10,000", limit: "10000", count: 6, emoji: "🚐" },
+  { id: "under-20k", title: "Under ₹20,000", limit: "20000", count: 14, emoji: "🏞" },
+  { id: "under-50k", title: "Premium Under ₹50,000", limit: "50000", count: 24, emoji: "✨" },
 ];
 
 export type PopularExperience = {

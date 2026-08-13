@@ -4,6 +4,7 @@ import "./globals.css";
 import { RouteAwareNavbar, RouteAwareBottomNav } from "@/components/layout/RouteAwareNavigation";
 import { FooterGuard } from "@/components/layout/FooterGuard";
 import { AtmosphereField } from "@/components/ui/AtmosphereField";
+import { DreamTravelsReelWidget } from "@/components/widgets/DreamTravelsReelWidget";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -84,6 +85,7 @@ export default function RootLayout({
           <FooterGuard />
           <RouteAwareBottomNav />
         </div>
+        <DreamTravelsReelWidget />
       </body>
     </html>
   );

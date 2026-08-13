@@ -262,7 +262,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
     };
 
     return (
-        <main className="flex-1 pt-20 sm:pt-24 lg:pt-28 pb-28 lg:pb-16 bg-canvas">
+        <main className="flex-1 pt-24 sm:pt-28 lg:pt-32 pb-28 lg:pb-16 bg-canvas">
             {/* eslint-disable-next-line react/no-danger */}
             <script
                 type="application/ld+json"

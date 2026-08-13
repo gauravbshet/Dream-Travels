@@ -2,7 +2,7 @@ import { Container } from "@/components/ui/Container";
 
 export default function CategoryLoading() {
   return (
-    <main data-tone="light" className="flex-1 bg-canvas py-16">
+    <main data-tone="light" className="flex-1 bg-canvas pt-24 sm:pt-28 lg:pt-32 pb-16">
       <Container>
         <div className="h-7 w-48 animate-pulse rounded bg-surface-sage" />
         <div className="mt-3 h-4 w-72 animate-pulse rounded bg-surface-sage" />

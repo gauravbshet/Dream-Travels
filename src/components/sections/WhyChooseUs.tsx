@@ -48,65 +48,57 @@ const whyPoints = [
 
 export function WhyChooseUs() {
   return (
-    <Section tone="light" id="about" className="overflow-hidden py-16 sm:py-24 lg:py-32">
+    <Section tone="light" id="about" className="overflow-hidden py-10 sm:py-14 lg:py-16">
       <Container>
-        <div className="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
-          {/* Left sticky column */}
-          <div className="lg:col-span-5 lg:sticky lg:top-32">
-            <Reveal>
-              <h2 className="text-4xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl lg:leading-[1.1]">
-                Why Choose<br className="hidden lg:block" /> Dream Travels.
-              </h2>
-              <p className="mt-6 max-w-md text-lg leading-relaxed text-ink-muted">
-                What makes travelling with us different? We go beyond the standard generic tours to craft experiences that truly resonate.
-              </p>
-              <div className="mt-10 flex w-full justify-center lg:justify-start">
-                <div className="relative aspect-[3/4] w-full max-w-md overflow-hidden rounded-[24px] shadow-lg">
-                  <Image
-                    src="/dt.jpg"
-                    alt="Dream Travels Experience"
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
-                </div>
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-stretch lg:gap-12">
+          {/* Left info & photo */}
+          <div className="flex flex-col justify-between lg:col-span-5">
+            <Reveal className="flex flex-col justify-between h-full">
+              <div>
+                <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+                  Why Choose Dream Travels.
+                </h2>
+                <p className="mt-2.5 text-sm leading-relaxed text-ink-muted sm:text-base">
+                  What makes travelling with us different? We go beyond standard generic tours to craft experiences that truly resonate.
+                </p>
+              </div>
+              <div className="relative mt-5 aspect-[16/10] w-full flex-1 overflow-hidden rounded-[20px] border border-border/60 shadow-sm sm:aspect-[16/9] lg:aspect-auto lg:min-h-[180px]">
+                <Image
+                  src="/dt.jpg"
+                  alt="Dream Travels Experience"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                />
               </div>
             </Reveal>
           </div>
 
-          {/* Right list column */}
-          <div className="lg:col-span-7">
-            <div className="flex flex-col">
+          {/* Right 2-column feature grid */}
+          <div className="flex flex-col justify-between lg:col-span-7">
+            <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 sm:gap-4 h-full">
               {whyPoints.map((point, index) => (
-                <Reveal key={point.title} delay={index * 50}>
-                  <div className="group relative border-t border-border py-8 transition-colors hover:border-ink/30 sm:py-10">
-                    <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-10">
-                      
-                      {/* Icon & Number column */}
-                      <div className="flex items-center gap-5 sm:flex-col sm:items-start sm:gap-6">
-                        <span className="font-mono text-sm font-semibold tracking-wider text-ink-muted/50 transition-colors group-hover:text-primary">
+                <Reveal key={point.title} delay={index * 40} className="h-full">
+                  <div className="group flex flex-col justify-between h-full rounded-[18px] border border-border/70 bg-surface/70 p-4 transition-all duration-300 hover:border-canopy/40 hover:bg-surface hover:shadow-md">
+                    <div>
+                      <div className="flex items-center justify-between gap-3 mb-2.5">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-sage text-canopy transition-transform duration-300 group-hover:scale-105 group-hover:bg-canopy group-hover:text-white">
+                          <point.icon className="h-4 w-4" />
+                        </span>
+                        <span className="font-mono text-xs font-semibold tracking-wider text-ink-muted/40">
                           {String(index + 1).padStart(2, "0")}
                         </span>
-                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-sage text-canopy transition-all duration-500 ease-out group-hover:scale-110 group-hover:bg-canopy group-hover:text-white">
-                          <point.icon className="h-5 w-5" />
-                        </span>
                       </div>
-                      
-                      {/* Content */}
-                      <div className="flex-1 pt-1 sm:pt-2">
-                        <h3 className="text-xl font-bold tracking-tight text-ink sm:text-2xl transition-colors group-hover:text-primary">
-                          {point.title}
-                        </h3>
-                        <p className="mt-3 text-base leading-relaxed text-ink-muted sm:text-lg sm:mt-4">
-                          {point.description}
-                        </p>
-                      </div>
-
+                      <h3 className="text-base font-bold tracking-tight text-ink transition-colors group-hover:text-canopy">
+                        {point.title}
+                      </h3>
+                      <p className="mt-1.5 text-xs leading-relaxed text-ink-muted sm:text-[13px]">
+                        {point.description}
+                      </p>
                     </div>
                   </div>
                 </Reveal>
               ))}
-              <div className="border-t border-border"></div>
             </div>
           </div>
         </div>

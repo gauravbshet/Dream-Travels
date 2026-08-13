@@ -393,14 +393,14 @@ function InputField({
     trailing?: React.ReactNode;
 }) {
     return (
-        <div className="flex items-center gap-3 rounded-[11px] border border-border bg-surface px-4 py-3.5 transition-colors duration-[180ms] focus-within:border-canopy focus-within:outline-none focus-within:ring-0">
+        <div className="flex items-center gap-3 rounded-[11px] border border-border bg-surface px-4 py-3.5 transition-colors duration-[180ms] focus-within:border-canopy">
             <span className="text-ink-muted">{icon}</span>
             <input
                 type={type}
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
                 placeholder={placeholder}
-                className="w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-ink-muted focus:outline-none focus:ring-0"
+                className="w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-ink-muted focus:outline-none"
             />
             {trailing}
         </div>

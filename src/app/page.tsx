@@ -4,7 +4,6 @@ import { FeaturedPackagesGrid } from "@/components/sections/FeaturedPackagesGrid
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
 import { ReviewCarousel } from "@/components/sections/ReviewCarousel";
 import { PromoBanner } from "@/components/sections/PromoBanner";
-import { LatestArticles } from "@/components/sections/LatestArticles";
 import { CategorySlider } from "@/components/sections/CategorySlider";
 import { ExploreByMap } from "@/components/sections/ExploreByMap";
 import { BudgetCards } from "@/components/sections/BudgetCards";
@@ -63,7 +62,7 @@ async function fetchFeaturedData() {
     { data: experiencesData },
     { data: collectionsData },
     { data: budgetTiersData },
-    { data: destinationPrices },
+    { data: packagePrices },
     { data: reelsData },
   ] = await Promise.all([
     supabase
@@ -96,7 +95,7 @@ async function fetchFeaturedData() {
     supabase.from("popular_experiences").select("id,title,image").order("created_at", { ascending: false }),
     supabase.from("seasonal_collections").select("id,title,image").order("created_at", { ascending: false }),
     supabase.from("budget_tiers").select("id,title,emoji,price_limit").order("price_limit", { ascending: true }),
-    supabase.from("destinations").select("price"),
+    supabase.from("packages").select("price").eq("status", "published"),
     supabase
       .from("reels")
       .select("id,title,destination,description,video_url,thumbnail_url,instagram_url,category,is_active,display_order")
@@ -156,19 +155,29 @@ async function fetchFeaturedData() {
 
   const collections: SeasonalCollection[] = collectionsData?.length ? collectionsData : staticCollections;
 
-  const prices = (destinationPrices ?? [])
+  const dbPrices = (packagePrices ?? [])
     .map((row) => row.price)
     .filter((price): price is number => typeof price === "number");
 
-  const budgetTiers: BudgetTier[] = budgetTiersData?.length
-    ? budgetTiersData.map((tier) => ({
-      id: tier.id,
-      title: tier.title,
-      emoji: tier.emoji,
-      limit: String(tier.price_limit),
-      count: prices.filter((price) => price <= tier.price_limit).length,
-    }))
-    : staticBudgetTiers;
+  const staticAllPackages = [...staticPackages, ...staticTopPicks];
+  const prices = dbPrices.length > 0
+    ? dbPrices
+    : (packages?.length ? packages : staticAllPackages).map((p) => p.price);
+
+  const budgetTiers: BudgetTier[] = (
+    budgetTiersData?.length
+      ? budgetTiersData.map((tier) => ({
+          id: tier.id,
+          title: tier.title,
+          emoji: tier.emoji,
+          limit: String(tier.price_limit),
+          count: prices.filter((price) => price <= Number(tier.price_limit)).length,
+        }))
+      : staticBudgetTiers.map((tier) => ({
+          ...tier,
+          count: prices.filter((price) => price <= Number(tier.limit)).length,
+        }))
+  );
 
   const reels: Reel[] = (reelsData?.length ? reelsData : staticReels).map((reel) =>
     "video_url" in reel
@@ -229,7 +238,6 @@ export default async function Home() {
         <BudgetCards tiers={budgetTiers} />
         <Statistics />
         <ExploreByMap />
-        <LatestArticles packages={featuredPackages} />
         <PopularExperiences experiences={experiences} />
         <SeasonalCollections collections={collections} />
         <EventsSection events={events} />

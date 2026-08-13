@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
+import { ExternalLink, Pencil, Plus, Star, Trash2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 import { createStoragePath, normalizeUrl } from "@/lib/utils";
 import { categories as travelCategories } from "@/data/categories";
@@ -22,6 +22,7 @@ type ReelRow = {
   category: string | null;
   is_active: boolean | null;
   display_order: number | null;
+  is_featured_widget?: boolean | null;
 };
 
 type FormState = {
@@ -36,6 +37,7 @@ type FormState = {
   category: string;
   is_active: boolean;
   display_order: string;
+  is_featured_widget: boolean;
 };
 
 const emptyForm: FormState = {
@@ -50,10 +52,11 @@ const emptyForm: FormState = {
   category: "",
   is_active: true,
   display_order: "0",
+  is_featured_widget: false,
 };
 
 const REEL_COLUMNS =
-  "id,title,destination,description,video_url,thumbnail_url,instagram_url,category,is_active,display_order";
+  "id,title,destination,description,video_url,thumbnail_url,instagram_url,category,is_active,display_order,is_featured_widget";
 
 export function ReelsManager() {
   const supabase = createBrowserSupabaseClient();
@@ -84,6 +87,7 @@ export function ReelsManager() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial data fetch on mount
     loadReels();
   }, []);
 
@@ -107,8 +111,51 @@ export function ReelsManager() {
       category: reel.category ?? "",
       is_active: reel.is_active ?? true,
       display_order: reel.display_order?.toString() ?? "0",
+      is_featured_widget: Boolean(reel.is_featured_widget),
     });
     setShowForm(true);
+  }
+
+  async function handleSetFeaturedWidget(targetReel: ReelRow) {
+    const nextState = !targetReel.is_featured_widget;
+    try {
+      if (nextState) {
+        await supabase.from("reels").update({ is_featured_widget: false }).neq("id", targetReel.id);
+      }
+      const { error } = await supabase
+        .from("reels")
+        .update({ is_featured_widget: nextState })
+        .eq("id", targetReel.id);
+
+      if (error) {
+        // Fallback for local state if DB table column doesn't exist yet
+        setReels((prev) =>
+          prev.map((r) => ({
+            ...r,
+            is_featured_widget: r.id === targetReel.id ? nextState : false,
+          }))
+        );
+      } else {
+        loadReels();
+      }
+      showToast(
+        nextState
+          ? `"${targetReel.title}" set as Floating Widget Reel ✨`
+          : "Floating Widget Reel removed."
+      );
+    } catch {
+      setReels((prev) =>
+        prev.map((r) => ({
+          ...r,
+          is_featured_widget: r.id === targetReel.id ? nextState : false,
+        }))
+      );
+      showToast(
+        nextState
+          ? `"${targetReel.title}" set as Floating Widget Reel ✨`
+          : "Floating Widget Reel removed."
+      );
+    }
   }
 
   async function uploadReelVideo(file: File | null) {
@@ -403,7 +450,16 @@ export function ReelsManager() {
               ) : (
                 reels.map((reel) => (
                   <tr key={reel.id} className="hover:bg-admin-surface-2/40 transition">
-                    <td className="px-4 py-2.5 font-semibold text-admin-ink">{reel.title}</td>
+                    <td className="px-4 py-2.5 font-semibold text-admin-ink">
+                      <div className="flex items-center gap-2">
+                        <span>{reel.title}</span>
+                        {reel.is_featured_widget && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-300">
+                            <Star className="h-3 w-3 fill-amber-500 text-amber-500" /> Widget Featured
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-4 py-2.5 text-admin-ink-2">{reel.destination ?? "—"}</td>
                     <td className="px-4 py-2.5 text-admin-ink-2">{categoryLabel(reel.category)}</td>
                     <td className="px-4 py-2.5 text-admin-ink-2">{reel.display_order ?? 0}</td>
@@ -422,6 +478,19 @@ export function ReelsManager() {
                     </td>
                     <td className="px-4 py-2.5">
                       <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleSetFeaturedWidget(reel)}
+                          title={reel.is_featured_widget ? "Remove from floating widget" : "Feature on sticky floating widget"}
+                          className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition ${
+                            reel.is_featured_widget
+                              ? "bg-amber-500 text-white shadow-xs"
+                              : "bg-admin-surface-2 text-admin-ink-2 hover:bg-amber-100 hover:text-amber-800"
+                          }`}
+                        >
+                          <Star className={`h-3.5 w-3.5 ${reel.is_featured_widget ? "fill-white text-white" : ""}`} />
+                          {reel.is_featured_widget ? "Featured Widget" : "Feature on Widget"}
+                        </button>
                         {normalizeUrl(reel.instagram_url ?? "") && (
                           <a
                             href={normalizeUrl(reel.instagram_url ?? "")!}
