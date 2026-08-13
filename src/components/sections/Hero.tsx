@@ -11,7 +11,7 @@ import {
 } from "framer-motion";
 import { ArrowUpRight, Star } from "lucide-react";
 import { HeroSearch, HeroSearchCompact } from "./HeroSearch";
-import heroImage from "../../../media/hero.png";
+import heroImage from "../../../media/hero.jpg";
 
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null);
