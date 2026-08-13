@@ -7,6 +7,18 @@ import { createServerSupabaseClient } from "@/lib/supabase.server";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 
+type WishlistItem = {
+    id: string;
+    package_id: string;
+    packages: {
+        title: string;
+        slug: string;
+        price: number;
+        image: string | null;
+        duration: string | null;
+    } | null;
+};
+
 async function getUserData() {
     const supabase = createServerSupabaseClient();
     const { data: { user }, error } = await supabase.auth.getUser();
@@ -32,7 +44,7 @@ async function getUserData() {
 
     return {
         user,
-        wishlist: wishlistData ?? [],
+        wishlist: (wishlistData ?? []) as unknown as WishlistItem[],
     };
 }
 
@@ -75,7 +87,7 @@ export default async function DashboardPage() {
                             {wishlist.length === 0 ? (
                                 <p className="text-ink/60">You don&apos;t have any saved packages yet.</p>
                             ) : (
-                                wishlist.map((item: any) => (
+                                wishlist.map((item) => (
                                     <div
                                         key={item.id}
                                         className="rounded-[16px] border border-border bg-sage-100/60 p-4"

@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Claude Code tooling/skill scaffolding — CommonJS scripts, not app
+    // source, and not meant to be linted against the app's TS/React config.
+    ".claude/**",
+    ".agents/**",
   ]),
 ]);
 
