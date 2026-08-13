@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Minus, Plus, MessageCircle, Phone } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { buildWhatsAppLink, buildTelLink } from "@/lib/whatsapp";
 
 export function PackageBookingCard({
   slug,
@@ -25,11 +26,12 @@ export function PackageBookingCard({
     date ? `&date=${encodeURIComponent(date)}` : ""
   }`;
 
-  const whatsappHref = `https://wa.me/${whatsappNumber ?? ""}?text=${encodeURIComponent(
+  const whatsappHref = buildWhatsAppLink(
     `Hello! I would like to book *${title}* for ${travellers} traveller(s)${
       date ? ` around ${date}` : ""
-    }. Could you share availability and next steps?`
-  )}`;
+    }. Could you share availability and next steps?`,
+    whatsappNumber
+  );
 
   const totalPrice = price * travellers;
   const totalOriginal = originalPrice ? originalPrice * travellers : null;
@@ -115,7 +117,7 @@ export function PackageBookingCard({
           <MessageCircle className="h-4 w-4 text-[#25D366]" /> Chat on WhatsApp
         </a>
         <a
-          href={`tel:${whatsappNumber ?? ""}`}
+          href={buildTelLink(whatsappNumber)}
           className="flex w-full items-center justify-center gap-2 rounded-[12px] border border-border/80 bg-surface px-5 py-3.5 text-sm font-bold text-ink transition-colors hover:bg-sage-100"
         >
           <Phone className="h-4 w-4 text-canopy" /> Enquire / Call Us
