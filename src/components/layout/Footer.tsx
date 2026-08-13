@@ -7,22 +7,44 @@ import { ChevronDown, Send } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
 
-const footerGroups = [
+// Most of these are still placeholder ("#") — those pages don't exist yet.
+// "Cancellation Policy" is the one real page in this list.
+const footerGroups: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Company",
-    links: ["About Us", "Careers", "Press", "Partner With Us"],
+    links: [
+      { label: "About Us", href: "#" },
+      { label: "Careers", href: "#" },
+      { label: "Press", href: "#" },
+      { label: "Partner With Us", href: "#" },
+    ],
   },
   {
     title: "Destinations",
-    links: ["Kashmir", "Kerala", "Goa", "Ladakh", "Andaman"],
+    links: [
+      { label: "Kashmir", href: "#" },
+      { label: "Kerala", href: "#" },
+      { label: "Goa", href: "#" },
+      { label: "Ladakh", href: "#" },
+      { label: "Andaman", href: "#" },
+    ],
   },
   {
     title: "Support",
-    links: ["Help Center", "Cancellation Policy", "Safety", "Contact Us"],
+    links: [
+      { label: "Help Center", href: "#" },
+      { label: "Cancellation Policy", href: "/cancellation-policy" },
+      { label: "Safety", href: "#" },
+      { label: "Contact Us", href: "#" },
+    ],
   },
   {
     title: "Legal",
-    links: ["Terms & Conditions", "Privacy Policy", "Refund Policy"],
+    links: [
+      { label: "Terms & Conditions", href: "#" },
+      { label: "Privacy Policy", href: "#" },
+      { label: "Refund Policy", href: "/cancellation-policy" },
+    ],
   },
 ];
 
@@ -100,10 +122,10 @@ export function Footer() {
                 <h4 className="font-semibold text-ink">{group.title}</h4>
                 <ul className="mt-4 space-y-2.5">
                   {group.links.map((link) => (
-                    <li key={link}>
-                      <a href="#" className="text-sm hover:text-primary transition-colors">
-                        {link}
-                      </a>
+                    <li key={link.label}>
+                      <Link href={link.href} className="text-sm hover:text-primary transition-colors">
+                        {link.label}
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -161,7 +183,13 @@ export function Footer() {
   );
 }
 
-function FooterAccordion({ title, links }: { title: string; links: string[] }) {
+function FooterAccordion({
+  title,
+  links,
+}: {
+  title: string;
+  links: { label: string; href: string }[];
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -185,10 +213,10 @@ function FooterAccordion({ title, links }: { title: string; links: string[] }) {
             className="overflow-hidden"
           >
             {links.map((link) => (
-              <li key={link} className="pb-3 text-sm">
-                <a href="#" className="hover:text-primary transition-colors">
-                  {link}
-                </a>
+              <li key={link.label} className="pb-3 text-sm">
+                <Link href={link.href} className="hover:text-primary transition-colors">
+                  {link.label}
+                </Link>
               </li>
             ))}
           </motion.ul>
