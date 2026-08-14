@@ -190,13 +190,18 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             price: pkg.price,
             priceCurrency: "INR",
         },
-        aggregateRating: pkg.rating
-            ? {
-                  "@type": "AggregateRating",
-                  ratingValue: pkg.rating,
-                  reviewCount: pkg.reviews ?? 0,
-              }
-            : undefined,
+        // Only publish a rating when real reviews sit behind it. Google rejects
+        // an AggregateRating whose reviewCount is 0, and shipping one anyway
+        // puts the domain's rich results at risk. A package that has a rating
+        // but no reviews yet simply omits the field.
+        aggregateRating:
+            pkg.rating && pkg.reviews && pkg.reviews > 0
+                ? {
+                      "@type": "AggregateRating",
+                      ratingValue: pkg.rating,
+                      reviewCount: pkg.reviews,
+                  }
+                : undefined,
     };
 
     return (
