@@ -13,8 +13,11 @@
  * Run:
  *   node scripts/migrate-to-cloudinary.js
  *
- * Safe to re-run: uploads use overwrite:false + deterministic public_id,
- * and DB updates only touch rows whose value matches an old URL.
+ * Safe to re-run, and safe to re-run after switching Cloudinary accounts:
+ * matching is done by filename basename, so a row currently pointing at
+ * either the original Supabase URL OR a previously-migrated Cloudinary URL
+ * (any cloud) will be detected and repointed at the CURRENT
+ * CLOUDINARY_CLOUD_NAME.
  */
 
 require('dotenv').config();
@@ -33,6 +36,28 @@ cloudinary.config({
 });
 
 const BUCKET = process.env.SUPABASE_BUCKET || 'images';
+
+// -------------------------------------------------------------------------
+// helpers: derive a stable "basename" (filename, no extension) from either
+// a Supabase storage path or any URL (Supabase public URL or a Cloudinary
+// delivery URL from a previous migration run/account)
+// -------------------------------------------------------------------------
+function basenameFromPath(path) {
+  const file = path.substring(path.lastIndexOf('/') + 1);
+  return file.replace(/\.[^/.]+$/, '');
+}
+
+function basenameFromUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+  try {
+    const u = new URL(url);
+    const parts = u.pathname.split('/');
+    const last = parts[parts.length - 1];
+    return last ? last.replace(/\.[^/.]+$/, '') : null;
+  } catch {
+    return null;
+  }
+}
 
 // -------------------------------------------------------------------------
 // Step 1: recursively list every file in the bucket (it has subfolders:
@@ -57,43 +82,57 @@ async function listAllFiles(prefix = '') {
 
 // -------------------------------------------------------------------------
 // Step 2: upload every file to Cloudinary (fetched server-side from the
-// Supabase public URL — no local download needed), build old->new URL map
+// Supabase public URL — no local download needed), build a basename ->
+// new Cloudinary URL map
 // -------------------------------------------------------------------------
 async function uploadAllToCloudinary(paths) {
-  const urlMap = new Map(); // oldSupabaseUrl -> newCloudinaryUrl
+  const basenameMap = new Map(); // basename -> newCloudinaryUrl
 
   for (const path of paths) {
     const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(path);
     const sourceUrl = urlData.publicUrl;
+    const basename = basenameFromPath(path);
 
     try {
       const result = await cloudinary.uploader.upload(sourceUrl, {
         folder: `dream-travels/${path.substring(0, path.lastIndexOf('/'))}` || 'dream-travels',
-        public_id: path.substring(path.lastIndexOf('/') + 1).replace(/\.[^/.]+$/, ''),
-        overwrite: false,
+        public_id: basename,
+        overwrite: true, // re-running should refresh to the current cloud/account
       });
 
-      urlMap.set(sourceUrl, result.secure_url);
+      basenameMap.set(basename, result.secure_url);
       console.log(`Uploaded: ${path} -> ${result.secure_url}`);
     } catch (err) {
       console.error(`  Failed to upload ${path}:`, err.message);
     }
   }
 
-  return urlMap;
+  return basenameMap;
 }
 
 // -------------------------------------------------------------------------
-// Step 3: rewrite URLs in the DB across all tables/columns that hold them
+// Step 3: rewrite URLs in the DB across all tables/columns that hold them.
+// Matches by basename so it repairs rows currently on a stale Cloudinary
+// URL (old account) just as well as rows still on the original Supabase URL.
 // -------------------------------------------------------------------------
-async function updateDestinations(urlMap) {
+function resolveNewUrl(basenameMap, currentValue) {
+  const basename = basenameFromUrl(currentValue);
+  if (!basename) return null;
+  const newUrl = basenameMap.get(basename);
+  if (!newUrl || newUrl === currentValue) return null;
+  return newUrl;
+}
+
+async function updateDestinations(basenameMap) {
   const { data: rows, error } = await supabase.from('destinations').select('id, image, cover_image');
   if (error) throw error;
 
   for (const row of rows) {
     const patch = {};
-    if (urlMap.has(row.image)) patch.image = urlMap.get(row.image);
-    if (urlMap.has(row.cover_image)) patch.cover_image = urlMap.get(row.cover_image);
+    const newImage = resolveNewUrl(basenameMap, row.image);
+    const newCover = resolveNewUrl(basenameMap, row.cover_image);
+    if (newImage) patch.image = newImage;
+    if (newCover) patch.cover_image = newCover;
 
     if (Object.keys(patch).length > 0) {
       const { error: updErr } = await supabase.from('destinations').update(patch).eq('id', row.id);
@@ -103,19 +142,18 @@ async function updateDestinations(urlMap) {
   }
 }
 
-async function updatePackages(urlMap) {
+async function updatePackages(basenameMap) {
   const { data: rows, error } = await supabase.from('packages').select('id, image, additional_images');
   if (error) throw error;
 
   for (const row of rows) {
     const patch = {};
 
-    if (urlMap.has(row.image)) {
-      patch.image = urlMap.get(row.image);
-    }
+    const newImage = resolveNewUrl(basenameMap, row.image);
+    if (newImage) patch.image = newImage;
 
     if (Array.isArray(row.additional_images)) {
-      const newImages = row.additional_images.map((url) => urlMap.get(url) || url);
+      const newImages = row.additional_images.map((url) => resolveNewUrl(basenameMap, url) || url);
       const changed = newImages.some((url, i) => url !== row.additional_images[i]);
       if (changed) patch.additional_images = newImages;
     }
@@ -128,16 +166,14 @@ async function updatePackages(urlMap) {
   }
 }
 
-async function updateItineraries(urlMap) {
+async function updateItineraries(basenameMap) {
   const { data: rows, error } = await supabase.from('itineraries').select('id, image');
   if (error) throw error;
 
   for (const row of rows) {
-    if (urlMap.has(row.image)) {
-      const { error: updErr } = await supabase
-        .from('itineraries')
-        .update({ image: urlMap.get(row.image) })
-        .eq('id', row.id);
+    const newImage = resolveNewUrl(basenameMap, row.image);
+    if (newImage) {
+      const { error: updErr } = await supabase.from('itineraries').update({ image: newImage }).eq('id', row.id);
       if (updErr) console.error(`  itineraries ${row.id} update failed:`, updErr.message);
       else console.log(`Updated itineraries.${row.id}`);
     }
@@ -146,26 +182,27 @@ async function updateItineraries(urlMap) {
 
 // -------------------------------------------------------------------------
 async function migrate() {
+  console.log(`Target Cloudinary cloud: ${process.env.CLOUDINARY_CLOUD_NAME}`);
   console.log('Listing files in bucket...');
   const files = await listAllFiles();
   console.log(`Found ${files.length} files.`);
 
   console.log('Uploading to Cloudinary...');
-  const urlMap = await uploadAllToCloudinary(files);
-  console.log(`Uploaded ${urlMap.size} files.`);
+  const basenameMap = await uploadAllToCloudinary(files);
+  console.log(`Uploaded ${basenameMap.size} files.`);
 
   console.log('Updating destinations...');
-  await updateDestinations(urlMap);
+  await updateDestinations(basenameMap);
 
   console.log('Updating packages...');
-  await updatePackages(urlMap);
+  await updatePackages(basenameMap);
 
   console.log('Updating itineraries...');
-  await updateItineraries(urlMap);
+  await updateItineraries(basenameMap);
 
   console.log('Migration complete.');
   console.log(
-    'Next: verify every page renders res.cloudinary.com URLs, then delete the old files from the Supabase bucket to reclaim storage.'
+    'Next: verify every page renders res.cloudinary.com URLs under the current cloud, then delete the old files from the Supabase bucket to reclaim storage.'
   );
 }
 
