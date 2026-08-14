@@ -59,7 +59,10 @@ export function PackageItinerary({ itinerary }: { itinerary: ItineraryDay[] }) {
 
                 <div className="p-5 pt-0 border-t border-border/60 space-y-4">
                   {day.description && (
-                    <p className="text-sm leading-relaxed text-ink/80 pt-3">{day.description}</p>
+                    <div 
+                        className="text-sm leading-relaxed text-ink/80 pt-3 whitespace-pre-wrap"
+                        dangerouslySetInnerHTML={{ __html: day.description.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}
+                    />
                   )}
                   {day.image && (
                     <div className="relative h-48 w-full overflow-hidden rounded-[14px]">

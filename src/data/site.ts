@@ -14,7 +14,7 @@ import {
 export type NavLink = { label: string; href: string };
 
 export const navLinks: NavLink[] = [
-  { label: "Destination", href: "#destinations" },
+  { label: "Destination", href: "/destinations" },
   { label: "Package", href: "#packages" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
