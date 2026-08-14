@@ -4,7 +4,7 @@ import Image from "next/image";
 import {
   ShieldCheck,
   BadgePercent,
-  Lock,
+  MessageCircle,
   Sparkles,
   Headphones,
   BadgeCheck,
@@ -21,13 +21,13 @@ const whyPoints = [
   },
   {
     icon: BadgePercent,
-    title: "Best Price Guarantee",
-    description: "Transparent pricing with no hidden fees — found it cheaper? We'll match it.",
+    title: "Transparent Pricing",
+    description: "Clear per-person costs shared upfront — ask us exactly what's included.",
   },
   {
-    icon: Lock,
-    title: "Secure Payments",
-    description: "Bank-grade encryption on every transaction, every time.",
+    icon: MessageCircle,
+    title: "Plan Over WhatsApp",
+    description: "Talk to a real planner before you commit — no auto-checkout, no pressure.",
   },
   {
     icon: Sparkles,
@@ -41,8 +41,8 @@ const whyPoints = [
   },
   {
     icon: BadgeCheck,
-    title: "Verified Reviews",
-    description: "Real feedback from real travellers — no fake ratings, ever.",
+    title: "Small Group Trips",
+    description: "Curated departures with room to actually see the place, not a coach tour.",
   },
 ];
 

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight, MapPin, Star } from "lucide-react";
 import { banners } from "@/data/banners";
+import { heroBadge } from "@/data/site";
 import { cn } from "@/lib/utils";
 
 export function HeroCarousel({ className }: { className?: string }) {
@@ -79,7 +80,7 @@ export function HeroCarousel({ className }: { className?: string }) {
       <div className="relative z-10 flex h-full flex-col justify-end px-5 pb-10 pt-24">
         <span className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/[0.08] px-3.5 py-2 text-[12px] text-ink-2 backdrop-blur-md">
           <Star className="h-3.5 w-3.5 fill-amber text-amber" />
-          Rated 4.9 by 75,000+ travellers
+          {heroBadge.tagline}
         </span>
 
         {/* Headline copy is never opacity-animated — it is the most important

@@ -7,6 +7,10 @@ import { Section } from "@/components/ui/Section";
 import { stats } from "@/data/site";
 
 export function Statistics() {
+  // No verified figures to show means no section at all — rendering an empty
+  // dark band would be worse than omitting it. See the note on `stats`.
+  if (stats.length === 0) return null;
+
   return (
     <Section tone="dark">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(79,125,87,0.18),transparent_45%),radial-gradient(circle_at_80%_80%,rgba(47,99,63,0.18),transparent_45%)]" />

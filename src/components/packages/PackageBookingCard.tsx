@@ -125,17 +125,28 @@ export function PackageBookingCard({
       </div>
 
       <div className="mt-6 pt-5 border-t border-border/70 space-y-2 text-xs text-ink-muted">
+        {/* These three lines are commitments to a paying customer, so each one
+            has to match what the business actually does. The previous copy
+            promised instant confirmation (there is no booking engine — every
+            trip is confirmed by a consultant) and "free cancellation up to 48
+            hours", which directly contradicted /cancellation-policy, where
+            anything inside 7 days is non-refundable. */}
         <div className="flex items-center gap-2">
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px]">✓</span>
-          <span>Instant Booking Confirmation</span>
+          <span>Confirmed personally by a trip consultant</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px]">✓</span>
-          <span>Free Cancellation up to 48 hours</span>
+          <span>
+            Up to 90% refund —{" "}
+            <Link href="/cancellation-policy" className="underline underline-offset-2 hover:text-ink">
+              see cancellation policy
+            </Link>
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px]">✓</span>
-          <span>Best Price & Quality Guarantee</span>
+          <span>Transparent pricing — ask what&apos;s included</span>
         </div>
       </div>
     </div>

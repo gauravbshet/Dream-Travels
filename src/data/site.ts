@@ -48,8 +48,8 @@ export const features: Feature[] = [
   },
   {
     id: "instant",
-    title: "Instant Booking",
-    description: "Confirm your trip in seconds with real-time availability.",
+    title: "Fast Replies",
+    description: "Send an enquiry on WhatsApp and hear back from a real planner.",
     icon: Zap,
   },
   {
@@ -66,8 +66,8 @@ export const features: Feature[] = [
   },
   {
     id: "secure",
-    title: "Secure Payments",
-    description: "Bank-grade encryption for every transaction.",
+    title: "Transparent Pricing",
+    description: "Clear per-person costs shared upfront — ask what's included.",
     icon: Lock,
   },
   {
@@ -91,26 +91,34 @@ export type Stat = {
   suffix: string;
 };
 
-export const stats: Stat[] = [
-  { id: "travellers", label: "Happy Travellers", value: 75000, suffix: "+" },
-  { id: "destinations", label: "Destinations", value: 250, suffix: "+" },
-  { id: "rating", label: "Google Rating", value: 4.9, suffix: "★" },
-  { id: "satisfaction", label: "Customer Satisfaction", value: 99, suffix: "%" },
-];
+/**
+ * Headline statistics shown in the Statistics section.
+ *
+ * INTENTIONALLY EMPTY. This previously carried invented figures
+ * (75,000+ travellers, 250 destinations, 4.9 Google rating, 99%
+ * satisfaction) that nothing in the business could substantiate — the
+ * database holds roughly a dozen destinations, not 250.
+ *
+ * `Statistics` renders nothing while this is empty, which is the correct
+ * behaviour: no number beats a made-up one. Add entries back only for
+ * figures you can point at a source for (a Google Business rating, a real
+ * booking count). Everything here is shown to customers as fact.
+ */
+export const stats: Stat[] = [];
 
-/** Social-proof numbers used in Hero badge and JSON-LD aggregateRating.
- *  Edit here — Hero.tsx and structured data both derive values from this object.
+/**
+ * Social proof for the Hero badge.
+ *
+ * The star rating / review count that used to live here also fed the
+ * homepage JSON-LD `aggregateRating`. Publishing a rating that isn't backed
+ * by real collected reviews breaks Google's structured-data policy and can
+ * cost the site its rich results, so both the rating and the JSON-LD block
+ * that consumed it are gone until there are real reviews to aggregate.
+ *
+ * `tagline` is a plain positioning statement — true by construction, and it
+ * needs no numbers to stand up.
  */
 export const heroBadge = {
-  /** Star rating displayed in the Hero badge and JSON-LD aggregateRating. */
-  rating: 4.9,
-  /** Human-readable traveller count for the Hero badge (e.g. "75,000+"). */
-  reviewCountLabel: "75,000+",
-  /** Numeric review count for JSON-LD aggregateRating.reviewCount. */
-  reviewCount: 75000,
-  /** Number of curated destinations, shown in the floating stat card. */
-  destinations: 250,
-  /** Number of countries covered, shown in the floating stat card. */
-  countries: 40,
+  tagline: "Mountain & forest trips, planned by real people",
 } as const;
 
