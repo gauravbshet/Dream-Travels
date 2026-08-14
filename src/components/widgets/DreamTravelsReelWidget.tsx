@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, VolumeX, Minus, Sparkles, ArrowRight, Play, Pause, X, MapPin, Star } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
@@ -8,8 +9,10 @@ import { reels as staticReels, type Reel } from "@/data/reels";
 import { ReelBookingModal } from "@/components/modals/ReelBookingModal";
 
 export function DreamTravelsReelWidget() {
+  const pathname = usePathname();
   const [reel, setReel] = useState<Reel>(staticReels[0]);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [hasUserToggled, setHasUserToggled] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -17,6 +20,10 @@ export function DreamTravelsReelWidget() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const supabase = createBrowserSupabaseClient();
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   useEffect(() => {
     async function fetchFeaturedReel() {
@@ -50,6 +57,28 @@ export function DreamTravelsReelWidget() {
 
     fetchFeaturedReel();
   }, [supabase]);
+
+  // Auto-minimize widget on scroll down, expand on scroll to top
+  useEffect(() => {
+    const handleScroll = () => {
+      // If user scrolls back to the very top, reset manual override state
+      if (window.scrollY < 20) {
+        setHasUserToggled(false);
+      }
+
+      if (hasUserToggled) return;
+
+      if (window.scrollY > 150) {
+        setIsMinimized(true);
+      } else if (window.scrollY < 80) {
+        setIsMinimized(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasUserToggled]);
 
   function toggleMute(e: React.MouseEvent) {
     e.stopPropagation();
@@ -123,7 +152,10 @@ export function DreamTravelsReelWidget() {
               exit={{ scale: 0.8, opacity: 0, y: 20 }}
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
-              onClick={() => setIsMinimized(false)}
+              onClick={() => {
+                setIsMinimized(false);
+                setHasUserToggled(true);
+              }}
               className="group flex items-center gap-3 rounded-full border border-border bg-surface/95 backdrop-blur-md px-4 py-2.5 shadow-2xl transition-all duration-300 hover:border-canopy/60"
             >
               <div className="relative h-9 w-9 overflow-hidden rounded-full border border-white/40 shadow-xs shrink-0">
@@ -225,7 +257,10 @@ export function DreamTravelsReelWidget() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => setIsMinimized(true)}
+                    onClick={() => {
+                      setIsMinimized(true);
+                      setHasUserToggled(true);
+                    }}
                     title="Minimize widget"
                     aria-label="Minimize widget"
                     className="flex h-5 w-5 items-center justify-center rounded-full bg-sage-100 text-ink/60 hover:bg-sage-200 hover:text-ink transition-colors"

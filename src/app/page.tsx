@@ -9,8 +9,6 @@ import { ExploreByMap } from "@/components/sections/ExploreByMap";
 import { BudgetCards } from "@/components/sections/BudgetCards";
 import { Statistics } from "@/components/sections/Statistics";
 import { PopularExperiences } from "@/components/sections/PopularExperiences";
-import { SeasonalCollections } from "@/components/sections/SeasonalCollections";
-import { EventsSection } from "@/components/sections/EventsSection";
 import { ReelsShowcase } from "@/components/sections/ReelsShowcase";
 import { heroBadge } from "@/data/site";
 import { createServerSupabaseClient } from "@/lib/supabase.server";
@@ -22,12 +20,10 @@ import {
   interestingDestinations as staticInterestingDestinations,
   budgetTiers as staticBudgetTiers,
   popularExperiences as staticExperiences,
-  seasonalCollections as staticCollections,
 } from "@/data/destinations";
 import { packages as staticPackages, topPicks as staticTopPicks } from "@/data/packages";
 import { reviews as staticReviews, type Review } from "@/data/reviews";
-import { events as staticEvents, type TravelEvent } from "@/data/events";
-import type { PopularExperience, SeasonalCollection } from "@/data/destinations";
+import type { PopularExperience } from "@/data/destinations";
 
 export const dynamic = "force-dynamic";
 
@@ -58,9 +54,7 @@ async function fetchFeaturedData() {
     { data: packages },
     { data: topPickPackages },
     { data: reviewsData },
-    { data: eventsData },
     { data: experiencesData },
-    { data: collectionsData },
     { data: budgetTiersData },
     { data: packagePrices },
     { data: reelsData },
@@ -91,9 +85,7 @@ async function fetchFeaturedData() {
       .order("created_at", { ascending: false })
       .limit(6),
     supabase.from("reviews").select("id,name,avatar,rating,review,date").order("created_at", { ascending: false }),
-    supabase.from("events").select("id,title,image,date,location").order("created_at", { ascending: false }),
     supabase.from("popular_experiences").select("id,title,image").order("created_at", { ascending: false }),
-    supabase.from("seasonal_collections").select("id,title,image").order("created_at", { ascending: false }),
     supabase.from("budget_tiers").select("id,title,emoji,price_limit").order("price_limit", { ascending: true }),
     supabase.from("packages").select("price").eq("status", "published"),
     supabase
@@ -149,11 +141,7 @@ async function fetchFeaturedData() {
 
   const reviews: Review[] = reviewsData?.length ? reviewsData : staticReviews;
 
-  const events: TravelEvent[] = eventsData?.length ? eventsData : staticEvents;
-
   const experiences: PopularExperience[] = experiencesData?.length ? experiencesData : staticExperiences;
-
-  const collections: SeasonalCollection[] = collectionsData?.length ? collectionsData : staticCollections;
 
   const dbPrices = (packagePrices ?? [])
     .map((row) => row.price)
@@ -200,9 +188,7 @@ async function fetchFeaturedData() {
     featuredPackages,
     topPicks,
     reviews,
-    events,
     experiences,
-    collections,
     budgetTiers,
     reels,
   };
@@ -213,9 +199,7 @@ export default async function Home() {
     featuredDestinations,
     featuredPackages,
     reviews,
-    events,
     experiences,
-    collections,
     budgetTiers,
     reels,
   } = await fetchFeaturedData();
@@ -239,8 +223,6 @@ export default async function Home() {
         <Statistics />
         <ExploreByMap />
         <PopularExperiences experiences={experiences} />
-        <SeasonalCollections collections={collections} />
-        <EventsSection events={events} />
       </main>
     </>
   );
