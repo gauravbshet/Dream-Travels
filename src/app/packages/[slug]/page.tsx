@@ -190,13 +190,18 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             price: pkg.price,
             priceCurrency: "INR",
         },
-        aggregateRating: pkg.rating
-            ? {
-                  "@type": "AggregateRating",
-                  ratingValue: pkg.rating,
-                  reviewCount: pkg.reviews ?? 0,
-              }
-            : undefined,
+        // Only publish a rating when real reviews sit behind it. Google rejects
+        // an AggregateRating whose reviewCount is 0, and shipping one anyway
+        // puts the domain's rich results at risk. A package that has a rating
+        // but no reviews yet simply omits the field.
+        aggregateRating:
+            pkg.rating && pkg.reviews && pkg.reviews > 0
+                ? {
+                      "@type": "AggregateRating",
+                      ratingValue: pkg.rating,
+                      reviewCount: pkg.reviews,
+                  }
+                : undefined,
     };
 
     return (
@@ -279,9 +284,10 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                         {pkg.overview && (
                             <section id="overview" className="scroll-mt-36">
                                 <h2 className="text-2xl font-bold tracking-tight text-ink">Trip Overview</h2>
-                                <p className="prose-measure mt-3 text-base leading-relaxed text-ink/80">
-                                    {pkg.overview}
-                                </p>
+                                <div 
+                                    className="prose-measure mt-3 text-base leading-relaxed text-ink/80 whitespace-pre-wrap"
+                                    dangerouslySetInnerHTML={{ __html: pkg.overview.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}
+                                />
                             </section>
                         )}
 
@@ -295,7 +301,11 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                                             key={i}
                                             className="flex items-start gap-3 rounded-[16px] border border-border/80 bg-surface p-4 text-sm font-medium text-ink shadow-2xs hover:border-canopy/40 hover:shadow-xs transition-all"
                                         >
-                                            <Compass className="mt-0.5 h-4 w-4 shrink-0 text-canopy" /> {item}
+                                            <Compass className="mt-0.5 h-4 w-4 shrink-0 text-canopy" /> 
+                                            <span 
+                                                className="whitespace-pre-wrap"
+                                                dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} 
+                                            />
                                         </li>
                                     ))}
                                 </ul>
@@ -333,7 +343,11 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                                         <ul className="mt-4 space-y-2.5 text-sm font-medium text-ink/80">
                                             {pkg.inclusions!.map((item, i) => (
                                                 <li key={i} className="flex items-start gap-2.5">
-                                                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /> {item}
+                                                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /> 
+                                                    <span 
+                                                        className="whitespace-pre-wrap"
+                                                        dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} 
+                                                    />
                                                 </li>
                                             ))}
                                         </ul>
@@ -348,7 +362,11 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                                         <ul className="mt-4 space-y-2.5 text-sm font-medium text-ink/80">
                                             {pkg.exclusions!.map((item, i) => (
                                                 <li key={i} className="flex items-start gap-2.5">
-                                                    <XIcon className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" /> {item}
+                                                    <XIcon className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" /> 
+                                                    <span 
+                                                        className="whitespace-pre-wrap"
+                                                        dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} 
+                                                    />
                                                 </li>
                                             ))}
                                         </ul>

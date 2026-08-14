@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Pencil, Plus, Star, Trash2 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
-import { createStoragePath, normalizeUrl } from "@/lib/utils";
+import { normalizeUrl } from "@/lib/utils";
+import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 import { categories as travelCategories } from "@/data/categories";
 import { useToast } from "./Toast";
 import { Modal } from "./Modal";
@@ -165,28 +166,14 @@ export function ReelsManager() {
     }
 
     setUploadingVideo(true);
-    const filename = createStoragePath("reels", file);
-    const { data, error } = await supabase.storage.from("images").upload(filename, file, {
-      cacheControl: "3600",
-      upsert: true,
-    });
-
-    if (error || !data?.path) {
-      showToast(`Failed to upload video: ${error?.message ?? "Unknown error"}`, "error");
+    try {
+      const result = await uploadToCloudinary(file, "reels", "video");
+      setForm((f) => ({ ...f, video_file: file, video_url: result.secure_url }));
+    } catch (err) {
+      showToast(`Failed to upload video: ${err instanceof Error ? err.message : "Unknown error"}`, "error");
+    } finally {
       setUploadingVideo(false);
-      return;
     }
-
-    const { data: publicData } = await supabase.storage.from("images").getPublicUrl(data.path);
-
-    if (!publicData?.publicUrl) {
-      showToast("Failed to generate video URL", "error");
-      setUploadingVideo(false);
-      return;
-    }
-
-    setForm((f) => ({ ...f, video_file: file, video_url: publicData.publicUrl }));
-    setUploadingVideo(false);
   }
 
   async function uploadReelThumbnail(file: File | null) {
@@ -196,28 +183,14 @@ export function ReelsManager() {
     }
 
     setUploadingThumbnail(true);
-    const filename = createStoragePath("reels", file);
-    const { data, error } = await supabase.storage.from("images").upload(filename, file, {
-      cacheControl: "3600",
-      upsert: true,
-    });
-
-    if (error || !data?.path) {
-      showToast(`Failed to upload thumbnail: ${error?.message ?? "Unknown error"}`, "error");
+    try {
+      const result = await uploadToCloudinary(file, "reels");
+      setForm((f) => ({ ...f, thumbnail_file: file, thumbnail_url: result.secure_url }));
+    } catch (err) {
+      showToast(`Failed to upload thumbnail: ${err instanceof Error ? err.message : "Unknown error"}`, "error");
+    } finally {
       setUploadingThumbnail(false);
-      return;
     }
-
-    const { data: publicData } = await supabase.storage.from("images").getPublicUrl(data.path);
-
-    if (!publicData?.publicUrl) {
-      showToast("Failed to generate thumbnail URL", "error");
-      setUploadingThumbnail(false);
-      return;
-    }
-
-    setForm((f) => ({ ...f, thumbnail_file: file, thumbnail_url: publicData.publicUrl }));
-    setUploadingThumbnail(false);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {

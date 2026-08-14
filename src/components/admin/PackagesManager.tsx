@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
-import { createStoragePath, slugify } from "@/lib/utils";
+import { slugify } from "@/lib/utils";
+import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 import { categories as travelCategories, categoryLabels, isCategorySlug } from "@/data/categories";
 import { useToast } from "./Toast";
 import { Modal } from "./Modal";
@@ -307,35 +308,18 @@ export function PackagesManager() {
     }
 
     setUploadingImage(true);
-    const filename = createStoragePath("packages", file);
-    const { data, error } = await supabase.storage.from("images").upload(filename, file, {
-      cacheControl: "3600",
-      upsert: true,
-    });
-
-    if (error || !data?.path) {
-      showToast(`Failed to upload image: ${error?.message ?? "Unknown error"}`, "error");
+    try {
+      const result = await uploadToCloudinary(file, "packages");
+      setForm((f) => ({
+        ...f,
+        image_file: file,
+        image: result.secure_url,
+      }));
+    } catch (err) {
+      showToast(`Failed to upload image: ${err instanceof Error ? err.message : "Unknown error"}`, "error");
+    } finally {
       setUploadingImage(false);
-      return;
     }
-
-    const { data: publicData } = await supabase
-      .storage
-      .from("images")
-      .getPublicUrl(data.path);
-
-    if (!publicData?.publicUrl) {
-      showToast("Failed to generate image URL", "error");
-      setUploadingImage(false);
-      return;
-    }
-
-    setForm((f) => ({
-      ...f,
-      image_file: file,
-      image: publicData.publicUrl,
-    }));
-    setUploadingImage(false);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {

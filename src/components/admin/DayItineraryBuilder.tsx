@@ -1,8 +1,7 @@
 "use client";
 
 import { ChevronDown, ChevronUp, Copy, Plus, Trash2 } from "lucide-react";
-import { createBrowserSupabaseClient } from "@/lib/supabase.client";
-import { createStoragePath } from "@/lib/utils";
+import { uploadToCloudinary } from "@/lib/uploadToCloudinary";
 import { ImageUploadField } from "./ImageUploadField";
 import { AdminField, AdminIconButton } from "./ui";
 
@@ -35,8 +34,6 @@ export function DayItineraryBuilder({
   days: DayFormItem[];
   onChange: (days: DayFormItem[]) => void;
 }) {
-  const supabase = createBrowserSupabaseClient();
-
   function updateDay(index: number, patch: Partial<DayFormItem>) {
     const next = [...days];
     next[index] = { ...next[index], ...patch };
@@ -73,20 +70,11 @@ export function DayItineraryBuilder({
       return;
     }
 
-    const filename = createStoragePath("itinerary-days", file);
-    const { data, error } = await supabase.storage.from("images").upload(filename, file, {
-      cacheControl: "3600",
-      upsert: true,
-    });
-
-    if (error || !data?.path) {
-      window.alert(`Failed to upload day image: ${error?.message ?? "Unknown error"}`);
-      return;
-    }
-
-    const { data: publicData } = await supabase.storage.from("images").getPublicUrl(data.path);
-    if (publicData?.publicUrl) {
-      updateDay(index, { image: publicData.publicUrl });
+    try {
+      const result = await uploadToCloudinary(file, "itinerary-days");
+      updateDay(index, { image: result.secure_url });
+    } catch (err) {
+      window.alert(`Failed to upload day image: ${err instanceof Error ? err.message : "Unknown error"}`);
     }
   }
 

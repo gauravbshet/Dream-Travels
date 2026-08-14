@@ -11,6 +11,7 @@ import {
 } from "framer-motion";
 import { ArrowUpRight, Star } from "lucide-react";
 import { HeroSearch, HeroSearchCompact } from "./HeroSearch";
+import { heroBadge } from "@/data/site";
 import heroImage from "../../../media/hero.jpg";
 
 export function Hero() {
@@ -98,7 +99,7 @@ export function Hero() {
                 className="mb-3 sm:mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-black/40 px-4 py-1.5 text-xs font-medium text-white backdrop-blur-md shadow-md"
               >
                 <Star className="h-3.5 w-3.5 fill-amber text-amber" />
-                <span>Rated 4.9 by 75,000+ happy travellers</span>
+                <span>{heroBadge.tagline}</span>
               </motion.div>
             </motion.div>
 

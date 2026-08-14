@@ -29,20 +29,17 @@ export const dynamic = "force-dynamic";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dreamtravels.com";
 
+// No `aggregateRating` here on purpose. Google requires that a published
+// aggregateRating reflect genuine reviews collected from customers; emitting
+// an invented one risks a manual action and the loss of rich results for the
+// whole domain. Add it back only when real reviews exist to aggregate.
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
   name: "Dream Travels",
   url: siteUrl,
   description:
-    "Dream Travels is a premium travel booking platform for curated trips, dream destinations, and unforgettable experiences across the globe.",
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: heroBadge.rating,
-    reviewCount: heroBadge.reviewCount,
-    bestRating: 5,
-    worstRating: 1,
-  },
+    "Dream Travels is a travel consultancy for India's mountains, forests, and hidden trails. Every itinerary is planned with a real consultant over WhatsApp.",
 };
 
 async function fetchFeaturedData() {
