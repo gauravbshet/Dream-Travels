@@ -11,12 +11,14 @@ export function PackageBookingCard({
   title,
   price,
   originalPrice,
+  slotsLeft,
   whatsappNumber,
 }: {
   slug: string;
   title: string;
   price: number;
   originalPrice?: number | null;
+  slotsLeft?: number | null;
   whatsappNumber?: string;
 }) {
   const [travellers, setTravellers] = useState(2);
@@ -39,6 +41,38 @@ export function PackageBookingCard({
 
   return (
     <div className="rounded-[20px] border border-border/80 bg-surface p-6 shadow-md sm:p-7">
+      {/* Slots Left Banner */}
+      {slotsLeft != null && (
+        <div
+          className={`mb-4 flex items-center justify-between rounded-xl p-3 text-xs font-bold ${
+            slotsLeft === 0
+              ? "bg-rose-50 border border-rose-200 text-rose-800"
+              : "bg-amber-50 border border-amber-200 text-amber-900"
+          }`}
+        >
+          <span className="flex items-center gap-1.5">
+            <span className="relative flex h-2 w-2">
+              <span
+                className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                  slotsLeft === 0 ? "bg-rose-400" : "bg-amber-400"
+                }`}
+              />
+              <span
+                className={`relative inline-flex rounded-full h-2 w-2 ${
+                  slotsLeft === 0 ? "bg-rose-500" : "bg-amber-500"
+                }`}
+              />
+            </span>
+            {slotsLeft === 0
+              ? "Batch Sold Out — Contact for Next Dates"
+              : `Hurry! Only ${slotsLeft} ${slotsLeft === 1 ? "slot" : "slots"} remaining for next batch`}
+          </span>
+          <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-700 bg-amber-200/60 px-1.5 py-0.5 rounded">
+            Live
+          </span>
+        </div>
+      )}
+
       <div className="flex items-baseline justify-between">
         <div>
           <div className="flex items-baseline gap-2">

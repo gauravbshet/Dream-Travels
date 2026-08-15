@@ -35,7 +35,7 @@ const footerGroups: { title: string; links: { label: string; href: string }[] }[
       { label: "Help Center", href: "#" },
       { label: "Cancellation Policy", href: "/cancellation-policy" },
       { label: "Safety", href: "#" },
-      { label: "Contact Us", href: "mailto:info@dream-travels.in" },
+      { label: "Contact Us", href: "/contact" },
     ],
   },
   {

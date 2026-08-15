@@ -8,19 +8,24 @@ import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 import { reels as staticReels, type Reel } from "@/data/reels";
 import { ReelBookingModal } from "@/components/modals/ReelBookingModal";
 
+type ViewState = "expanded" | "pill" | "circle";
+
 export function DreamTravelsReelWidget() {
   const pathname = usePathname();
-  const isHiddenRoute = Boolean(
-    pathname?.startsWith("/admin") ||
-    pathname?.startsWith("/login") ||
-    pathname?.startsWith("/signup") ||
-    pathname?.startsWith("/auth")
+
+  // Route check: Only render widget on Home ('/'), Destinations ('/destinations'), Destination Details ('/destinations/[slug]'), and About ('/about')
+  const isAllowedRoute = Boolean(
+    pathname === "/" ||
+    pathname === "/destinations" ||
+    pathname?.startsWith("/destinations/") ||
+    pathname === "/about"
   );
 
   const [reelsList, setReelsList] = useState<Reel[]>(staticReels);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [hasUserToggled, setHasUserToggled] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [userOverrideState, setUserOverrideState] = useState<ViewState | null>(null);
+
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -30,7 +35,7 @@ export function DreamTravelsReelWidget() {
   const supabase = createBrowserSupabaseClient();
 
   useEffect(() => {
-    if (isHiddenRoute) return;
+    if (!isAllowedRoute) return;
 
     async function fetchFeaturedReels() {
       try {
@@ -105,41 +110,44 @@ export function DreamTravelsReelWidget() {
     }
 
     fetchFeaturedReels();
-  }, [supabase, isHiddenRoute]);
+  }, [supabase, isAllowedRoute]);
 
   // Active reel & package details
   const reel = reelsList[selectedIndex] || reelsList[0] || staticReels[0];
   const pkg = reel.linkedPackage;
 
-  // Active package details (uses linked package data if available, falls back to reel properties)
+  // Active package details
   const activeTitle = pkg?.title || reel.title;
   const activeDestination = pkg?.location || reel.destination || "Maharashtra";
   const activePrice = pkg?.price ?? reel.price ?? 2499;
   const activeRating = pkg?.rating ?? reel.rating ?? 4.8;
   const activeDuration = pkg?.duration ?? reel.duration ?? "2D / 1N";
 
-  // Auto-minimize widget on scroll down, expand on scroll to top
+  // Scroll listener to drive progressive 3-stage widget sizing:
+  // 1. scrollY < 120px  => "expanded" (full dual pane)
+  // 2. 120px <= scrollY < 450px => "pill" (compact capsule pill)
+  // 3. scrollY >= 450px => "circle" (small round circle button)
   useEffect(() => {
-    if (isHiddenRoute) return;
+    if (!isAllowedRoute) return;
 
     const handleScroll = () => {
-      if (window.scrollY < 20) {
-        setHasUserToggled(false);
-      }
+      const currentY = window.scrollY;
+      setScrollY(currentY);
 
-      if (hasUserToggled) return;
-
-      if (window.scrollY > 150) {
-        setIsMinimized(true);
-      } else if (window.scrollY < 80) {
-        setIsMinimized(false);
+      if (currentY < 20) {
+        setUserOverrideState(null);
       }
     };
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasUserToggled, isHiddenRoute]);
+  }, [isAllowedRoute]);
+
+  // Active view state determination
+  const currentState: ViewState = userOverrideState ?? (
+    scrollY >= 450 ? "circle" : scrollY >= 120 ? "pill" : "expanded"
+  );
 
   function toggleMute(e: React.MouseEvent) {
     e.stopPropagation();
@@ -161,72 +169,130 @@ export function DreamTravelsReelWidget() {
     }
   }
 
-  if (isHiddenRoute) {
+  if (!isAllowedRoute) {
     return null;
   }
 
   return (
     <>
-      {/* Mobile: compact pill button */}
+      {/* Mobile view */}
       <div className="fixed bottom-4 right-4 z-[180] font-sans sm:hidden">
-        <button
-          type="button"
-          onClick={() => setIsExpandedModal(true)}
-          className="group flex items-center gap-3 rounded-full border border-border bg-surface/95 backdrop-blur-md px-4 py-2.5 shadow-2xl transition-all duration-300 active:scale-95"
-        >
-          <div className="relative h-9 w-9 overflow-hidden rounded-full border border-white/40 shadow-xs shrink-0">
+        {currentState === "circle" ? (
+          /* Mobile Stage 3: Small Round Circle */
+          <motion.button
+            type="button"
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setIsExpandedModal(true)}
+            aria-label={`Open featured trip: ${activeTitle}`}
+            className="group relative flex h-13 w-13 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-surface shadow-2xl backdrop-blur-md"
+          >
             {reel.thumbnailUrl ? (
-              <img
-                src={reel.thumbnailUrl}
-                alt={activeTitle}
-                className="h-full w-full object-cover"
-              />
+              <img src={reel.thumbnailUrl} alt={activeTitle} className="h-full w-full object-cover" />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-canopy text-xs font-bold text-white">
                 🏕
               </div>
             )}
-            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border border-white bg-emerald-500 animate-pulse" />
-          </div>
-          <div className="text-left pr-1">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold text-canopy uppercase tracking-wider">
-                Featured Trip
-              </span>
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-center justify-center">
+              <Play className="h-3.5 w-3.5 fill-white text-white ml-0.5" />
             </div>
-            <p className="text-xs font-bold text-ink line-clamp-1">
-              {activeTitle} • ₹{activePrice.toLocaleString("en-IN")}
-            </p>
-          </div>
-        </button>
+            <span className="absolute top-0.5 right-0.5 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border border-white" />
+            </span>
+          </motion.button>
+        ) : (
+          /* Mobile Stage 1 & 2: Pill Capsule Badge */
+          <motion.button
+            type="button"
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsExpandedModal(true)}
+            className="group flex items-center gap-3 rounded-full border border-border bg-surface/95 backdrop-blur-md px-4 py-2.5 shadow-2xl transition-all duration-300"
+          >
+            <div className="relative h-9 w-9 overflow-hidden rounded-full border border-white/40 shadow-xs shrink-0">
+              {reel.thumbnailUrl ? (
+                <img src={reel.thumbnailUrl} alt={activeTitle} className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-canopy text-xs font-bold text-white">
+                  🏕
+                </div>
+              )}
+              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border border-white bg-emerald-500 animate-pulse" />
+            </div>
+            <div className="text-left pr-1">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-canopy uppercase tracking-wider">
+                  Featured Trip
+                </span>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+              </div>
+              <p className="text-xs font-bold text-ink line-clamp-1">
+                {activeTitle} • ₹{activePrice.toLocaleString("en-IN")}
+              </p>
+            </div>
+          </motion.button>
+        )}
       </div>
 
-      {/* Tablet/desktop: full expand/minimize widget */}
+      {/* Desktop / Tablet view */}
       <div className="fixed bottom-4 right-4 z-[180] hidden font-sans sm:bottom-6 sm:right-6 sm:block">
         <AnimatePresence mode="wait">
-          {isMinimized ? (
-            /* Minimized Featured Package Badge Button */
+          {currentState === "circle" ? (
+            /* Desktop Stage 3: Small Round Circle Floating Button (Deep Scroll) */
             <motion.button
-              key="minimized-widget"
-              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              key="minimized-circle-widget"
+              initial={{ scale: 0.7, opacity: 0, y: 16 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.8, opacity: 0, y: 20 }}
+              exit={{ scale: 0.7, opacity: 0, y: 16 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => {
+                setUserOverrideState("expanded");
+              }}
+              aria-label={`Open featured trip: ${activeTitle}`}
+              title={`Featured Trip: ${activeTitle} (₹${activePrice.toLocaleString("en-IN")})`}
+              className="group relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-surface shadow-2xl backdrop-blur-md transition-all duration-300 hover:border-canopy hover:shadow-canopy/25 cursor-pointer"
+            >
+              {reel.thumbnailUrl ? (
+                <img
+                  src={reel.thumbnailUrl}
+                  alt={activeTitle}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-canopy text-sm font-bold text-white">
+                  🏕
+                </div>
+              )}
+
+              <div className="absolute inset-0 bg-black/35 group-hover:bg-black/50 transition-colors flex items-center justify-center">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/30 text-white backdrop-blur-xs group-hover:scale-110 group-hover:bg-canopy transition-all">
+                  <Play className="h-3.5 w-3.5 fill-white ml-0.5" />
+                </div>
+              </div>
+
+              <span className="absolute top-1 right-1 flex h-3.5 w-3.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-white" />
+              </span>
+            </motion.button>
+          ) : currentState === "pill" ? (
+            /* Desktop Stage 2: Pill Capsule Badge Button (Medium Scroll) */
+            <motion.button
+              key="minimized-pill-widget"
+              initial={{ scale: 0.85, opacity: 0, y: 16 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0, y: 16 }}
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => {
-                setIsMinimized(false);
-                setHasUserToggled(true);
+                setUserOverrideState("expanded");
               }}
-              className="group flex items-center gap-3 rounded-full border border-border bg-surface/95 backdrop-blur-md px-4 py-2.5 shadow-2xl transition-all duration-300 hover:border-canopy/60"
+              className="group flex items-center gap-3 rounded-full border border-border bg-surface/95 backdrop-blur-md px-4 py-2.5 shadow-2xl transition-all duration-300 hover:border-canopy/60 cursor-pointer"
             >
               <div className="relative h-9 w-9 overflow-hidden rounded-full border border-white/40 shadow-xs shrink-0">
                 {reel.thumbnailUrl ? (
-                  <img
-                    src={reel.thumbnailUrl}
-                    alt={activeTitle}
-                    className="h-full w-full object-cover"
-                  />
+                  <img src={reel.thumbnailUrl} alt={activeTitle} className="h-full w-full object-cover" />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-canopy text-xs font-bold text-white">
                     🏕
@@ -247,7 +313,7 @@ export function DreamTravelsReelWidget() {
               </div>
             </motion.button>
           ) : (
-            /* Dual-Pane Floating Reel & Package Card */
+            /* Desktop Stage 1: Full Dual-Pane Floating Reel & Package Card (Top of Page) */
             <motion.div
               key="expanded-widget"
               initial={{ scale: 0.9, opacity: 0, y: 24 }}
@@ -273,10 +339,8 @@ export function DreamTravelsReelWidget() {
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
-                {/* Dark Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 pointer-events-none" />
 
-                {/* Top Controls: Mute Toggle */}
                 <div className="absolute top-2 right-2 z-10 flex gap-1">
                   <button
                     type="button"
@@ -288,7 +352,6 @@ export function DreamTravelsReelWidget() {
                   </button>
                 </div>
 
-                {/* Play/Pause Toggle */}
                 <button
                   type="button"
                   onClick={togglePlay}
@@ -300,7 +363,6 @@ export function DreamTravelsReelWidget() {
                   </div>
                 </button>
 
-                {/* Bottom Caption Pill */}
                 <div className="absolute bottom-2 left-2 right-2 z-10">
                   <div className="inline-block rounded-md bg-black/75 backdrop-blur-xs px-2 py-1 text-[10px] font-medium leading-tight text-white shadow-xs">
                     <span className="line-clamp-2">
@@ -312,7 +374,6 @@ export function DreamTravelsReelWidget() {
 
               {/* Right Pane: Featured Package Details Card */}
               <div className="relative flex h-[160px] w-[200px] sm:h-[185px] sm:w-[220px] flex-col justify-between rounded-[20px] border border-border/80 bg-surface/95 p-3 shadow-2xl backdrop-blur-md text-ink">
-                {/* Header row: Featured Reel Badge & Minimize Button */}
                 <div className="flex items-center justify-between gap-1">
                   <div className="flex items-center gap-1 text-[10px] font-bold text-canopy uppercase tracking-wider">
                     <Sparkles className="h-3 w-3 fill-canopy/20" />
@@ -321,8 +382,7 @@ export function DreamTravelsReelWidget() {
                   <button
                     type="button"
                     onClick={() => {
-                      setIsMinimized(true);
-                      setHasUserToggled(true);
+                      setUserOverrideState("circle");
                     }}
                     title="Minimize widget"
                     aria-label="Minimize widget"
@@ -332,9 +392,6 @@ export function DreamTravelsReelWidget() {
                   </button>
                 </div>
 
-
-
-                {/* Middle: Destination & Package Title */}
                 <div className="my-auto space-y-0.5 py-0.5">
                   <div className="flex items-center gap-1 text-[10.5px] font-semibold text-ink-muted">
                     <MapPin className="h-3 w-3 shrink-0 text-canopy" />
@@ -345,7 +402,6 @@ export function DreamTravelsReelWidget() {
                     {activeTitle}
                   </h4>
 
-                  {/* Price & Rating Row */}
                   <div className="flex items-center justify-between text-xs pt-0.5">
                     <span className="font-extrabold text-ink text-xs">
                       ₹{activePrice.toLocaleString("en-IN")}
@@ -358,7 +414,6 @@ export function DreamTravelsReelWidget() {
                   </div>
                 </div>
 
-                {/* Bottom: Book Package CTA Button */}
                 <button
                   type="button"
                   onClick={() => setIsBookingOpen(true)}

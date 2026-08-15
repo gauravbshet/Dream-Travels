@@ -57,10 +57,26 @@ export function PackageCard({
             {/* Soft gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/20" />
 
-            {/* Top Left: Category Badge */}
-            <span className="absolute left-2.5 top-2.5 z-[3] rounded-md bg-canopy px-2 py-0.5 text-[9.5px] sm:text-[10px] font-semibold text-white shadow-2xs">
-              {isCompact ? "Destination" : (categoryLabels[pkg.category as CategorySlug] ?? pkg.category)}
-            </span>
+            {/* Top Left: Category & Slots Badges */}
+            <div className="absolute left-2.5 top-2.5 z-[3] flex flex-col gap-1 items-start">
+              <span className="rounded-md bg-canopy px-2 py-0.5 text-[9.5px] sm:text-[10px] font-semibold text-white shadow-2xs">
+                {isCompact ? "Destination" : (categoryLabels[pkg.category as CategorySlug] ?? pkg.category)}
+              </span>
+              {(pkg.slots_left != null || pkg.slotsLeft != null) && (
+                <span
+                  className={cn(
+                    "rounded-md px-2 py-0.5 text-[9px] sm:text-[9.5px] font-extrabold tracking-wide text-white shadow-2xs",
+                    (pkg.slots_left ?? pkg.slotsLeft) === 0
+                      ? "bg-rose-600"
+                      : "bg-amber-600 animate-pulse"
+                  )}
+                >
+                  {(pkg.slots_left ?? pkg.slotsLeft) === 0
+                    ? "Sold Out"
+                    : `⚡ ${pkg.slots_left ?? pkg.slotsLeft} slots left`}
+                </span>
+              )}
+            </div>
 
             {/* Top Right: Floating Wishlist Heart */}
             <WishlistButton className="absolute right-2.5 top-2.5 z-[3] rounded-full bg-black/30 p-1 sm:p-1.5 text-white backdrop-blur-md hover:bg-black/50" />

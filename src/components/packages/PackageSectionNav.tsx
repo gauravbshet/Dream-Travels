@@ -9,8 +9,7 @@ const SECTIONS = [
   { id: "facts", label: "Trip Facts" },
   { id: "itinerary", label: "Itinerary" },
   { id: "inclusions", label: "Inclusions" },
-  { id: "faq", label: "FAQs" },
-  { id: "trust", label: "Why Choose Us" },
+  { id: "refund-policy", label: "Refund Policy" },
 ];
 
 export function PackageSectionNav() {

@@ -16,6 +16,8 @@ export type Package = {
   originalPrice?: number;
   original_price?: number;
   destination_id?: string;
+  slots_left?: number | null;
+  slotsLeft?: number | null;
 };
 
 export const packages: Package[] = [

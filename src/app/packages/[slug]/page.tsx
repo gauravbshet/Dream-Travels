@@ -62,6 +62,7 @@ type PackageDetail = {
     transport: string | null;
     accommodation: string | null;
     meals: string | null;
+    slots_left: number | null;
 };
 
 type ItineraryDay = {
@@ -87,7 +88,7 @@ type RelatedPackage = {
 };
 
 const PACKAGE_COLUMNS =
-    "id,slug,title,location,image,additional_images,category,duration,pickup,drop_point,dates,price,original_price,overview,destination_id,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals";
+    "id,slug,title,location,image,additional_images,category,duration,pickup,drop_point,dates,price,original_price,overview,destination_id,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals,slots_left";
 
 // Prerender every published package at build time. Drafts are excluded
 // deliberately — `getPackageData` 404s them anyway. New packages still work:
@@ -405,60 +406,106 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                             </section>
                         )}
 
-                        {/* Why Choose Us / Trust Badges */}
-                        <section id="trust" className="scroll-mt-36 rounded-[20px] border border-border/80 bg-surface p-5 sm:p-6 shadow-2xs">
-                            <h2 className="text-lg sm:text-xl font-bold text-ink flex items-center gap-2">
-                                <Sparkles className="h-5 w-5 text-canopy" /> Why Book With Dream Travels?
-                            </h2>
-                            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                <div className="flex items-start gap-3 rounded-[14px] bg-canvas/60 p-3.5 border border-border/60">
-                                    <ShieldCheck className="h-5 w-5 text-canopy shrink-0 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-bold text-xs sm:text-sm text-ink">100% Verified Local Guides</h4>
-                                        <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed">Experienced, licensed local experts ensuring your trip is safe, authentic, and hassle-free.</p>
-                                    </div>
+                        {/* Cancellation & Refund Policy */}
+                        <section id="refund-policy" className="scroll-mt-36 rounded-[20px] border border-border/80 bg-surface p-5 sm:p-7 shadow-2xs">
+                            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/70 pb-4">
+                                <div>
+                                    <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-ink flex items-center gap-2">
+                                        <ShieldCheck className="h-6 w-6 text-canopy shrink-0" /> Cancellation & Refund Policy
+                                    </h2>
+                                    <p className="mt-1 text-xs sm:text-sm text-ink-muted">
+                                        Clear, transparent cancellation terms. All refunds are calculated based on departure timeline.
+                                    </p>
                                 </div>
-                                <div className="flex items-start gap-3 rounded-[14px] bg-canvas/60 p-3.5 border border-border/60">
-                                    <Sparkles className="h-5 w-5 text-canopy shrink-0 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-bold text-xs sm:text-sm text-ink">Transparent Pricing</h4>
-                                        <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed">No hidden fees or unexpected costs. What you see is exactly what you pay.</p>
-                                    </div>
+                                <Link
+                                    href="/cancellation-policy"
+                                    className="inline-flex items-center gap-1 text-xs font-bold text-canopy hover:underline"
+                                >
+                                    View Full Policy →
+                                </Link>
+                            </div>
+
+                            {/* Refund Timeline Table */}
+                            <div className="mt-5 overflow-x-auto">
+                                <div className="min-w-[440px] overflow-hidden rounded-[16px] border border-border/80 bg-canvas/40">
+                                    <table className="w-full text-left text-xs sm:text-sm">
+                                        <thead className="bg-sage-100/70 border-b border-border/80">
+                                            <tr className="text-ink font-bold">
+                                                <th className="px-4 py-3">Cancellation Notice</th>
+                                                <th className="px-4 py-3">Refund Amount</th>
+                                                <th className="px-4 py-3">Retention Charge</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-border/60 bg-surface">
+                                            <tr>
+                                                <td className="px-4 py-3 font-semibold text-ink">30+ Days before departure</td>
+                                                <td className="px-4 py-3 font-extrabold text-emerald-600">90% Refund</td>
+                                                <td className="px-4 py-3 text-ink-muted">10% Charge</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="px-4 py-3 font-semibold text-ink">21 – 29 Days before departure</td>
+                                                <td className="px-4 py-3 font-extrabold text-emerald-600">75% Refund</td>
+                                                <td className="px-4 py-3 text-ink-muted">25% Charge</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="px-4 py-3 font-semibold text-ink">15 – 20 Days before departure</td>
+                                                <td className="px-4 py-3 font-extrabold text-amber-600">50% Refund</td>
+                                                <td className="px-4 py-3 text-ink-muted">50% Charge</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="px-4 py-3 font-semibold text-ink">8 – 14 Days before departure</td>
+                                                <td className="px-4 py-3 font-extrabold text-amber-600">25% Refund</td>
+                                                <td className="px-4 py-3 text-ink-muted">75% Charge</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="px-4 py-3 font-semibold text-ink">0 – 7 Days before departure / No-show</td>
+                                                <td className="px-4 py-3 font-extrabold text-rose-600">Non-Refundable</td>
+                                                <td className="px-4 py-3 text-ink-muted">100% Charge</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div className="flex items-start gap-3 rounded-[14px] bg-canvas/60 p-3.5 border border-border/60">
-                                    <Headphones className="h-5 w-5 text-canopy shrink-0 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-bold text-xs sm:text-sm text-ink">24/7 On-Trip Support</h4>
-                                        <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed">Dedicated trip coordinator available round the clock on WhatsApp and call throughout your journey.</p>
-                                    </div>
+                            </div>
+
+                            {/* Important Policy Guidelines */}
+                            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                                <div className="rounded-[14px] bg-canvas/60 p-4 border border-border/60">
+                                    <h4 className="font-bold text-xs sm:text-sm text-ink flex items-center gap-1.5">
+                                        <Sparkles className="h-4 w-4 text-canopy shrink-0" /> Non-Refundable Direct Costs
+                                    </h4>
+                                    <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+                                        Trek/Forest permits, entry tickets, hotel reservations, transport bookings & payment gateway fees are non-refundable once issued.
+                                    </p>
                                 </div>
-                                <div className="flex items-start gap-3 rounded-[14px] bg-canvas/60 p-3.5 border border-border/60">
-                                    <Check className="h-5 w-5 text-canopy shrink-0 mt-0.5" />
-                                    <div>
-                                        <h4 className="font-bold text-xs sm:text-sm text-ink">Flexible Cancellation</h4>
-                                        <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed">Free cancellation up to 48 hours before departure on qualifying package bookings.</p>
-                                    </div>
+
+                                <div className="rounded-[14px] bg-canvas/60 p-4 border border-border/60">
+                                    <h4 className="font-bold text-xs sm:text-sm text-ink flex items-center gap-1.5">
+                                        <ShieldCheck className="h-4 w-4 text-canopy shrink-0" /> Weather & Force Majeure
+                                    </h4>
+                                    <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+                                        If roads/destinations close due to weather, landslides or Govt orders, we offer alternative dates, modified routes, or partial refunds after deducting direct non-recoverable supplier costs.
+                                    </p>
+                                </div>
+
+                                <div className="rounded-[14px] bg-canvas/60 p-4 border border-border/60">
+                                    <h4 className="font-bold text-xs sm:text-sm text-ink flex items-center gap-1.5">
+                                        <Clock className="h-4 w-4 text-canopy shrink-0" /> Quick Refund Processing
+                                    </h4>
+                                    <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+                                        Approved refunds are processed back to your original payment method (bank account / UPI) within <strong>7–15 working days</strong>.
+                                    </p>
+                                </div>
+
+                                <div className="rounded-[14px] bg-canvas/60 p-4 border border-border/60">
+                                    <h4 className="font-bold text-xs sm:text-sm text-ink flex items-center gap-1.5">
+                                        <Users className="h-4 w-4 text-canopy shrink-0" /> Booking Transfer Option
+                                    </h4>
+                                    <p className="text-xs text-ink-muted mt-1 leading-relaxed">
+                                        Cannot travel? You can transfer your seat to a friend or family member free of charge up to 72 hours before departure (subject to permit rules).
+                                    </p>
                                 </div>
                             </div>
                         </section>
-
-                        {/* FAQs */}
-                        {pkg.faq && pkg.faq.length > 0 && (
-                            <section id="faq" className="scroll-mt-36">
-                                <h2 className="text-2xl font-bold tracking-tight text-ink">Frequently Asked Questions</h2>
-                                <div className="mt-4 space-y-3">
-                                    {pkg.faq.map((item, i) => (
-                                        <details key={i} className="group rounded-[16px] border border-border/80 bg-surface p-4 sm:p-5 transition-colors [&[open]]:border-canopy/40">
-                                            <summary className="cursor-pointer list-none font-bold text-ink flex items-center justify-between gap-4">
-                                                <span>{item.question}</span>
-                                                <span className="text-canopy font-bold text-lg transition-transform group-open:rotate-45">+</span>
-                                            </summary>
-                                            <p className="mt-3 text-sm leading-relaxed text-ink/80 border-t border-border/60 pt-3">{item.answer}</p>
-                                        </details>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
 
                         {/* Bottom CTA */}
                         <section className="rounded-[20px] bg-primary/10 p-6 text-center">
@@ -514,6 +561,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                                 title={pkg.title}
                                 price={pkg.price}
                                 originalPrice={pkg.original_price}
+                                slotsLeft={pkg.slots_left}
                                 whatsappNumber={whatsappNumber}
                             />
                         </div>

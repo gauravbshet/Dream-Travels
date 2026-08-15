@@ -48,6 +48,7 @@ type PackageRow = {
   accommodation: string | null;
   meals: string | null;
   display_order: number | null;
+  slots_left: number | null;
 };
 
 type DestinationOption = { id: string; name: string };
@@ -85,6 +86,7 @@ type FormState = {
   accommodation: string;
   meals: string;
   display_order: string;
+  slots_left: string;
 };
 
 const emptyForm: FormState = {
@@ -120,6 +122,7 @@ const emptyForm: FormState = {
   accommodation: "",
   meals: "",
   display_order: "0",
+  slots_left: "",
 };
 
 // Pulls the day count out of a duration string like "5D / 4N", "5 Days 4 Nights",
@@ -132,7 +135,7 @@ function parseDayCountFromDuration(duration: string): number | null {
 }
 
 const PACKAGE_COLUMNS =
-  "id,slug,title,duration,price,original_price,overview,image,additional_images,destination_id,location,category,pickup,drop_point,dates,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals,display_order";
+  "id,slug,title,duration,price,original_price,overview,image,additional_images,destination_id,location,category,pickup,drop_point,dates,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals,display_order,slots_left";
 
 export function PackagesManager() {
   const supabase = createBrowserSupabaseClient();
@@ -249,6 +252,7 @@ export function PackagesManager() {
       accommodation: pkg.accommodation ?? "",
       meals: pkg.meals ?? "",
       display_order: pkg.display_order?.toString() ?? "0",
+      slots_left: pkg.slots_left?.toString() ?? "",
     });
     setShowForm(true);
 
@@ -388,6 +392,7 @@ export function PackagesManager() {
       accommodation: form.accommodation.trim() || null,
       meals: form.meals.trim() || null,
       display_order: form.display_order ? Number(form.display_order) : 0,
+      slots_left: form.slots_left !== "" ? Number(form.slots_left) : null,
     };
 
     const { data: savedPackage, error } = editingId
@@ -703,6 +708,16 @@ export function PackagesManager() {
                   placeholder="e.g. 15"
                 />
               </AdminField>
+              <AdminField label="Slots Left / Available Seats (shown to users)">
+                <input
+                  type="number"
+                  min="0"
+                  value={form.slots_left}
+                  onChange={(e) => setForm((f) => ({ ...f, slots_left: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. 4 (enter 0 for Sold Out)"
+                />
+              </AdminField>
               <AdminField label="Transport">
                 <input
                   value={form.transport}
@@ -849,6 +864,7 @@ export function PackagesManager() {
                 <th className="px-4 py-3">Location</th>
                 <th className="px-4 py-3">Duration</th>
                 <th className="px-4 py-3">Price</th>
+                <th className="px-4 py-3">Slots Left</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Top pick</th>
                 <th className="px-4 py-3 text-right">Actions</th>
@@ -856,9 +872,9 @@ export function PackagesManager() {
             </thead>
             <tbody className="divide-y divide-admin-border">
               {loading ? (
-                <AdminTableState colSpan={9}>Loading packages...</AdminTableState>
+                <AdminTableState colSpan={10}>Loading packages...</AdminTableState>
               ) : filteredPackages.length === 0 ? (
-                <AdminTableState colSpan={9}>
+                <AdminTableState colSpan={10}>
                   {categoryFilter ? "No packages in this category." : "No packages yet."}
                 </AdminTableState>
               ) : (
@@ -873,6 +889,15 @@ export function PackagesManager() {
                     <td className="px-4 py-2.5 text-admin-ink-2">{pkg.duration ?? "—"}</td>
                     <td className="px-4 py-2.5 text-admin-ink-2">
                       {pkg.price != null ? `₹${pkg.price}` : "—"}
+                    </td>
+                    <td className="px-4 py-2.5">
+                      {pkg.slots_left != null ? (
+                        <AdminBadge className={pkg.slots_left === 0 ? "bg-red-500/10 text-red-500 font-bold" : "bg-emerald-500/10 text-emerald-600 font-bold"}>
+                          {pkg.slots_left === 0 ? "Sold Out" : `⚡ ${pkg.slots_left} slots`}
+                        </AdminBadge>
+                      ) : (
+                        "—"
+                      )}
                     </td>
                     <td className="px-4 py-2.5">
                       <AdminBadge className={pkg.status === "draft" ? "bg-admin-accent-soft text-admin-accent" : undefined}>
