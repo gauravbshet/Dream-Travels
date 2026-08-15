@@ -259,47 +259,47 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             </Container>
 
             {/* Hero Banner */}
-            <Container className="mb-8">
-                <div className="relative h-[380px] sm:h-[480px] lg:h-[520px] w-full overflow-hidden rounded-[20px] sm:rounded-[24px] shadow-md border border-border/60">
+            <Container className="mb-8 overflow-hidden">
+                <div className="relative min-h-[340px] sm:h-[480px] lg:h-[520px] w-full overflow-hidden rounded-[20px] sm:rounded-[24px] shadow-md border border-border/60">
                     {gallery[0] && (
                         <Image src={cldUrl(gallery[0], 1600)} alt={pkg.title} fill priority sizes="100vw" className="object-cover" />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10" />
 
-                    <div className="relative z-10 flex h-full flex-col justify-end p-5 sm:p-8 text-white">
-                        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                    <div className="relative z-10 flex h-full min-h-[340px] flex-col justify-end p-4 sm:p-8 text-white">
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold">
                             {pkg.rating != null && (
-                                <span className="flex items-center gap-1 rounded-full bg-black/40 px-3 py-1 backdrop-blur-md border border-white/15">
-                                    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" /> {pkg.rating.toFixed(1)}
+                                <span className="flex items-center gap-1 rounded-full bg-black/40 px-2.5 py-0.5 sm:px-3 sm:py-1 backdrop-blur-md border border-white/15">
+                                    <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5 fill-amber-400 text-amber-400" /> {pkg.rating.toFixed(1)}
                                 </span>
                             )}
                             {pkg.duration && (
-                                <span className="rounded-full bg-canopy px-3 py-1 font-bold text-white shadow-xs">
+                                <span className="rounded-full bg-canopy px-2.5 py-0.5 sm:px-3 sm:py-1 font-bold text-white shadow-xs">
                                     {pkg.duration}
                                 </span>
                             )}
                             {pkg.category && (
-                                <span className="rounded-full bg-black/40 px-3 py-1 backdrop-blur-md border border-white/15">
+                                <span className="rounded-full bg-black/40 px-2.5 py-0.5 sm:px-3 sm:py-1 backdrop-blur-md border border-white/15">
                                     {pkg.category}
                                 </span>
                             )}
                             {pkg.travel_type && (
-                                <span className="rounded-full bg-black/40 px-3 py-1 backdrop-blur-md border border-white/15">
+                                <span className="rounded-full bg-black/40 px-2.5 py-0.5 sm:px-3 sm:py-1 backdrop-blur-md border border-white/15 truncate max-w-[180px] sm:max-w-none">
                                     {pkg.travel_type}
                                 </span>
                             )}
                         </div>
-                        <h1 className="font-sans mt-3 text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
+                        <h1 className="font-sans mt-2 sm:mt-3 text-xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-snug drop-shadow-md">
                             {pkg.title}
                         </h1>
-                        <div className="mt-3 flex flex-wrap items-center gap-4 text-xs sm:text-sm text-white/90 font-medium">
+                        <div className="mt-2.5 sm:mt-3 flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-white/90 font-medium">
                             {pkg.location && (
                                 <span className="flex items-center gap-1.5">
-                                    <MapPin className="h-4 w-4 text-canopy shrink-0" /> {pkg.location}
+                                    <MapPin className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-canopy shrink-0" /> {pkg.location}
                                 </span>
                             )}
-                            <span className="rounded-full bg-black/50 px-4 py-1.5 text-base sm:text-lg text-white font-bold backdrop-blur-md border border-white/10">
-                                Starting {formatPrice(pkg.price)} <span className="text-sm sm:text-base font-normal text-white/70">/ person</span>
+                            <span className="rounded-full bg-black/50 px-3 py-1 sm:px-4 sm:py-1.5 text-xs sm:text-lg text-white font-bold backdrop-blur-md border border-white/10">
+                                Starting {formatPrice(pkg.price)} <span className="text-[10px] sm:text-base font-normal text-white/70">/ person</span>
                             </span>
                         </div>
                     </div>
@@ -309,9 +309,9 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             {/* Sticky Section Quick Jump Nav Bar */}
             <PackageSectionNav />
 
-            <Container>
-                <div className="grid gap-8 lg:grid-cols-[1fr_380px] items-start">
-                    <div className="space-y-6 sm:space-y-8 lg:space-y-12">
+            <Container className="overflow-hidden">
+                <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] items-start min-w-0 w-full">
+                    <div className="min-w-0 w-full space-y-6 sm:space-y-8 lg:space-y-12">
                         {/* Gallery */}
                         {gallery.length > 1 && <PackageGallery images={gallery} title={pkg.title} />}
 
@@ -320,7 +320,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                             <section id="overview" className="scroll-mt-36">
                                 <h2 className="text-2xl font-bold tracking-tight text-ink">Trip Overview</h2>
                                 <div 
-                                    className="prose-measure mt-3 text-base leading-relaxed text-ink/80 whitespace-pre-wrap"
+                                    className="prose-measure mt-3 text-sm sm:text-base leading-relaxed text-ink/80 whitespace-pre-wrap break-words max-w-full overflow-hidden"
                                     dangerouslySetInnerHTML={{ __html: pkg.overview.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}
                                 />
                             </section>
@@ -430,8 +430,8 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                             </div>
 
                             {/* Refund Timeline Table */}
-                            <div className="mt-5 overflow-x-auto">
-                                <div className="min-w-[440px] overflow-hidden rounded-[16px] border border-border/80 bg-canvas/40">
+                            <div className="mt-5 overflow-x-auto w-full">
+                                <div className="min-w-[320px] sm:min-w-[440px] overflow-hidden rounded-[16px] border border-border/80 bg-canvas/40">
                                     <table className="w-full text-left text-xs sm:text-sm">
                                         <thead className="bg-sage-100/70 border-b border-border/80">
                                             <tr className="text-ink font-bold">
