@@ -87,8 +87,9 @@ export default function RootLayout({
       lang="en"
       data-scroll-behavior="smooth"
       className={`${archivo.variable} ${bricolage.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-background text-ink">
+      <body className="min-h-full flex flex-col bg-background text-ink" suppressHydrationWarning>
         <AtmosphereField />
         <div className="relative flex min-h-full flex-1 flex-col" style={{ zIndex: 1 }}>
           <RouteAwareNavbar />

@@ -47,9 +47,17 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   // Protect /admin and /dashboard. If there's no user, redirect to /login.
-  // (Admin-role checking still happens server-side in src/app/admin/page.tsx —
-  // this only confirms *someone* is signed in before the page even loads.)
-  if (!user && (request.nextUrl.pathname.startsWith('/admin') || request.nextUrl.pathname.startsWith('/dashboard'))) {
+  const isAdminPath = request.nextUrl.pathname.startsWith('/admin')
+  const isDashboardPath = request.nextUrl.pathname.startsWith('/dashboard')
+
+  if (!user && (isAdminPath || isDashboardPath)) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  // Explicitly validate admin role for /admin paths
+  if (user && isAdminPath && user.user_metadata?.role !== 'admin') {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)

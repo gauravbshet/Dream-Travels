@@ -11,12 +11,14 @@ function assertBrowserSupabaseEnv() {
     }
 }
 
-let browserClient: ReturnType<typeof createBrowserClient> | null = null;
+import { Database } from "@/types/database.types";
+
+let browserClient: ReturnType<typeof createBrowserClient<Database>> | null = null;
 
 export function createBrowserSupabaseClient() {
     assertBrowserSupabaseEnv();
     if (!browserClient) {
-        browserClient = createBrowserClient(supabaseUrl!, supabaseAnonKey!);
+        browserClient = createBrowserClient<Database>(supabaseUrl!, supabaseAnonKey!);
     }
     return browserClient;
 }

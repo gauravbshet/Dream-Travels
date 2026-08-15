@@ -33,21 +33,23 @@ export async function generateStaticParams() {
 
 async function getDestination(slug: string) {
     const supabase = createPublicSupabaseClient();
-    const { data: destination } = await supabase
+    const { data } = await supabase
         .from("destinations")
         .select("id,slug,name,cover_image,image,description,price,rating")
         .eq("slug", slug)
         .maybeSingle();
+    const destination = data;
 
     if (!destination) {
         return null;
     }
 
-    const { data: packages } = await supabase
+    const { data: packagesData } = await supabase
         .from("packages")
         .select("id,slug,title,location,image,category,duration,pickup,dates,price,rating,reviews")
         .eq("destination_id", destination.id)
         .eq("status", "published");
+    const packages = packagesData;
 
     return { destination, packages: packages ?? [] };
 }

@@ -12,12 +12,12 @@ const contentSecurityPolicy = [
   // Next.js ships inline bootstrap data and this app renders JSON-LD via
   // dangerouslySetInnerHTML <script> tags — both need 'unsafe-inline' since
   // there's no nonce/hash pipeline wired up yet.
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
   // Tailwind arbitrary values and inline style={} usage throughout the UI.
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: https://images.unsplash.com https://cdn-icons-png.flaticon.com https://res.cloudinary.com ${SUPABASE_ORIGIN}`,
   "font-src 'self' data:",
-  "media-src 'self' https://res.cloudinary.com https://interactive-examples.mdn.mozilla.net",
+  `media-src 'self' https://res.cloudinary.com https://interactive-examples.mdn.mozilla.net ${SUPABASE_ORIGIN}`,
   `connect-src 'self' ${SUPABASE_ORIGIN} wss://${SUPABASE_ORIGIN.replace("https://", "")} https://api.cloudinary.com`,
   "frame-src 'none'",
   "object-src 'none'",
@@ -38,6 +38,15 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // lucide-react (per-icon imports) and framer-motion are both used
+  // throughout the UI. Next already auto-optimizes a default list of
+  // packages, but naming these explicitly guarantees each import is
+  // compiled down to its own module rather than pulling in the package's
+  // barrel file, which is the usual source of Lighthouse's "unused
+  // JavaScript" finding for icon libraries.
+  experimental: {
+    optimizePackageImports: ["lucide-react", "framer-motion"],
+  },
   async headers() {
     return [
       {
@@ -83,4 +92,10 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+import withBundleAnalyzer from '@next/bundle-analyzer';
+
+const analyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+export default analyzer(nextConfig);

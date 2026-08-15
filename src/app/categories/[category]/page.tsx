@@ -34,7 +34,7 @@ async function getPackagesByCategory(category: CategorySlug): Promise<Package[]>
       .order("created_at", { ascending: false });
 
     if (data && data.length > 0) {
-      return data.map((pkg) => ({
+      return (data ?? []).map((pkg) => ({
         ...pkg,
         location: pkg.location ?? "",
         category: pkg.category ?? category,

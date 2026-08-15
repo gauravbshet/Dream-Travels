@@ -14,10 +14,12 @@ function assertServerSupabaseEnv() {
     }
 }
 
+import { Database } from "@/types/database.types";
+
 export function createServerSupabaseClient() {
     assertServerSupabaseEnv();
 
-    return createServerClient(supabaseUrl!, supabaseAnonKey!, {
+    return createServerClient<Database>(supabaseUrl!, supabaseAnonKey!, {
         cookies: {
             getAll: async () =>
                 (await cookies()).getAll().map((cookie) => ({ name: cookie.name, value: cookie.value })),
@@ -46,13 +48,13 @@ export function createServerSupabaseClient() {
  * Do NOT use it for anything auth-dependent (dashboard, admin, bookings) — it
  * carries no session, so RLS treats every call as anonymous.
  */
-let publicSupabaseInstance: ReturnType<typeof createClient> | null = null;
+let publicSupabaseInstance: ReturnType<typeof createClient<Database>> | null = null;
 
 export function createPublicSupabaseClient() {
     assertServerSupabaseEnv();
 
     if (!publicSupabaseInstance) {
-        publicSupabaseInstance = createClient(supabaseUrl!, supabaseAnonKey!, {
+        publicSupabaseInstance = createClient<Database>(supabaseUrl!, supabaseAnonKey!, {
             auth: { persistSession: false, autoRefreshToken: false },
         });
     }
@@ -60,7 +62,7 @@ export function createPublicSupabaseClient() {
     return publicSupabaseInstance;
 }
 
-let adminSupabaseInstance: ReturnType<typeof createClient> | null = null;
+let adminSupabaseInstance: ReturnType<typeof createClient<Database>> | null = null;
 
 export function createAdminSupabaseClient() {
     const key = supabaseServiceRoleKey ?? supabaseAnonKey;
@@ -74,7 +76,7 @@ export function createAdminSupabaseClient() {
     }
 
     if (!adminSupabaseInstance) {
-        adminSupabaseInstance = createClient(supabaseUrl, key);
+        adminSupabaseInstance = createClient<Database>(supabaseUrl, key);
     }
 
     return adminSupabaseInstance;

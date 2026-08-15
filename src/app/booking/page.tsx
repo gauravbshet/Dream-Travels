@@ -24,11 +24,12 @@ export default async function BookingPage({
     }
 
     const supabase = createPublicSupabaseClient();
-    const { data: pkg } = await supabase
+    const { data } = await supabase
         .from("packages")
         .select("id,slug,title,image,price,duration,location,available_dates,available_from,available_to")
         .eq("slug", slug)
         .maybeSingle();
+    const pkg = data;
 
     if (!pkg) {
         notFound();
