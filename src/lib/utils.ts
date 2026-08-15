@@ -13,6 +13,19 @@ export function formatPrice(value: number) {
   }).format(value);
 }
 
+/** Formats a `YYYY-MM-DD` date string (from `<input type="date">` or a
+ * Postgres `date` column) as a friendly label, e.g. "Fri, 20 Sep 2026". */
+export function formatDateLabel(value: string): string {
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString("en-IN", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export function slugify(value: string) {
   return value
     .toLowerCase()

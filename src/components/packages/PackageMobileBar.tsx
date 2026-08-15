@@ -10,11 +10,15 @@ export function PackageMobileBar({
   title,
   price,
   whatsappNumber,
+  availableFrom,
+  availableTo,
 }: {
   slug: string;
   title: string;
   price: number;
   whatsappNumber?: string;
+  availableFrom?: string | null;
+  availableTo?: string | null;
 }) {
   const whatsappHref = buildWhatsAppLink(
     `Hello! I would like to enquire about *${title}*. Could you share availability and pricing?`,
@@ -38,7 +42,7 @@ export function PackageMobileBar({
           <MessageCircle className="h-4 w-4 text-[#25D366]" />
         </a>
         <Link
-          href={`/booking?package=${encodeURIComponent(slug)}`}
+          href={`/booking?package=${encodeURIComponent(slug)}${availableFrom ? `&available_from=${availableFrom}` : ''}${availableTo ? `&available_to=${availableTo}` : ''}`}
           className="rounded-[12px] bg-canopy hover:bg-canopy-hover px-5 py-2.5 text-sm font-bold text-white shadow-xs transition-colors"
         >
           Book Now

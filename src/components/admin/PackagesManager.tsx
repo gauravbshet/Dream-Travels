@@ -11,6 +11,7 @@ import { useToast } from "./Toast";
 import { Modal } from "./Modal";
 import { ImageUploadField } from "./ImageUploadField";
 import { TagListInput } from "./TagListInput";
+import { AvailableDatesInput } from "./AvailableDatesInput";
 import { FaqBuilder, type FaqItem } from "./FaqBuilder";
 import { DayItineraryBuilder, emptyDay, type DayFormItem } from "./DayItineraryBuilder";
 import { AdminBadge, AdminButton, AdminCard, AdminField, AdminIconButton, AdminPageHeader, AdminTableState } from "./ui";
@@ -25,6 +26,9 @@ type PackageRow = {
   pickup: string | null;
   drop_point: string | null;
   dates: string | null;
+  available_dates: string[] | null;
+  available_from: string | null;
+  available_to: string | null;
   duration: string | null;
   price: number | null;
   original_price: number | null;
@@ -62,6 +66,9 @@ type FormState = {
   pickup: string;
   drop_point: string;
   dates: string;
+  available_dates: string[];
+  available_from: string;
+  available_to: string;
   duration: string;
   price: string;
   original_price: string;
@@ -98,6 +105,9 @@ const emptyForm: FormState = {
   pickup: "",
   drop_point: "",
   dates: "",
+  available_dates: [],
+  available_from: "",
+  available_to: "",
   duration: "",
   price: "",
   original_price: "",
@@ -135,7 +145,7 @@ function parseDayCountFromDuration(duration: string): number | null {
 }
 
 const PACKAGE_COLUMNS =
-  "id,slug,title,duration,price,original_price,overview,image,additional_images,destination_id,location,category,pickup,drop_point,dates,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals,display_order,slots_left";
+  "id,slug,title,duration,price,original_price,overview,image,additional_images,destination_id,location,category,pickup,drop_point,dates,available_dates,available_from,available_to,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals,display_order,slots_left";
 
 export function PackagesManager() {
   const supabase = createBrowserSupabaseClient();
@@ -228,6 +238,9 @@ export function PackagesManager() {
       pickup: pkg.pickup ?? "",
       drop_point: pkg.drop_point ?? "",
       dates: pkg.dates ?? "",
+      available_dates: pkg.available_dates ?? [],
+      available_from: pkg.available_from ?? "",
+      available_to: pkg.available_to ?? "",
       duration: pkg.duration ?? "",
       price: pkg.price?.toString() ?? "",
       original_price: pkg.original_price?.toString() ?? "",
@@ -363,6 +376,12 @@ export function PackagesManager() {
       pickup: form.pickup.trim() || null,
       drop_point: form.drop_point.trim() || null,
       dates: form.dates.trim() || null,
+      available_dates: (() => {
+        const cleaned = form.available_dates.filter(Boolean);
+        return cleaned.length > 0 ? cleaned : null;
+      })(),
+      available_from: form.available_from || null,
+      available_to: form.available_to || null,
       duration: form.duration.trim() || null,
       price: form.price ? Number(form.price) : null,
       original_price: form.original_price ? Number(form.original_price) : null,
@@ -640,6 +659,28 @@ export function PackagesManager() {
                   onChange={(e) => setForm((f) => ({ ...f, dates: e.target.value }))}
                   className="admin-input"
                   placeholder="e.g. Available year-round"
+                />
+              </AdminField>
+              <AdminField label="Available departure dates (booking form picks from these)" full>
+                <AvailableDatesInput
+                  items={form.available_dates}
+                  onChange={(items) => setForm((f) => ({ ...f, available_dates: items }))}
+                />
+              </AdminField>
+              <AdminField label="Available From (Date range)">
+                <input
+                  type="date"
+                  value={form.available_from}
+                  onChange={(e) => setForm((f) => ({ ...f, available_from: e.target.value }))}
+                  className="admin-input"
+                />
+              </AdminField>
+              <AdminField label="Available To (Date range)">
+                <input
+                  type="date"
+                  value={form.available_to}
+                  onChange={(e) => setForm((f) => ({ ...f, available_to: e.target.value }))}
+                  className="admin-input"
                 />
               </AdminField>
               <AdminField label="Best time to visit">

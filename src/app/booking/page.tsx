@@ -14,9 +14,9 @@ import { BookingForm } from "@/components/packages/BookingForm";
 export default async function BookingPage({
     searchParams,
 }: {
-    searchParams: Promise<{ package?: string; travellers?: string; date?: string }>;
+    searchParams: Promise<{ package?: string; travellers?: string; date?: string; available_from?: string; available_to?: string }>;
 }) {
-    const { package: slug, travellers, date } = await searchParams;
+    const { package: slug, travellers, date, available_from, available_to } = await searchParams;
 
     if (!slug) {
         notFound();
@@ -25,7 +25,7 @@ export default async function BookingPage({
     const supabase = createPublicSupabaseClient();
     const { data: pkg } = await supabase
         .from("packages")
-        .select("id,slug,title,image,price,duration,location")
+        .select("id,slug,title,image,price,duration,location,available_dates,available_from,available_to")
         .eq("slug", slug)
         .maybeSingle();
 
@@ -64,6 +64,9 @@ export default async function BookingPage({
                         packageTitle={pkg.title}
                         defaultTravellers={travellers ? Number(travellers) : 2}
                         defaultDate={date ?? ""}
+                        availableDates={pkg.available_dates}
+                        availableFrom={pkg.available_from ?? available_from}
+                        availableTo={pkg.available_to ?? available_to}
                         whatsappNumber={process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}
                     />
                 </div>

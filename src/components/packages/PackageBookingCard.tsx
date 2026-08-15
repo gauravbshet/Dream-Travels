@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Minus, Plus, MessageCircle, Phone } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
+import { formatDateLabel, formatPrice } from "@/lib/utils";
 import { buildWhatsAppLink, buildTelLink } from "@/lib/whatsapp";
 
 export function PackageBookingCard({
@@ -12,6 +12,7 @@ export function PackageBookingCard({
   price,
   originalPrice,
   slotsLeft,
+  availableDates,
   whatsappNumber,
 }: {
   slug: string;
@@ -19,19 +20,23 @@ export function PackageBookingCard({
   price: number;
   originalPrice?: number | null;
   slotsLeft?: number | null;
+  availableDates?: string[] | null;
+  availableFrom?: string | null;
+  availableTo?: string | null;
   whatsappNumber?: string;
 }) {
   const [travellers, setTravellers] = useState(2);
   const [date, setDate] = useState("");
+  const hasFixedDates = (availableDates?.length ?? 0) > 0;
 
   const bookingHref = `/booking?package=${encodeURIComponent(slug)}&travellers=${travellers}${
     date ? `&date=${encodeURIComponent(date)}` : ""
   }`;
 
   const whatsappHref = buildWhatsAppLink(
-    `Hello! I would like to book *${title}* for ${travellers} traveller(s)${
-      date ? ` around ${date}` : ""
-    }. Could you share availability and next steps?`,
+    `Hello! I would like to book *${title}* for ${travellers} traveller(s). Could you share availability and next steps?${
+      date ? `\n\n📅 Selected Date: ${date}` : ""
+    }`,
     whatsappNumber
   );
 
@@ -117,15 +122,33 @@ export function PackageBookingCard({
 
         <div>
           <label htmlFor="travel-date" className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
-            Preferred Travel Date
+            {hasFixedDates ? "Choose a Departure Date" : "Preferred Travel Date"}
           </label>
-          <input
-            id="travel-date"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="mt-2 w-full rounded-[12px] border border-border/80 bg-surface px-4 py-2.5 text-sm text-ink outline-none focus:border-canopy transition-all"
-          />
+          {hasFixedDates ? (
+            <select
+              id="travel-date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="mt-2 w-full rounded-[12px] border border-border/80 bg-surface px-4 py-2.5 text-sm text-ink outline-none focus:border-canopy transition-all"
+            >
+              <option value="">Select a date</option>
+              {availableDates!.map((d) => (
+                <option key={d} value={d}>
+                  {formatDateLabel(d)}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              id="travel-date"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              min={availableFrom || undefined}
+              max={availableTo || undefined}
+              className="mt-2 w-full rounded-[12px] border border-border/80 bg-surface px-4 py-2.5 text-sm text-ink outline-none focus:border-canopy transition-all"
+            />
+          )}
         </div>
 
         {/* Dynamic Total Price Row */}

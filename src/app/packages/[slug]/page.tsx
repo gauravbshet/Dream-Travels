@@ -42,6 +42,9 @@ type PackageDetail = {
     pickup: string | null;
     drop_point: string | null;
     dates: string | null;
+    available_dates: string[] | null;
+    available_from: string | null;
+    available_to: string | null;
     price: number;
     original_price: number | null;
     overview: string | null;
@@ -88,7 +91,7 @@ type RelatedPackage = {
 };
 
 const PACKAGE_COLUMNS =
-    "id,slug,title,location,image,additional_images,category,duration,pickup,drop_point,dates,price,original_price,overview,destination_id,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals,slots_left";
+    "id,slug,title,location,image,additional_images,category,duration,pickup,drop_point,dates,available_dates,available_from,available_to,price,original_price,overview,destination_id,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals,slots_left";
 
 // Prerender every published package at build time. Drafts are excluded
 // deliberately — `getPackageData` 404s them anyway. New packages still work:
@@ -512,7 +515,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                             <h3 className="text-lg font-semibold text-ink">Ready for {pkg.title}?</h3>
                             <p className="mt-1 text-sm text-ink/70">Lock in your dates before they fill up.</p>
                             <Link
-                                href={`/booking?package=${encodeURIComponent(pkg.slug)}`}
+                                href={`/booking?package=${encodeURIComponent(pkg.slug)}${pkg.available_from ? `&available_from=${pkg.available_from}` : ''}${pkg.available_to ? `&available_to=${pkg.available_to}` : ''}`}
                                 className="mt-4 inline-flex items-center justify-center rounded-[12px] bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-dark"
                             >
                                 Book Now
@@ -562,6 +565,9 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                                 price={pkg.price}
                                 originalPrice={pkg.original_price}
                                 slotsLeft={pkg.slots_left}
+                                availableDates={pkg.available_dates}
+                                availableFrom={pkg.available_from}
+                                availableTo={pkg.available_to}
                                 whatsappNumber={whatsappNumber}
                             />
                         </div>
@@ -575,6 +581,8 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                 title={pkg.title}
                 price={pkg.price}
                 whatsappNumber={whatsappNumber}
+                availableFrom={pkg.available_from}
+                availableTo={pkg.available_to}
             />
         </main>
     );

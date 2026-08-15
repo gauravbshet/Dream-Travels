@@ -4,16 +4,21 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
+import { formatDateLabel } from "@/lib/utils";
 
 export function BookingForm({
     packageTitle,
     defaultTravellers,
     defaultDate,
+    availableDates,
     whatsappNumber,
 }: {
     packageTitle: string;
     defaultTravellers: number;
     defaultDate: string;
+    availableDates?: string[] | null;
+    availableFrom?: string | null;
+    availableTo?: string | null;
     whatsappNumber?: string;
 }) {
     const router = useRouter();
@@ -22,6 +27,7 @@ export function BookingForm({
     const [travellers, setTravellers] = useState(defaultTravellers);
     const [date, setDate] = useState(defaultDate);
     const [submitted, setSubmitted] = useState(false);
+    const hasFixedDates = (availableDates?.length ?? 0) > 0;
 
     function handleSubmit(event: React.FormEvent) {
         event.preventDefault();
@@ -29,7 +35,7 @@ export function BookingForm({
         setSubmitted(true);
 
         const message = `Hello! I'd like to book *${packageTitle}*.\nName: ${name}\nPhone: ${phone}\nTravellers: ${travellers}${
-            date ? `\nPreferred date: ${date}` : ""
+            date ? `\n\n📅 Selected Date: ${date}` : ""
         }`;
         window.open(buildWhatsAppLink(message, whatsappNumber), "_blank", "noopener,noreferrer");
     }
@@ -98,15 +104,33 @@ export function BookingForm({
             </div>
             <div className="sm:col-span-2">
                 <label htmlFor="booking-date" className="text-xs font-semibold uppercase tracking-wide text-ink/60">
-                    Preferred travel date
+                    {hasFixedDates ? "Choose a departure date" : "Preferred travel date"}
                 </label>
-                <input
-                    id="booking-date"
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="mt-2 w-full rounded-[12px] border border-border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-primary"
-                />
+                {hasFixedDates ? (
+                    <select
+                        id="booking-date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        className="mt-2 w-full rounded-[12px] border border-border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-primary"
+                    >
+                        <option value="">Select a date</option>
+                        {availableDates!.map((d) => (
+                            <option key={d} value={d}>
+                                {formatDateLabel(d)}
+                            </option>
+                        ))}
+                    </select>
+                ) : (
+                    <input
+                        id="booking-date"
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        min={availableFrom || undefined}
+                        max={availableTo || undefined}
+                        className="mt-2 w-full rounded-[12px] border border-border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-primary"
+                    />
+                )}
             </div>
             <button
                 type="submit"
