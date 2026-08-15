@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { unsplash, IMG } from "@/data/images";
 
 export function PromoBanner() {
   return (
@@ -14,11 +13,11 @@ export function PromoBanner() {
         <Reveal className="relative overflow-hidden rounded-[20px] sm:rounded-[24px]">
           <div className="relative h-[260px] w-full sm:h-[300px] lg:h-[340px]">
             <Image
-              src={unsplash(IMG.roadtrip, 1800)}
+              src="/promo-banner.png"
               alt="Plan your next adventure with Dream Travels"
               fill
               sizes="100vw"
-              className="object-cover"
+              className="object-cover object-[75%_center] sm:object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10" />
           </div>
