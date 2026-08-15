@@ -4,12 +4,14 @@
 export const revalidate = 300;
 
 import { notFound } from "next/navigation";
+import { Sparkles, MessageSquare } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PackageCard } from "@/components/cards/PackageCard";
 import { createPublicSupabaseClient } from "@/lib/supabase.server";
 import { categories, categoryLabels, isCategorySlug, type CategorySlug } from "@/data/categories";
 import { packages as staticPackages, type Package } from "@/data/packages";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 // The category set is a fixed, known list, so prerender all four at build
 // time instead of rendering each on first request. Anything outside the list
@@ -72,13 +74,47 @@ export default async function CategoryPage({
       <Container>
         <SectionHeading
           title={`Explore ${label}`}
-          description={`Curated ${label.toLowerCase()} picked for you — browse and book directly.`}
+          description={
+            category === "international"
+              ? "Handpicked international group expeditions launching soon — pre-register to get early bird access."
+              : `Curated ${label.toLowerCase()} picked for you — browse and book directly.`
+          }
         />
 
+        {category === "international" && (
+          <div className="mt-6 rounded-[24px] border border-amber-200/80 bg-amber-50/60 p-6 sm:p-8 shadow-2xs">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-900 border border-amber-300/40">
+                  <Sparkles className="h-3.5 w-3.5" /> Coming Soon
+                </span>
+                <h2 className="mt-3 text-xl sm:text-2xl font-extrabold text-ink tracking-tight">
+                  International Packages Launching Soon!
+                </h2>
+                <p className="mt-1.5 text-xs sm:text-sm text-ink-muted leading-relaxed max-w-2xl">
+                  We are finalizing flight partnerships and luxury stays for our upcoming international group packages (Bali, Thailand, Dubai & Vietnam). Get notified on WhatsApp for priority booking alerts.
+                </p>
+              </div>
+              <a
+                href={buildWhatsAppLink(
+                  "Hello Dream Travels! Please notify me as soon as International Packages open for booking."
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-canopy hover:bg-canopy-hover px-5 py-3 text-xs font-bold text-white shadow-xs transition-all active:scale-95"
+              >
+                <MessageSquare className="h-4 w-4" /> Get Notified on WhatsApp
+              </a>
+            </div>
+          </div>
+        )}
+
         {packages.length === 0 ? (
-          <p className="mt-10 text-center text-sm text-ink-muted">
-            No packages are available under {label.toLowerCase()} yet — check back soon.
-          </p>
+          category === "international" ? null : (
+            <p className="mt-10 text-center text-sm text-ink-muted">
+              No packages are available under {label.toLowerCase()} yet — check back soon.
+            </p>
+          )
         ) : (
           <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {packages.map((pkg) => (

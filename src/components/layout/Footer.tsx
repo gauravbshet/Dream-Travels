@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Send, Mail } from "lucide-react";
+import { ChevronDown, Mail } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
 
@@ -14,27 +14,12 @@ const footerGroups: { title: string; links: { label: string; href: string }[] }[
     title: "Company",
     links: [
       { label: "About Us", href: "/about" },
-      { label: "Careers", href: "#" },
-      { label: "Press", href: "#" },
-      { label: "Partner With Us", href: "#" },
-    ],
-  },
-  {
-    title: "Destinations",
-    links: [
-      { label: "Kashmir", href: "#" },
-      { label: "Kerala", href: "#" },
-      { label: "Goa", href: "#" },
-      { label: "Ladakh", href: "#" },
-      { label: "Andaman", href: "#" },
     ],
   },
   {
     title: "Support",
     links: [
-      { label: "Help Center", href: "#" },
       { label: "Cancellation Policy", href: "/cancellation-policy" },
-      { label: "Safety", href: "#" },
       { label: "Contact Us", href: "/contact" },
     ],
   },
@@ -79,7 +64,7 @@ export function Footer() {
         DREAM TRAVELS
       </span>
       <Container className="relative">
-        <div className="grid gap-y-14 lg:grid-cols-[minmax(220px,1.9fr)_repeat(4,minmax(90px,0.7fr))_minmax(180px,1.3fr)] lg:items-start lg:gap-x-6 xl:gap-x-8">
+        <div className="grid gap-y-10 lg:grid-cols-[minmax(260px,2fr)_repeat(3,minmax(140px,1fr))] lg:items-start lg:gap-x-8 xl:gap-x-12">
           <div>
             <Link href="/" className="flex items-center gap-3">
               <img
@@ -120,8 +105,7 @@ export function Footer() {
           </div>
 
           {/* Desktop columns — `contents` lifts each group into a direct
-              child of the outer grid so it gets its own track, instead of
-              a nested 4-col grid squeezed into a single outer track. */}
+              child of the outer grid so it gets its own track */}
           <div className="hidden lg:contents">
             {footerGroups.map((group) => (
               <div key={group.title} className="min-w-0">
@@ -144,27 +128,6 @@ export function Footer() {
             {footerGroups.map((group) => (
               <FooterAccordion key={group.title} title={group.title} links={group.links} />
             ))}
-          </div>
-
-          <div className="min-w-0">
-            <h3 className="font-semibold text-ink">Newsletter</h3>
-            <p className="mt-4 text-sm leading-relaxed">
-              Get exclusive deals and travel inspiration in your inbox.
-            </p>
-            <form className="mt-4 flex items-center gap-2" onSubmit={(e) => e.preventDefault()}>
-              <input
-                type="email"
-                placeholder="Your email"
-                className="w-full min-w-0 rounded-[12px] border border-border bg-surface px-4 py-2.5 text-sm text-ink placeholder:text-ink-muted outline-none focus:border-canopy"
-              />
-              <button
-                type="submit"
-                aria-label="Subscribe"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[11px] bg-canopy text-white transition-colors hover:bg-canopy-hover"
-              >
-                <Send className="h-4 w-4" />
-              </button>
-            </form>
           </div>
         </div>
 

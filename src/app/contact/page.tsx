@@ -81,7 +81,7 @@ export default function ContactPage() {
               Dream Travels & Intova Groups travel operations hub.
             </p>
             <div className="mt-4 text-sm font-semibold text-ink space-y-1">
-              <p>Karnataka, India</p>
+              <p>Bangalore, India</p>
               <div className="flex items-center gap-1.5 text-xs text-ink-muted font-normal pt-1">
                 <Clock className="h-3.5 w-3.5 text-canopy shrink-0" />
                 <span>9:00 AM – 9:00 PM IST (7 Days)</span>
