@@ -24,6 +24,9 @@ import {
 import { packages as staticPackages, topPicks as staticTopPicks } from "@/data/packages";
 import { reviews as staticReviews, type Review } from "@/data/reviews";
 import type { PopularExperience } from "@/data/destinations";
+import { mapDestinations as staticMapDestinations, type MapDestination, type Region } from "@/data/map";
+
+const MAP_REGIONS = new Set<Region>(["Himalayas", "Northeast", "West Coast", "Western Ghats", "Islands"]);
 
 // Cached for 5 minutes rather than rendered per request. This page fires
 // eleven Supabase queries; under `force-dynamic` every visitor paid for all
@@ -59,6 +62,7 @@ async function fetchFeaturedData() {
     { data: budgetTiersData },
     { data: packagePrices },
     { data: reelsData },
+    { data: mapDestinationsRaw },
   ] = await Promise.all([
     supabase
       .from("destinations")
@@ -92,7 +96,7 @@ async function fetchFeaturedData() {
     supabase.from("reviews").select("id,name,avatar,rating,review,date").order("created_at", { ascending: false }),
     supabase.from("popular_experiences").select("id,title,image").order("created_at", { ascending: false }),
     supabase.from("budget_tiers").select("id,title,emoji,price_limit").order("price_limit", { ascending: true }),
-    supabase.from("packages").select("price").eq("status", "published"),
+    supabase.from("packages").select("price,destination_id").eq("status", "published"),
     supabase
       .from("reels")
       .select(
@@ -100,6 +104,12 @@ async function fetchFeaturedData() {
       )
       .eq("is_active", true)
       .order("display_order", { ascending: true }),
+    supabase
+      .from("destinations")
+      .select("id,slug,name,description,cover_image,image,region,state,lat,lng")
+      .not("lat", "is", null)
+      .not("lng", "is", null)
+      .not("region", "is", null),
   ]);
 
   const mapPackage = (pkg: Record<string, unknown>): Package => ({
@@ -174,6 +184,44 @@ async function fetchFeaturedData() {
         }))
   );
 
+  // Per-destination package stats for the map cards (min price + count),
+  // computed from the same published-package rows used for budget tiers
+  // above rather than a separate query.
+  const packageStatsByDestination = new Map<string, { minPrice: number; count: number }>();
+  for (const row of packagePrices ?? []) {
+    if (!row.destination_id || typeof row.price !== "number") continue;
+    const existing = packageStatsByDestination.get(row.destination_id);
+    if (existing) {
+      existing.count += 1;
+      existing.minPrice = Math.min(existing.minPrice, row.price);
+    } else {
+      packageStatsByDestination.set(row.destination_id, { minPrice: row.price, count: 1 });
+    }
+  }
+
+  const dynamicMapDestinations: MapDestination[] = (mapDestinationsRaw ?? [])
+    .filter((d): d is typeof d & { region: Region; lat: number; lng: number } =>
+      MAP_REGIONS.has(d.region as Region)
+    )
+    .map((d) => {
+      const stats = packageStatsByDestination.get(d.id);
+      return {
+        id: d.id,
+        name: d.name,
+        state: d.state ?? "",
+        region: d.region,
+        lat: d.lat,
+        lng: d.lng,
+        fromPrice: stats?.minPrice ?? 0,
+        packageCount: stats?.count ?? 0,
+        image: d.cover_image ?? d.image ?? "",
+        blurb: d.description ?? "",
+      };
+    });
+
+  const mapDestinations: MapDestination[] =
+    dynamicMapDestinations.length > 0 ? dynamicMapDestinations : staticMapDestinations;
+
   const reels: Reel[] = (reelsData?.length ? reelsData : staticReels).map((reel) => {
     if (!("video_url" in reel)) return reel;
 
@@ -212,6 +260,7 @@ async function fetchFeaturedData() {
     experiences,
     budgetTiers,
     reels,
+    mapDestinations,
   };
 }
 
@@ -223,6 +272,7 @@ export default async function Home() {
     experiences,
     budgetTiers,
     reels,
+    mapDestinations,
   } = await fetchFeaturedData();
 
   return (
@@ -242,7 +292,7 @@ export default async function Home() {
         <PromoBanner />
         <BudgetCards tiers={budgetTiers} />
         <Statistics />
-        <ExploreByMap />
+        <ExploreByMap destinations={mapDestinations} />
         <PopularExperiences experiences={experiences} />
       </main>
     </>

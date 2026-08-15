@@ -101,6 +101,9 @@ export default function LoginPage() {
             // A database trigger (on_auth_user_created) already creates this row
             // from auth.users, so upsert here instead of insert to avoid a
             // duplicate-key conflict and to fill in full_name/phone right away.
+            // `role` is intentionally omitted here — it's server-controlled
+            // (see enforce_profiles_role_default trigger) and should never
+            // be set from client-side code.
             const { error: profileError } = await supabase.from("profiles").upsert(
                 [
                     {
@@ -108,7 +111,6 @@ export default function LoginPage() {
                         email,
                         full_name: fullName,
                         phone,
-                        role: "user",
                     },
                 ],
                 { onConflict: "id" }

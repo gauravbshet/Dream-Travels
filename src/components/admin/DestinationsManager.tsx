@@ -10,6 +10,8 @@ import { Modal } from "./Modal";
 import { ImageUploadField } from "./ImageUploadField";
 import { AdminBadge, AdminButton, AdminCard, AdminField, AdminIconButton, AdminPageHeader, AdminTableState } from "./ui";
 
+const MAP_REGIONS = ["Himalayas", "Northeast", "West Coast", "Western Ghats", "Islands"] as const;
+
 type Destination = {
   id: string;
   slug: string | null;
@@ -22,6 +24,10 @@ type Destination = {
   is_featured: boolean | null;
   created_at: string | null;
   display_order: number | null;
+  lat: number | null;
+  lng: number | null;
+  region: string | null;
+  state: string | null;
 };
 
 type FormState = {
@@ -36,6 +42,10 @@ type FormState = {
   cover_image: string;
   cover_image_file: File | null;
   display_order: string;
+  region: string;
+  state: string;
+  lat: number | null;
+  lng: number | null;
 };
 
 const emptyForm: FormState = {
@@ -50,7 +60,27 @@ const emptyForm: FormState = {
   cover_image: "",
   cover_image_file: null,
   display_order: "0",
+  region: "",
+  state: "",
+  lat: null,
+  lng: null,
 };
+
+/** Looks up lat/lng (and state, as a fallback) for a place name via the
+ * server-side Nominatim proxy. Returns null on any failure - the caller
+ * should let the destination save anyway, just without map coordinates. */
+async function geocodeDestination(name: string, state: string) {
+  const query = state ? `${name}, ${state}, India` : `${name}, India`;
+  try {
+    const res = await fetch(`/api/geocode?q=${encodeURIComponent(query)}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (typeof data.lat !== "number" || typeof data.lng !== "number") return null;
+    return { lat: data.lat as number, lng: data.lng as number, state: data.state as string | null };
+  } catch {
+    return null;
+  }
+}
 
 export function DestinationsManager() {
   const supabase = createBrowserSupabaseClient();
@@ -64,12 +94,15 @@ export function DestinationsManager() {
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingCoverImage, setUploadingCoverImage] = useState(false);
+  const [locating, setLocating] = useState(false);
 
   async function loadDestinations() {
     setLoading(true);
     const { data, error } = await supabase
       .from("destinations")
-      .select("id,slug,name,description,cover_image,image,price,rating,is_featured,created_at,display_order")
+      .select(
+        "id,slug,name,description,cover_image,image,price,rating,is_featured,created_at,display_order,lat,lng,region,state"
+      )
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
 
@@ -105,6 +138,10 @@ export function DestinationsManager() {
       cover_image: destination.cover_image ?? "",
       cover_image_file: null,
       display_order: destination.display_order?.toString() ?? "0",
+      region: destination.region ?? "",
+      state: destination.state ?? "",
+      lat: destination.lat,
+      lng: destination.lng,
     });
     setShowForm(true);
   }
@@ -140,6 +177,31 @@ export function DestinationsManager() {
 
     setSaving(true);
 
+    // Auto-locate on the map: only re-geocode if we don't already have
+    // coordinates, or the name/state changed since the last save (a
+    // typo fix shouldn't silently keep stale coordinates).
+    let lat = form.lat;
+    let lng = form.lng;
+    let state = form.state.trim();
+
+    const needsGeocode = lat == null || lng == null;
+    if (needsGeocode) {
+      setLocating(true);
+      const result = await geocodeDestination(form.name.trim(), state);
+      setLocating(false);
+
+      if (result) {
+        lat = result.lat;
+        lng = result.lng;
+        if (!state && result.state) state = result.state;
+      } else {
+        showToast(
+          "Couldn't auto-locate this destination on the map — it will save without a map pin. You can add coordinates later.",
+          "error"
+        );
+      }
+    }
+
     const payload = {
       name: form.name.trim(),
       slug: (form.slug.trim() || slugify(form.name)) || null,
@@ -150,6 +212,10 @@ export function DestinationsManager() {
       image: form.image.trim() || null,
       cover_image: form.cover_image.trim() || null,
       display_order: form.display_order ? Number(form.display_order) : 0,
+      region: form.region || null,
+      state: state || null,
+      lat,
+      lng,
     };
 
     const { error } = editingId
@@ -207,7 +273,7 @@ export function DestinationsManager() {
               <AdminField label="Name">
                 <input
                   value={form.name}
-                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value, lat: null, lng: null }))}
                   className="admin-input"
                   placeholder="Paris, Bali, Kyoto"
                 />
@@ -262,6 +328,37 @@ export function DestinationsManager() {
                   <label htmlFor="destination-is-featured">Show in featured destinations</label>
                 </div>
               </AdminField>
+              <AdminField label="Map region">
+                <select
+                  value={form.region}
+                  onChange={(e) => setForm((f) => ({ ...f, region: e.target.value }))}
+                  className="admin-input"
+                >
+                  <option value="">Not shown on map</option>
+                  {MAP_REGIONS.map((region) => (
+                    <option key={region} value={region}>
+                      {region}
+                    </option>
+                  ))}
+                </select>
+              </AdminField>
+              <AdminField label="State">
+                <input
+                  value={form.state}
+                  onChange={(e) => setForm((f) => ({ ...f, state: e.target.value, lat: null, lng: null }))}
+                  className="admin-input"
+                  placeholder="Auto-filled on save if left blank"
+                />
+              </AdminField>
+              {form.region && (
+                <div className="sm:col-span-2 rounded-lg bg-admin-surface-2 px-3 py-2 text-xs text-admin-ink-muted">
+                  {locating
+                    ? "Locating this destination on the map…"
+                    : form.lat != null && form.lng != null
+                      ? `Map pin set (${form.lat.toFixed(2)}, ${form.lng.toFixed(2)}). Edit the name to re-locate.`
+                      : "Map pin will be located automatically from the name when you save. Pick a region above for it to appear on the map."}
+                </div>
+              )}
               <div className="sm:col-span-2">
                 <ImageUploadField
                   label="Card image"

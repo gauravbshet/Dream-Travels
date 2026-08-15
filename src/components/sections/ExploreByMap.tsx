@@ -11,19 +11,26 @@ import { formatPrice, cn } from "@/lib/utils";
 import {
   INDIA_OUTLINE,
   MAP_VIEWBOX,
-  mapDestinations,
+  mapDestinations as staticMapDestinations,
   projectPoint,
   regionOrder,
   type MapDestination,
 } from "@/data/map";
 
-export function ExploreByMap() {
+export function ExploreByMap({
+  destinations,
+}: {
+  destinations?: MapDestination[];
+}) {
+  const mapDestinations =
+    destinations && destinations.length > 0 ? destinations : staticMapDestinations;
+
   const [activeId, setActiveId] = useState<string>(mapDestinations[0].id);
 
   const pins = useMemo(
     () =>
       mapDestinations.map((d) => ({ ...d, ...projectPoint(d.lng, d.lat) })),
-    []
+    [mapDestinations]
   );
 
   const active =
@@ -36,7 +43,7 @@ export function ExploreByMap() {
         items: mapDestinations.filter((d) => d.region === region),
       }))
       .filter((g) => g.items.length > 0);
-  }, []);
+  }, [mapDestinations]);
 
   const totalPackages = mapDestinations.reduce(
     (sum, d) => sum + d.packageCount,
