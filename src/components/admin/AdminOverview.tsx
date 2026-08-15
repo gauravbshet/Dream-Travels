@@ -455,7 +455,10 @@ export function AdminOverview({ onNavigate }: { onNavigate: (section: AdminSecti
               <AdminButton variant="secondary" onClick={() => onNavigate("reels")} className="w-full text-xs">
                 <Plus className="h-3.5 w-3.5" /> Add Reel
               </AdminButton>
-              <AdminButton variant="ghost" onClick={() => onNavigate("customers")} className="w-full text-xs">
+              <AdminButton variant="secondary" onClick={() => onNavigate("reviews")} className="w-full text-xs">
+                <Plus className="h-3.5 w-3.5" /> Add Review
+              </AdminButton>
+              <AdminButton variant="ghost" onClick={() => onNavigate("customers")} className="w-full text-xs col-span-2">
                 <Users className="h-3.5 w-3.5" /> Customers
               </AdminButton>
             </div>

@@ -162,20 +162,14 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-4 border-t border-border pt-4 text-xs text-ink-muted">
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center sm:gap-x-4">
-            <span className="font-semibold text-ink">Icons by Flaticon:</span>
-            <a href="https://www.flaticon.com/free-icons/travelling" title="travelling icons" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">Magnific (Solo)</a>
-            <span>•</span>
-            <a href="https://www.flaticon.com/free-icons/hotel-service" title="hotel service icons" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">Flat Icons (Group)</a>
-            <span>•</span>
-            <a href="https://www.flaticon.com/free-icons/tourism" title="tourism icons" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">Magnific (Family)</a>
-            <span>•</span>
-            <a href="https://www.flaticon.com/free-icons/international" title="international icons" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors">popcornarts (Intl)</a>
-          </div>
-          <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
-            <p className="text-ink">© 2026 Dream Travels. All rights reserved.</p>
-            <p className="text-ink">Designed for explorers, by explorers.</p>
+        <div className="mt-8 border-t border-border pt-6 text-xs text-ink-muted">
+          <div className="flex flex-col items-center justify-center text-center gap-1.5">
+            <p className="text-sm font-medium text-ink">
+              Made by <span className="font-semibold text-white">Intova Groups</span> for <span className="font-semibold text-white">Dream Travels</span>
+            </p>
+            <p className="text-xs text-ink-muted">
+              © 2026 Dream Travels. All rights reserved.
+            </p>
           </div>
         </div>
       </Container>

@@ -24,7 +24,10 @@ type ReelRow = {
   is_active: boolean | null;
   display_order: number | null;
   is_featured_widget?: boolean | null;
+  package_id?: string | null;
 };
+
+type PackageOption = { id: string; title: string };
 
 type FormState = {
   title: string;
@@ -39,6 +42,7 @@ type FormState = {
   is_active: boolean;
   display_order: string;
   is_featured_widget: boolean;
+  package_id: string;
 };
 
 const emptyForm: FormState = {
@@ -54,16 +58,18 @@ const emptyForm: FormState = {
   is_active: true,
   display_order: "0",
   is_featured_widget: false,
+  package_id: "",
 };
 
 const REEL_COLUMNS =
-  "id,title,destination,description,video_url,thumbnail_url,instagram_url,category,is_active,display_order,is_featured_widget";
+  "id,title,destination,description,video_url,thumbnail_url,instagram_url,category,is_active,display_order,is_featured_widget,package_id";
 
 export function ReelsManager() {
   const supabase = createBrowserSupabaseClient();
   const { showToast } = useToast();
 
   const [reels, setReels] = useState<ReelRow[]>([]);
+  const [packages, setPackages] = useState<PackageOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -74,16 +80,21 @@ export function ReelsManager() {
 
   async function loadReels() {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("reels")
-      .select(REEL_COLUMNS)
-      .order("display_order", { ascending: true });
+    const [reelsRes, packagesRes] = await Promise.all([
+      supabase.from("reels").select(REEL_COLUMNS).order("display_order", { ascending: true }),
+      supabase.from("packages").select("id,title").order("title", { ascending: true }),
+    ]);
 
-    if (error) {
-      showToast(`Failed to load reels: ${error.message}`, "error");
+    if (reelsRes.error) {
+      showToast(`Failed to load reels: ${reelsRes.error.message}`, "error");
     } else {
-      setReels(data ?? []);
+      setReels(reelsRes.data ?? []);
     }
+
+    if (!packagesRes.error) {
+      setPackages(packagesRes.data ?? []);
+    }
+
     setLoading(false);
   }
 
@@ -113,6 +124,7 @@ export function ReelsManager() {
       is_active: reel.is_active ?? true,
       display_order: reel.display_order?.toString() ?? "0",
       is_featured_widget: Boolean(reel.is_featured_widget),
+      package_id: reel.package_id ?? "",
     });
     setShowForm(true);
   }
@@ -232,6 +244,7 @@ export function ReelsManager() {
       category: form.category || null,
       is_active: form.is_active,
       display_order: form.display_order ? Number(form.display_order) : 0,
+      package_id: form.package_id || null,
     };
 
     const { error } = editingId
@@ -352,6 +365,20 @@ export function ReelsManager() {
                   placeholder="https://instagram.com/reel/..."
                 />
               </AdminField>
+              <AdminField label="Linked package (shows a Book Now card under the reel)">
+                <select
+                  value={form.package_id}
+                  onChange={(e) => setForm((f) => ({ ...f, package_id: e.target.value }))}
+                  className="admin-input"
+                >
+                  <option value="">No linked package</option>
+                  {packages.map((pkg) => (
+                    <option key={pkg.id} value={pkg.id}>
+                      {pkg.title}
+                    </option>
+                  ))}
+                </select>
+              </AdminField>
               <AdminField label="Status">
                 <div className="flex items-center gap-2 pt-2 text-sm text-admin-ink-2">
                   <input
@@ -410,6 +437,7 @@ export function ReelsManager() {
                 <th className="px-4 py-3">Title</th>
                 <th className="px-4 py-3">Destination</th>
                 <th className="px-4 py-3">Category</th>
+                <th className="px-4 py-3">Linked package</th>
                 <th className="px-4 py-3">Order</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3 text-right">Actions</th>
@@ -417,9 +445,9 @@ export function ReelsManager() {
             </thead>
             <tbody className="divide-y divide-admin-border">
               {loading ? (
-                <AdminTableState colSpan={6}>Loading reels...</AdminTableState>
+                <AdminTableState colSpan={7}>Loading reels...</AdminTableState>
               ) : reels.length === 0 ? (
-                <AdminTableState colSpan={6}>No reels yet — add your first one.</AdminTableState>
+                <AdminTableState colSpan={7}>No reels yet — add your first one.</AdminTableState>
               ) : (
                 reels.map((reel) => (
                   <tr key={reel.id} className="hover:bg-admin-surface-2/40 transition">
@@ -435,6 +463,9 @@ export function ReelsManager() {
                     </td>
                     <td className="px-4 py-2.5 text-admin-ink-2">{reel.destination ?? "—"}</td>
                     <td className="px-4 py-2.5 text-admin-ink-2">{categoryLabel(reel.category)}</td>
+                    <td className="px-4 py-2.5 text-admin-ink-2">
+                      {packages.find((pkg) => pkg.id === reel.package_id)?.title ?? "—"}
+                    </td>
                     <td className="px-4 py-2.5 text-admin-ink-2">{reel.display_order ?? 0}</td>
                     <td className="px-4 py-2.5">
                       <button type="button" onClick={() => handleToggleActive(reel)}>

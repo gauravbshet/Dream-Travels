@@ -95,7 +95,9 @@ async function fetchFeaturedData() {
     supabase.from("packages").select("price").eq("status", "published"),
     supabase
       .from("reels")
-      .select("id,title,destination,description,video_url,thumbnail_url,instagram_url,category,is_active,display_order")
+      .select(
+        "id,title,destination,description,video_url,thumbnail_url,instagram_url,category,is_active,display_order,package_id,packages(id,slug,title,price,original_price,image,duration)"
+      )
       .eq("is_active", true)
       .order("display_order", { ascending: true }),
   ]);
@@ -172,20 +174,34 @@ async function fetchFeaturedData() {
         }))
   );
 
-  const reels: Reel[] = (reelsData?.length ? reelsData : staticReels).map((reel) =>
-    "video_url" in reel
-      ? {
-          id: reel.id,
-          title: reel.title,
-          destination: reel.destination,
-          description: reel.description,
-          videoUrl: reel.video_url,
-          thumbnailUrl: reel.thumbnail_url,
-          instagramUrl: reel.instagram_url,
-          category: reel.category,
-        }
-      : reel
-  );
+  const reels: Reel[] = (reelsData?.length ? reelsData : staticReels).map((reel) => {
+    if (!("video_url" in reel)) return reel;
+
+    const linkedPkg = Array.isArray(reel.packages) ? reel.packages[0] : reel.packages;
+
+    return {
+      id: reel.id,
+      title: reel.title,
+      destination: reel.destination,
+      description: reel.description,
+      videoUrl: reel.video_url,
+      thumbnailUrl: reel.thumbnail_url,
+      instagramUrl: reel.instagram_url,
+      category: reel.category,
+      packageId: reel.package_id,
+      linkedPackage: linkedPkg
+        ? {
+            id: linkedPkg.id,
+            slug: linkedPkg.slug,
+            title: linkedPkg.title,
+            price: linkedPkg.price,
+            originalPrice: linkedPkg.original_price,
+            image: linkedPkg.image,
+            duration: linkedPkg.duration,
+          }
+        : null,
+    };
+  });
 
   return {
     featuredDestinations,

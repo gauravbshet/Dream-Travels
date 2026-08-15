@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LayoutGrid, MapPin, Package, Users, Clapperboard, LogOut, Menu, X } from "lucide-react";
+import { LayoutGrid, MapPin, Package, Users, Clapperboard, Star, LogOut, Menu, X } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 import { cn } from "@/lib/utils";
 import type { AdminSection } from "./AdminDashboard";
@@ -12,6 +12,7 @@ const navItems: { id: AdminSection; label: string; icon: typeof LayoutGrid }[] =
   { id: "destinations", label: "Destinations", icon: MapPin },
   { id: "packages", label: "Packages", icon: Package },
   { id: "reels", label: "Reels", icon: Clapperboard },
+  { id: "reviews", label: "Reviews", icon: Star },
   { id: "customers", label: "Customers", icon: Users },
 ];
 

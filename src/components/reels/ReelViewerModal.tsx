@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { Reel } from "@/data/reels";
 import { InstagramGlyph } from "./InstagramGlyph";
-import { normalizeUrl } from "@/lib/utils";
+import { normalizeUrl, formatPrice } from "@/lib/utils";
 
 export function ReelViewerModal({
   reels,
@@ -104,54 +105,96 @@ export function ReelViewerModal({
       )}
 
       <div
-        className="relative flex aspect-[9/16] h-[min(82vh,750px)] max-h-full flex-col overflow-hidden rounded-[20px] sm:rounded-[24px] bg-black shadow-2xl border border-white/10"
+        className="flex max-h-full flex-col gap-3"
         onClick={(event) => event.stopPropagation()}
       >
-        {/* Inside Reel Card: Top Close Pill for Instant Dismissal */}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close reel viewer"
-          className="absolute left-3 top-3 z-30 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md border border-white/20 shadow-md transition-colors hover:bg-black/80 active:scale-95"
-        >
-          <X className="h-3.5 w-3.5" />
-          <span>Close</span>
-        </button>
+        <div className="relative flex aspect-[9/16] h-[min(82vh,750px)] max-h-full flex-col overflow-hidden rounded-[20px] sm:rounded-[24px] bg-black shadow-2xl border border-white/10">
+          {/* Inside Reel Card: Top Close Pill for Instant Dismissal */}
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close reel viewer"
+            className="absolute left-3 top-3 z-30 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md border border-white/20 shadow-md transition-colors hover:bg-black/80 active:scale-95"
+          >
+            <X className="h-3.5 w-3.5" />
+            <span>Close</span>
+          </button>
 
-        {reel.videoUrl ? (
-          <video
-            key={reel.id}
-            src={reel.videoUrl}
-            poster={reel.thumbnailUrl ?? undefined}
-            controls
-            autoPlay
-            playsInline
-            loop
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-sm text-white/70">
-            This reel&apos;s video is unavailable.
+          {reel.videoUrl ? (
+            <video
+              key={reel.id}
+              src={reel.videoUrl}
+              poster={reel.thumbnailUrl ?? undefined}
+              controls
+              autoPlay
+              playsInline
+              loop
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-sm text-white/70">
+              This reel&apos;s video is unavailable.
+            </div>
+          )}
+
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent p-4 sm:p-5">
+            <h3 className="text-sm sm:text-base font-bold text-white">
+              {reel.title}
+            </h3>
+            {reel.destination && (
+              <p className="mt-0.5 text-xs sm:text-sm text-white/80">
+                {reel.destination}
+              </p>
+            )}
+            {reel.description && (
+              <p className="mt-1 line-clamp-2 text-xs text-white/70">
+                {reel.description}
+              </p>
+            )}
+            {normalizeUrl(reel.instagramUrl ?? "") && (
+              <a
+                href={normalizeUrl(reel.instagramUrl ?? "")!}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pointer-events-auto mt-2.5 sm:mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/25"
+              >
+                <InstagramGlyph className="h-3.5 w-3.5" /> View on Instagram
+              </a>
+            )}
           </div>
-        )}
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent p-4 sm:p-5">
-          <h3 className="text-sm sm:text-base font-bold text-white">{reel.title}</h3>
-          {reel.destination && <p className="mt-0.5 text-xs sm:text-sm text-white/80">{reel.destination}</p>}
-          {reel.description && (
-            <p className="mt-1 line-clamp-2 text-xs text-white/70">{reel.description}</p>
-          )}
-          {normalizeUrl(reel.instagramUrl ?? "") && (
-            <a
-              href={normalizeUrl(reel.instagramUrl ?? "")!}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="pointer-events-auto mt-2.5 sm:mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/25"
-            >
-              <InstagramGlyph className="h-3.5 w-3.5" /> View on Instagram
-            </a>
-          )}
         </div>
+
+        {reel.linkedPackage && (
+          <Link
+            href={`/booking?package=${encodeURIComponent(reel.linkedPackage.slug ?? reel.linkedPackage.id)}`}
+            className="group/book flex items-center justify-between gap-3 rounded-[16px] border border-border/80 bg-surface p-3.5 shadow-2xl"
+          >
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold text-ink">
+                {reel.linkedPackage.title}
+              </p>
+              <div className="mt-0.5 flex items-baseline gap-1.5">
+                {reel.linkedPackage.originalPrice &&
+                  reel.linkedPackage.originalPrice >
+                    reel.linkedPackage.price && (
+                    <span className="text-xs font-medium leading-none text-ink-muted line-through">
+                      {formatPrice(reel.linkedPackage.originalPrice)}
+                    </span>
+                  )}
+                <span className="text-base font-extrabold leading-none text-ink">
+                  {formatPrice(reel.linkedPackage.price)}
+                </span>
+                <span className="text-[11px] font-medium leading-none text-ink-muted">
+                  /person
+                </span>
+              </div>
+            </div>
+            <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-canopy px-4 py-2 text-xs font-bold text-white transition-colors group-hover/book:bg-canopy-hover">
+              Book Now
+              <ArrowRight className="h-3.5 w-3.5" />
+            </span>
+          </Link>
+        )}
       </div>
     </div>
   );
