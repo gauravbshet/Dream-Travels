@@ -99,8 +99,8 @@ export function ReelsManager() {
   }
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial data fetch on mount
     loadReels();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- initial data fetch on mount
   }, []);
 
   function openCreateForm() {

@@ -1,15 +1,18 @@
-export const dynamic = "force-dynamic";
+// Filtering (search/category/price) happens client-side against the
+// fetched array below, so caching the base fetch is safe — same pattern
+// as every other content page in this app.
+export const revalidate = 300;
 
 import Link from "next/link";
 import { X } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { createServerSupabaseClient } from "@/lib/supabase.server";
+import { createPublicSupabaseClient } from "@/lib/supabase.server";
 import { PackageCard } from "@/components/cards/PackageCard";
 import type { Package } from "@/data/packages";
 
 async function getPackages(): Promise<Package[]> {
-    const supabase = createServerSupabaseClient();
+    const supabase = createPublicSupabaseClient();
     const { data } = await supabase
         .from("packages")
         .select("id,slug,title,location,image,category,duration,pickup,dates,rating,reviews,price,original_price,destination_id")

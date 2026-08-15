@@ -43,13 +43,17 @@ export function PackageCard({
             data-tone="dark"
             className="relative h-[135px] w-full overflow-hidden rounded-t-[16px] shrink-0 sm:h-[150px]"
           >
-            <Image
-              src={pkg.image}
-              alt={pkg.title}
-              fill
-              sizes="(max-width: 640px) 200px, 250px"
-              className="object-cover transition-transform duration-[620ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
-            />
+            {pkg.image ? (
+              <Image
+                src={pkg.image}
+                alt={pkg.title}
+                fill
+                sizes="(max-width: 640px) 200px, 250px"
+                className="object-cover transition-transform duration-[620ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-slate-200 transition-transform duration-[620ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]" />
+            )}
             {/* Soft gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/20" />
 

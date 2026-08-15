@@ -1,7 +1,15 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function proxy(request: NextRequest) {
+// Edge-level auth check for /admin and /dashboard, on top of the
+// server-side checks already in those pages (defense in depth — this
+// catches unauthenticated access before the page even starts rendering).
+//
+// Scoped narrowly via `matcher` below: this must NOT run on every request
+// site-wide, since /packages, /destinations, etc. are deliberately cached
+// (ISR) — running a Supabase auth check on every hit there would add a
+// subrequest to every cached page load and undercut that caching work.
+export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -19,7 +27,7 @@ export async function proxy(request: NextRequest) {
         return request.cookies.getAll()
       },
       setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
         supabaseResponse = NextResponse.next({
           request,
         })
@@ -38,8 +46,10 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect the /packages route. If there's no user, redirect to /login
-  if (!user && request.nextUrl.pathname.startsWith('/packages')) {
+  // Protect /admin and /dashboard. If there's no user, redirect to /login.
+  // (Admin-role checking still happens server-side in src/app/admin/page.tsx —
+  // this only confirms *someone* is signed in before the page even loads.)
+  if (!user && (request.nextUrl.pathname.startsWith('/admin') || request.nextUrl.pathname.startsWith('/dashboard'))) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
@@ -49,14 +59,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  matcher: ['/admin/:path*', '/dashboard/:path*'],
 }
