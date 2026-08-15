@@ -1,9 +1,12 @@
-export const dynamic = "force-dynamic";
+// Package fields read here (title/image/price/duration/location) rarely
+// change minute-to-minute, so this is safe to cache same as the rest of
+// the content pages.
+export const revalidate = 60;
 
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { createServerSupabaseClient } from "@/lib/supabase.server";
+import { createPublicSupabaseClient } from "@/lib/supabase.server";
 import { Container } from "@/components/ui/Container";
 import { formatPrice } from "@/lib/utils";
 import { BookingForm } from "@/components/packages/BookingForm";
@@ -19,7 +22,7 @@ export default async function BookingPage({
         notFound();
     }
 
-    const supabase = createServerSupabaseClient();
+    const supabase = createPublicSupabaseClient();
     const { data: pkg } = await supabase
         .from("packages")
         .select("id,slug,title,image,price,duration,location")

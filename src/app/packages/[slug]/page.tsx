@@ -124,23 +124,28 @@ async function getPackageData(slug: string) {
         return null;
     }
 
-    const { data: itinerary } = await supabase
-        .from("itineraries")
-        .select("id,day,title,description,stay_location,stay_type,meals,image,optional_note")
-        .eq("package_id", pkg.id)
-        .order("day", { ascending: true });
+    // These two don't depend on each other — only both depend on `pkg`,
+    // fetched above. Running them together instead of sequentially cuts
+    // one round-trip of latency off every render (build time + each
+    // 5-minute ISR revalidation).
+    const [{ data: itinerary }, { data: relatedByDestination }] = await Promise.all([
+        supabase
+            .from("itineraries")
+            .select("id,day,title,description,stay_location,stay_type,meals,image,optional_note")
+            .eq("package_id", pkg.id)
+            .order("day", { ascending: true }),
+        pkg.destination_id
+            ? supabase
+                .from("packages")
+                .select("id,slug,title,image,price,duration,location")
+                .eq("destination_id", pkg.destination_id)
+                .eq("status", "published")
+                .neq("id", pkg.id)
+                .limit(4)
+            : Promise.resolve({ data: [] as RelatedPackage[] }),
+    ]);
 
-    let related: RelatedPackage[] = [];
-    if (pkg.destination_id) {
-        const { data } = await supabase
-            .from("packages")
-            .select("id,slug,title,image,price,duration,location")
-            .eq("destination_id", pkg.destination_id)
-            .eq("status", "published")
-            .neq("id", pkg.id)
-            .limit(4);
-        related = data ?? [];
-    }
+    let related: RelatedPackage[] = relatedByDestination ?? [];
 
     if (related.length === 0 && pkg.category) {
         const { data } = await supabase

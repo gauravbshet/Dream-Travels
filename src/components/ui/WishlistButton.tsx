@@ -9,19 +9,27 @@ export function WishlistButton({ className }: { className?: string }) {
   const [active, setActive] = useState(false);
 
   return (
-    <motion.button
-      type="button"
+    <motion.span
+      role="button"
+      tabIndex={0}
       whileTap={{ scale: 0.85 }}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
         setActive((v) => !v);
       }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          e.stopPropagation();
+          setActive((v) => !v);
+        }
+      }}
       aria-label="Toggle wishlist"
       aria-pressed={active}
       data-tone="dark"
       className={cn(
-        "flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-[oklch(0.16_0.022_158/0.7)] backdrop-blur-md transition-transform hover:scale-105 active:scale-95",
+        "flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-[oklch(0.16_0.022_158/0.7)] backdrop-blur-md transition-transform hover:scale-105 active:scale-95 cursor-pointer select-none",
         className
       )}
     >
@@ -36,6 +44,6 @@ export function WishlistButton({ className }: { className?: string }) {
           )}
         />
       </motion.span>
-    </motion.button>
+    </motion.span>
   );
 }

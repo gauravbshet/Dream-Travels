@@ -98,10 +98,17 @@ export function ReelCard({
         className="group relative aspect-[9/16] w-full overflow-hidden rounded-[20px] border border-border/80 bg-surface-dark shadow-2xs transition-all duration-300 hover:shadow-lg"
         data-tone="dark"
       >
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           onClick={onOpen}
-          className="absolute inset-0 z-[1] h-full w-full cursor-pointer text-left"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onOpen();
+            }
+          }}
+          className="absolute inset-0 z-[1] h-full w-full cursor-pointer text-left focus:outline-none"
           aria-label={`Open ${reel.title} reel`}
         >
           {videoError || !reel.videoUrl ? (
@@ -130,7 +137,7 @@ export function ReelCard({
               onError={() => setVideoError(true)}
             />
           )}
-        </button>
+        </div>
 
         <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-black/70 via-black/5 to-black/25" />
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Send } from "lucide-react";
+import { ChevronDown, Send, Mail } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +35,7 @@ const footerGroups: { title: string; links: { label: string; href: string }[] }[
       { label: "Help Center", href: "#" },
       { label: "Cancellation Policy", href: "/cancellation-policy" },
       { label: "Safety", href: "#" },
-      { label: "Contact Us", href: "#" },
+      { label: "Contact Us", href: "mailto:info@dream-travels.in" },
     ],
   },
   {
@@ -58,20 +58,14 @@ function SocialGlyph({ path }: { path: string }) {
 
 const socials = [
   {
-    label: "Facebook",
-    path: "M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.45h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94Z",
+    label: "WhatsApp",
+    href: "https://whatsapp.com/channel/0029Vb9IXJA6GcG6TYOBhb2g",
+    path: "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.05 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413",
   },
   {
     label: "Instagram",
+    href: "https://www.instagram.com/dream.___.travel",
     path: "M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.26 1.21.6 1.76 1.15.5.5.9 1.1 1.15 1.76.25.64.42 1.37.47 2.43.05 1.06.06 1.4.06 4.13s-.01 3.07-.06 4.13c-.05 1.06-.22 1.79-.47 2.43a4.9 4.9 0 0 1-1.15 1.76 4.9 4.9 0 0 1-1.76 1.15c-.64.25-1.37.42-2.43.47-1.06.05-1.4.06-4.12.06s-3.07-.01-4.13-.06c-1.06-.05-1.79-.22-2.43-.47a4.9 4.9 0 0 1-1.76-1.15 4.9 4.9 0 0 1-1.15-1.76c-.25-.64-.42-1.37-.47-2.43C2.01 15.07 2 14.73 2 12s.01-3.07.06-4.13c.05-1.06.22-1.79.47-2.43.26-.66.6-1.21 1.15-1.76A4.9 4.9 0 0 1 5.44 2.53c.64-.25 1.37-.42 2.43-.47C8.93 2.01 9.27 2 12 2Zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4Zm5.2-8.4a1.17 1.17 0 1 0 0-2.33 1.17 1.17 0 0 0 0 2.33Z",
-  },
-  {
-    label: "Twitter",
-    path: "M22 5.9c-.68.3-1.4.5-2.16.6a3.8 3.8 0 0 0 1.66-2.1 7.5 7.5 0 0 1-2.4.92 3.77 3.77 0 0 0-6.42 3.44A10.7 10.7 0 0 1 4.7 4.9a3.77 3.77 0 0 0 1.17 5.03 3.7 3.7 0 0 1-1.71-.47v.05a3.78 3.78 0 0 0 3.02 3.7c-.53.14-1.1.16-1.68.06a3.78 3.78 0 0 0 3.52 2.62A7.57 7.57 0 0 1 2 17.5a10.7 10.7 0 0 0 5.79 1.7c6.95 0 10.75-5.76 10.75-10.75l-.01-.49A7.7 7.7 0 0 0 22 5.9Z",
-  },
-  {
-    label: "YouTube",
-    path: "M21.6 7.2s-.21-1.5-.87-2.16c-.83-.87-1.76-.87-2.19-.92C15.44 4 12 4 12 4h-.01s-3.43 0-6.53.12c-.43.05-1.36.05-2.19.92-.66.66-.87 2.16-.87 2.16S2.18 8.98 2.18 10.75v1.49c0 1.77.22 3.55.22 3.55s.21 1.5.87 2.16c.83.87 1.92.84 2.41.94 1.75.17 7.32.22 7.32.22s3.44-.01 6.53-.13c.43-.06 1.36-.06 2.19-.93.66-.66.87-2.16.87-2.16s.22-1.77.22-3.55v-1.49c0-1.77-.22-3.55-.22-3.55ZM9.95 14.6V8.9l5.6 2.86-5.6 2.85Z",
   },
 ];
 
@@ -99,12 +93,24 @@ export function Footer() {
               Premium, curated travel experiences designed for the modern
               explorer. Wander far, wander well.
             </p>
-            <div className="mt-6 flex items-center gap-2">
+            <div className="mt-3.5 flex items-center gap-2 text-xs font-semibold text-white/90">
+              <Mail className="h-4 w-4 text-canopy shrink-0" />
+              <a
+                href="mailto:info@dream-travels.in"
+                className="hover:text-canopy transition-colors"
+              >
+                info@dream-travels.in
+              </a>
+            </div>
+            <div className="mt-4 flex items-center gap-2">
               {socials.map((s) => (
                 <a
                   key={s.label}
-                  href="#"
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={s.label}
+                  title={s.label}
                   className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-ink-muted transition-colors hover:bg-canopy hover:border-primary hover:text-white"
                 >
                   <SocialGlyph path={s.path} />
