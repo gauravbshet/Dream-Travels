@@ -58,7 +58,7 @@ export default async function DestinationsListPage() {
                                 <div className="relative aspect-[4/3] w-full overflow-hidden">
                                     {(destination.image || destination.cover_image) && (
                                         <Image
-                                            src={destination.image ?? destination.cover_image ?? ""}
+                                            src={(destination.image || destination.cover_image)!}
                                             alt={destination.name}
                                             fill
                                             sizes="(max-width: 768px) 50vw, 25vw"
