@@ -11,7 +11,12 @@ function assertBrowserSupabaseEnv() {
     }
 }
 
+let browserClient: ReturnType<typeof createBrowserClient> | null = null;
+
 export function createBrowserSupabaseClient() {
     assertBrowserSupabaseEnv();
-    return createBrowserClient(supabaseUrl!, supabaseAnonKey!);
+    if (!browserClient) {
+        browserClient = createBrowserClient(supabaseUrl!, supabaseAnonKey!);
+    }
+    return browserClient;
 }

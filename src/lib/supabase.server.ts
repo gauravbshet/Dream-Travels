@@ -46,13 +46,21 @@ export function createServerSupabaseClient() {
  * Do NOT use it for anything auth-dependent (dashboard, admin, bookings) — it
  * carries no session, so RLS treats every call as anonymous.
  */
+let publicSupabaseInstance: ReturnType<typeof createClient> | null = null;
+
 export function createPublicSupabaseClient() {
     assertServerSupabaseEnv();
 
-    return createClient(supabaseUrl!, supabaseAnonKey!, {
-        auth: { persistSession: false, autoRefreshToken: false },
-    });
+    if (!publicSupabaseInstance) {
+        publicSupabaseInstance = createClient(supabaseUrl!, supabaseAnonKey!, {
+            auth: { persistSession: false, autoRefreshToken: false },
+        });
+    }
+
+    return publicSupabaseInstance;
 }
+
+let adminSupabaseInstance: ReturnType<typeof createClient> | null = null;
 
 export function createAdminSupabaseClient() {
     const key = supabaseServiceRoleKey ?? supabaseAnonKey;
@@ -65,5 +73,9 @@ export function createAdminSupabaseClient() {
         throw new Error("Missing required Supabase environment variable NEXT_PUBLIC_SUPABASE_URL.");
     }
 
-    return createClient(supabaseUrl, key);
+    if (!adminSupabaseInstance) {
+        adminSupabaseInstance = createClient(supabaseUrl, key);
+    }
+
+    return adminSupabaseInstance;
 }
