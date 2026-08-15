@@ -21,11 +21,9 @@ export function DreamTravelsReelWidget() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const supabase = createBrowserSupabaseClient();
 
-  if (pathname?.startsWith("/admin")) {
-    return null;
-  }
-
   useEffect(() => {
+    if (pathname?.startsWith("/admin")) return;
+
     async function fetchFeaturedReel() {
       try {
         const { data, error } = await supabase
@@ -56,10 +54,12 @@ export function DreamTravelsReelWidget() {
     }
 
     fetchFeaturedReel();
-  }, [supabase]);
+  }, [supabase, pathname]);
 
   // Auto-minimize widget on scroll down, expand on scroll to top
   useEffect(() => {
+    if (pathname?.startsWith("/admin")) return;
+
     const handleScroll = () => {
       // If user scrolls back to the very top, reset manual override state
       if (window.scrollY < 20) {
@@ -78,7 +78,7 @@ export function DreamTravelsReelWidget() {
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasUserToggled]);
+  }, [hasUserToggled, pathname]);
 
   function toggleMute(e: React.MouseEvent) {
     e.stopPropagation();
@@ -98,6 +98,10 @@ export function DreamTravelsReelWidget() {
       }
       setIsPlaying(!isPlaying);
     }
+  }
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
   }
 
   return (
