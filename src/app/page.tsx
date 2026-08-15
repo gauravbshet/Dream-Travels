@@ -64,10 +64,12 @@ async function fetchFeaturedData() {
       .from("destinations")
       .select("id,slug,name,description,cover_image,image,price,rating")
       .eq("is_featured", true)
+      .order("display_order", { ascending: true })
       .order("updated_at", { ascending: false }),
     supabase
       .from("destinations")
       .select("id,slug,name,description,cover_image,image,price,rating")
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: false })
       .limit(8),
     supabase
@@ -75,6 +77,7 @@ async function fetchFeaturedData() {
       .select(
         "id,slug,title,location,image,category,duration,pickup,dates,rating,reviews,price,original_price,destination_id"
       )
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: false })
       .limit(8),
     supabase
@@ -83,6 +86,7 @@ async function fetchFeaturedData() {
         "id,slug,title,location,image,category,duration,pickup,dates,rating,reviews,price,original_price,destination_id"
       )
       .eq("is_top_pick", true)
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: false })
       .limit(6),
     supabase.from("reviews").select("id,name,avatar,rating,review,date").order("created_at", { ascending: false }),

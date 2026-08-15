@@ -47,6 +47,7 @@ type PackageRow = {
   transport: string | null;
   accommodation: string | null;
   meals: string | null;
+  display_order: number | null;
 };
 
 type DestinationOption = { id: string; name: string };
@@ -83,6 +84,7 @@ type FormState = {
   transport: string;
   accommodation: string;
   meals: string;
+  display_order: string;
 };
 
 const emptyForm: FormState = {
@@ -117,6 +119,7 @@ const emptyForm: FormState = {
   transport: "",
   accommodation: "",
   meals: "",
+  display_order: "0",
 };
 
 // Pulls the day count out of a duration string like "5D / 4N", "5 Days 4 Nights",
@@ -129,7 +132,7 @@ function parseDayCountFromDuration(duration: string): number | null {
 }
 
 const PACKAGE_COLUMNS =
-  "id,slug,title,duration,price,original_price,overview,image,additional_images,destination_id,location,category,pickup,drop_point,dates,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals";
+  "id,slug,title,duration,price,original_price,overview,image,additional_images,destination_id,location,category,pickup,drop_point,dates,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals,display_order";
 
 export function PackagesManager() {
   const supabase = createBrowserSupabaseClient();
@@ -157,7 +160,11 @@ export function PackagesManager() {
   async function loadData() {
     setLoading(true);
     const [packagesRes, destinationsRes] = await Promise.all([
-      supabase.from("packages").select(PACKAGE_COLUMNS).order("created_at", { ascending: false }),
+      supabase
+        .from("packages")
+        .select(PACKAGE_COLUMNS)
+        .order("display_order", { ascending: true })
+        .order("created_at", { ascending: false }),
       supabase.from("destinations").select("id,name").order("name"),
     ]);
 
@@ -241,6 +248,7 @@ export function PackagesManager() {
       transport: pkg.transport ?? "",
       accommodation: pkg.accommodation ?? "",
       meals: pkg.meals ?? "",
+      display_order: pkg.display_order?.toString() ?? "0",
     });
     setShowForm(true);
 
@@ -379,6 +387,7 @@ export function PackagesManager() {
       transport: form.transport.trim() || null,
       accommodation: form.accommodation.trim() || null,
       meals: form.meals.trim() || null,
+      display_order: form.display_order ? Number(form.display_order) : 0,
     };
 
     const { data: savedPackage, error } = editingId
@@ -555,6 +564,15 @@ export function PackagesManager() {
                   <option value="published">Published</option>
                   <option value="draft">Draft</option>
                 </select>
+              </AdminField>
+              <AdminField label="Display order (lower shows first)">
+                <input
+                  type="number"
+                  value={form.display_order}
+                  onChange={(e) => setForm((f) => ({ ...f, display_order: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. 1"
+                />
               </AdminField>
               <AdminField label="Location (shown on package page)">
                 <input
@@ -825,6 +843,7 @@ export function PackagesManager() {
           <table className="w-full min-w-[min(100%,960px)] text-left text-xs sm:text-sm">
             <thead className="sticky top-0 z-10 bg-admin-surface-2 border-b border-admin-border">
               <tr className="text-[11px] font-bold uppercase tracking-wider text-admin-ink-muted">
+                <th className="px-4 py-3">Order</th>
                 <th className="px-4 py-3">Title</th>
                 <th className="px-4 py-3">Destination</th>
                 <th className="px-4 py-3">Location</th>
@@ -837,14 +856,15 @@ export function PackagesManager() {
             </thead>
             <tbody className="divide-y divide-admin-border">
               {loading ? (
-                <AdminTableState colSpan={8}>Loading packages...</AdminTableState>
+                <AdminTableState colSpan={9}>Loading packages...</AdminTableState>
               ) : filteredPackages.length === 0 ? (
-                <AdminTableState colSpan={8}>
+                <AdminTableState colSpan={9}>
                   {categoryFilter ? "No packages in this category." : "No packages yet."}
                 </AdminTableState>
               ) : (
                 filteredPackages.map((pkg) => (
                   <tr key={pkg.id} className="hover:bg-admin-surface-2/40 transition">
+                    <td className="px-4 py-2.5 text-admin-ink-2">{pkg.display_order ?? 0}</td>
                     <td className="px-4 py-2.5 font-semibold text-admin-ink">{pkg.title}</td>
                     <td className="px-4 py-2.5 text-admin-ink-2">
                       {destinations.find((d) => d.id === pkg.destination_id)?.name ?? "—"}

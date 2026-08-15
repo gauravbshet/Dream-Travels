@@ -21,6 +21,7 @@ type Destination = {
   rating: number | null;
   is_featured: boolean | null;
   created_at: string | null;
+  display_order: number | null;
 };
 
 type FormState = {
@@ -34,6 +35,7 @@ type FormState = {
   image_file: File | null;
   cover_image: string;
   cover_image_file: File | null;
+  display_order: string;
 };
 
 const emptyForm: FormState = {
@@ -47,6 +49,7 @@ const emptyForm: FormState = {
   image_file: null,
   cover_image: "",
   cover_image_file: null,
+  display_order: "0",
 };
 
 export function DestinationsManager() {
@@ -66,7 +69,8 @@ export function DestinationsManager() {
     setLoading(true);
     const { data, error } = await supabase
       .from("destinations")
-      .select("id,slug,name,description,cover_image,image,price,rating,is_featured,created_at")
+      .select("id,slug,name,description,cover_image,image,price,rating,is_featured,created_at,display_order")
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -100,6 +104,7 @@ export function DestinationsManager() {
       image_file: null,
       cover_image: destination.cover_image ?? "",
       cover_image_file: null,
+      display_order: destination.display_order?.toString() ?? "0",
     });
     setShowForm(true);
   }
@@ -144,6 +149,7 @@ export function DestinationsManager() {
       is_featured: form.is_featured,
       image: form.image.trim() || null,
       cover_image: form.cover_image.trim() || null,
+      display_order: form.display_order ? Number(form.display_order) : 0,
     };
 
     const { error } = editingId
@@ -235,6 +241,15 @@ export function DestinationsManager() {
                   placeholder="e.g. 4.7"
                 />
               </AdminField>
+              <AdminField label="Display order (lower shows first)">
+                <input
+                  type="number"
+                  value={form.display_order}
+                  onChange={(e) => setForm((f) => ({ ...f, display_order: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. 1"
+                />
+              </AdminField>
               <AdminField label="Featured">
                 <div className="flex items-center gap-2 pt-2 text-sm text-admin-ink-2">
                   <input
@@ -291,6 +306,7 @@ export function DestinationsManager() {
           <table className="w-full min-w-[min(100%,720px)] text-left text-xs sm:text-sm">
             <thead className="sticky top-0 z-10 bg-admin-surface-2 border-b border-admin-border">
               <tr className="text-[11px] font-bold uppercase tracking-wider text-admin-ink-muted">
+                <th className="px-4 py-3">Order</th>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Price</th>
                 <th className="px-4 py-3">Rating</th>
@@ -301,12 +317,13 @@ export function DestinationsManager() {
             </thead>
             <tbody className="divide-y divide-admin-border">
               {loading ? (
-                <AdminTableState colSpan={6}>Loading destinations...</AdminTableState>
+                <AdminTableState colSpan={7}>Loading destinations...</AdminTableState>
               ) : destinations.length === 0 ? (
-                <AdminTableState colSpan={6}>No destinations yet.</AdminTableState>
+                <AdminTableState colSpan={7}>No destinations yet.</AdminTableState>
               ) : (
                 destinations.map((destination) => (
                   <tr key={destination.id} className="hover:bg-admin-surface-2/40 transition">
+                    <td className="px-4 py-2.5 text-admin-ink-2">{destination.display_order ?? 0}</td>
                     <td className="px-4 py-2.5 font-semibold text-admin-ink">{destination.name}</td>
                     <td className="px-4 py-2.5 text-admin-ink-2">
                       {destination.price != null ? `₹${destination.price}` : "—"}

@@ -14,6 +14,7 @@ async function getPackages(): Promise<Package[]> {
         .from("packages")
         .select("id,slug,title,location,image,category,duration,pickup,dates,rating,reviews,price,original_price,destination_id")
         .eq("status", "published")
+        .order("display_order", { ascending: true })
         .order("created_at", { ascending: false });
 
     return (data ?? []).map((pkg) => ({

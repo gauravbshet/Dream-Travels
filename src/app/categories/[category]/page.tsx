@@ -28,6 +28,7 @@ async function getPackagesByCategory(category: CategorySlug): Promise<Package[]>
       )
       .eq("status", "published")
       .eq("category", category)
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
 
     if (data && data.length > 0) {

@@ -26,6 +26,7 @@ async function getDestinations(): Promise<DestinationRow[]> {
     const { data } = await supabase
         .from("destinations")
         .select("id,slug,name,description,cover_image,image,price,rating")
+        .order("display_order", { ascending: true })
         .order("created_at", { ascending: false });
 
     return data ?? [];
