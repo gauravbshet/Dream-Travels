@@ -13,6 +13,8 @@ export function PackageBookingCard({
   originalPrice,
   slotsLeft,
   availableDates,
+  availableFrom,
+  availableTo,
   whatsappNumber,
 }: {
   slug: string;

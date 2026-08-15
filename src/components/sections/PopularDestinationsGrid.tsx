@@ -53,13 +53,17 @@ export function PopularDestinationsGrid({
                 className="group overflow-hidden rounded-[16px] border border-border bg-surface transition-shadow duration-300 hover:shadow-lg"
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
-                  <Image
-                    src={destination.image}
-                    alt={destination.name}
-                    fill
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-                  />
+                  {destination.image && destination.image.trim() !== "" ? (
+                    <Image
+                      src={destination.image}
+                      alt={destination.name}
+                      fill
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-slate-200 transition-transform duration-500 ease-out group-hover:scale-110" />
+                  )}
                   {packageCount > 0 && (
                     <span className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[9.5px] font-bold text-ink shadow-sm">
                       {packageCount} {packageCount === 1 ? "pkg" : "pkgs"}

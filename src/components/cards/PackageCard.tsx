@@ -43,7 +43,7 @@ export function PackageCard({
             data-tone="dark"
             className="relative h-[135px] w-full overflow-hidden rounded-t-[16px] shrink-0 sm:h-[150px]"
           >
-            {pkg.image ? (
+            {pkg.image && pkg.image.trim() !== "" ? (
               <Image
                 src={pkg.image}
                 alt={pkg.title}
