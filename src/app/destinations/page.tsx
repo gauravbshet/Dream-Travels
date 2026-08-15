@@ -1,11 +1,14 @@
-export const dynamic = "force-dynamic";
+// Cached for 5 minutes rather than rendered per request. Catalogue content
+// changes rarely, so serving every visitor a fresh Supabase round-trip was
+// pure waste. Admin edits appear within 5 minutes.
+export const revalidate = 300;
 
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Star } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { createServerSupabaseClient } from "@/lib/supabase.server";
+import { createPublicSupabaseClient } from "@/lib/supabase.server";
 
 type DestinationRow = {
     id: string;
@@ -19,7 +22,7 @@ type DestinationRow = {
 };
 
 async function getDestinations(): Promise<DestinationRow[]> {
-    const supabase = createServerSupabaseClient();
+    const supabase = createPublicSupabaseClient();
     const { data } = await supabase
         .from("destinations")
         .select("id,slug,name,description,cover_image,image,price,rating")
