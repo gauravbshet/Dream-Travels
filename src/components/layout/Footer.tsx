@@ -8,12 +8,12 @@ import { Container } from "@/components/ui/Container";
 import { cn } from "@/lib/utils";
 
 // Most of these are still placeholder ("#") — those pages don't exist yet.
-// "Cancellation Policy" is the one real page in this list.
+// "About Us" and "Cancellation Policy" are the real pages in this list.
 const footerGroups: { title: string; links: { label: string; href: string }[] }[] = [
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "#" },
+      { label: "About Us", href: "/about" },
       { label: "Careers", href: "#" },
       { label: "Press", href: "#" },
       { label: "Partner With Us", href: "#" },
