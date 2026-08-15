@@ -20,10 +20,30 @@ export function generateStaticParams() {
   return categories.map((category) => ({ category: category.id }));
 }
 
+// Cast needed below: the Supabase client has no generated Database type, so
+// TypeScript infers query results as `never` instead of the real row shape.
+// See supabase_schema.md — generating types would remove this.
+type CategoryPackageRow = {
+  id: string;
+  slug: string;
+  title: string;
+  location: string | null;
+  image: string | null;
+  category: string | null;
+  duration: string | null;
+  pickup: string | null;
+  dates: string | null;
+  rating: number | null;
+  reviews: number | null;
+  price: number;
+  original_price: number | null;
+  destination_id: string | null;
+};
+
 async function getPackagesByCategory(category: CategorySlug): Promise<Package[]> {
   try {
     const supabase = createPublicSupabaseClient();
-    const { data } = await supabase
+    const { data: rawData } = await supabase
       .from("packages")
       .select(
         "id,slug,title,location,image,category,duration,pickup,dates,rating,reviews,price,original_price,destination_id"
@@ -32,6 +52,7 @@ async function getPackagesByCategory(category: CategorySlug): Promise<Package[]>
       .eq("category", category)
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
+    const data = rawData as CategoryPackageRow[] | null;
 
     if (data && data.length > 0) {
       return (data ?? []).map((pkg) => ({
@@ -43,6 +64,9 @@ async function getPackagesByCategory(category: CategorySlug): Promise<Package[]>
         dates: pkg.dates ?? "Flexible",
         rating: pkg.rating ?? 0,
         reviews: pkg.reviews ?? 0,
+        original_price: pkg.original_price ?? undefined,
+        destination_id: pkg.destination_id ?? undefined,
+        image: pkg.image ?? "",
       }));
     }
   } catch (err) {

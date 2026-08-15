@@ -110,6 +110,7 @@ export function ReelCard({
           }}
           className="absolute inset-0 z-[1] h-full w-full cursor-pointer text-left focus:outline-none"
           aria-label={`Open ${reel.title} reel`}
+          suppressHydrationWarning
         >
           {videoError || !reel.videoUrl ? (
             reel.thumbnailUrl ? (
@@ -159,6 +160,7 @@ export function ReelCard({
           onClick={togglePlayback}
           aria-label={shouldPlay ? "Pause reel" : "Play reel"}
           aria-pressed={shouldPlay}
+          suppressHydrationWarning
           className="absolute left-2.5 top-2.5 z-[3] flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-black/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
         >
           {shouldPlay ? (

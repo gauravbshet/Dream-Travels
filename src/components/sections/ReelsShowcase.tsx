@@ -130,6 +130,7 @@ function FilterChip({
       type="button"
       onClick={onClick}
       aria-pressed={active}
+      suppressHydrationWarning
       className={cn(
         "rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors",
         active

@@ -20,7 +20,10 @@ export async function generateStaticParams() {
     try {
         const supabase = createPublicSupabaseClient();
         const { data } = await supabase.from("destinations").select("slug");
-        return (data ?? [])
+        // Cast needed: the Supabase client has no generated Database type, so
+        // TypeScript infers query results as `never` instead of the real row
+        // shape. See supabase_schema.md — generating types would remove this.
+        return ((data ?? []) as { slug: string | null }[])
             .map((row) => row.slug)
             .filter((slug): slug is string => Boolean(slug))
             .map((slug) => ({ slug }));
@@ -31,6 +34,35 @@ export async function generateStaticParams() {
     }
 }
 
+// Casts below needed: the Supabase client has no generated Database type, so
+// TypeScript infers query results as `never` instead of the real row shape.
+// See supabase_schema.md — generating types would remove this.
+type DestinationRow = {
+    id: string;
+    slug: string;
+    name: string;
+    cover_image: string | null;
+    image: string | null;
+    description: string | null;
+    price: number | null;
+    rating: number | null;
+};
+
+type DestinationPackageRow = {
+    id: string;
+    slug: string;
+    title: string;
+    location: string | null;
+    image: string | null;
+    category: string | null;
+    duration: string | null;
+    pickup: string | null;
+    dates: string | null;
+    price: number;
+    rating: number | null;
+    reviews: number | null;
+};
+
 async function getDestination(slug: string) {
     const supabase = createPublicSupabaseClient();
     const { data } = await supabase
@@ -38,7 +70,7 @@ async function getDestination(slug: string) {
         .select("id,slug,name,cover_image,image,description,price,rating")
         .eq("slug", slug)
         .maybeSingle();
-    const destination = data;
+    const destination = data as DestinationRow | null;
 
     if (!destination) {
         return null;
@@ -49,7 +81,7 @@ async function getDestination(slug: string) {
         .select("id,slug,title,location,image,category,duration,pickup,dates,price,rating,reviews")
         .eq("destination_id", destination.id)
         .eq("status", "published");
-    const packages = packagesData;
+    const packages = packagesData as DestinationPackageRow[] | null;
 
     return { destination, packages: packages ?? [] };
 }

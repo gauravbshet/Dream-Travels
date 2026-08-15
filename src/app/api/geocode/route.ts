@@ -33,11 +33,14 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
-  const { data: profile } = await supabase
+  const { data } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", user.id)
     .single();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const profile = data as any;
 
   if (profile?.role !== "admin") {
     return NextResponse.json({ error: "Forbidden." }, { status: 403 });
@@ -49,7 +52,7 @@ export async function GET(request: Request) {
   const parsedQuery = querySchema.safeParse(rawQuery);
 
   if (!parsedQuery.success) {
-    return NextResponse.json({ error: parsedQuery.error.errors[0].message }, { status: 400 });
+    return NextResponse.json({ error: parsedQuery.error.issues[0].message }, { status: 400 });
   }
   
   const query = parsedQuery.data;

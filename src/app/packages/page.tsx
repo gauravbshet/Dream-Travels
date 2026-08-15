@@ -12,13 +12,32 @@ import { PackageCard } from "@/components/cards/PackageCard";
 import type { Package } from "@/data/packages";
 
 async function getPackages(): Promise<Package[]> {
+    type PackageRow = {
+        id: string;
+        slug: string;
+        title: string;
+        location: string | null;
+        image: string | null;
+        category: string | null;
+        duration: string | null;
+        pickup: string | null;
+        dates: string | null;
+        rating: number | null;
+        reviews: number | null;
+        price: number;
+        original_price: number | null;
+        destination_id: string | null;
+    };
+
     const supabase = createPublicSupabaseClient();
-    const { data } = await supabase
+    const { data: rawData } = await supabase
         .from("packages")
         .select("id,slug,title,location,image,category,duration,pickup,dates,rating,reviews,price,original_price,destination_id")
         .eq("status", "published")
         .order("display_order", { ascending: true })
         .order("created_at", { ascending: false });
+
+    const data = rawData as PackageRow[] | null;
 
     return (data ?? []).map((pkg) => ({
         ...pkg,
@@ -29,6 +48,9 @@ async function getPackages(): Promise<Package[]> {
         dates: pkg.dates ?? "Flexible",
         rating: pkg.rating ?? 0,
         reviews: pkg.reviews ?? 0,
+        original_price: pkg.original_price ?? undefined,
+        destination_id: pkg.destination_id ?? undefined,
+        image: pkg.image ?? "",
     }));
 }
 

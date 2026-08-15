@@ -284,6 +284,7 @@ function RegionChip({
       type="button"
       onClick={onSelect}
       aria-pressed={active}
+      suppressHydrationWarning
       className={cn(
         "group relative flex items-center gap-1.5 overflow-hidden rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-all duration-300",
         active

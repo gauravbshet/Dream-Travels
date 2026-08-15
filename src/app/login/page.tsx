@@ -33,7 +33,12 @@ export default function LoginPage() {
             return "/dashboard";
         }
 
-        return profileData.role === "admin" ? "/admin" : "/dashboard";
+        // Cast needed: the Supabase client has no generated Database type, so
+        // TypeScript infers query results as `never` instead of the real row
+        // shape. See supabase_schema.md — generating types would remove this.
+        const profile = profileData as { role: string | null };
+
+        return profile.role === "admin" ? "/admin" : "/dashboard";
     }
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {

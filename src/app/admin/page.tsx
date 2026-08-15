@@ -12,11 +12,14 @@ async function requireAdmin() {
         redirect("/login");
     }
 
-    const { data: profileData } = await supabase
+    const { data } = await supabase
         .from("profiles")
         .select("role")
         .eq("id", user.id)
         .single();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const profileData = data as any;
 
     if (profileData?.role !== "admin") {
         redirect("/dashboard");

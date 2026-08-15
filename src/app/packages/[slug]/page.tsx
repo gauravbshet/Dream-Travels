@@ -105,7 +105,10 @@ export async function generateStaticParams() {
             .from("packages")
             .select("slug")
             .eq("status", "published");
-        return (data ?? [])
+        // Cast needed: the Supabase client has no generated Database type, so
+        // TypeScript infers query results as `never` instead of the real row
+        // shape. See supabase_schema.md — generating types would remove this.
+        return ((data ?? []) as { slug: string | null }[])
             .map((row) => row.slug)
             .filter((slug): slug is string => Boolean(slug))
             .map((slug) => ({ slug }));

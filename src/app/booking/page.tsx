@@ -12,6 +12,22 @@ import { formatPrice } from "@/lib/utils";
 import { BookingForm } from "@/components/packages/BookingForm";
 import { cldUrl } from "@/lib/cloudinary";
 
+// Cast needed below: the Supabase client has no generated Database type, so
+// TypeScript infers query results as `never` instead of the real row shape.
+// See supabase_schema.md — generating types would remove this.
+type BookingPackage = {
+    id: string;
+    slug: string;
+    title: string;
+    image: string | null;
+    price: number;
+    duration: string | null;
+    location: string | null;
+    available_dates: string[] | null;
+    available_from: string | null;
+    available_to: string | null;
+};
+
 export default async function BookingPage({
     searchParams,
 }: {
@@ -29,7 +45,7 @@ export default async function BookingPage({
         .select("id,slug,title,image,price,duration,location,available_dates,available_from,available_to")
         .eq("slug", slug)
         .maybeSingle();
-    const pkg = data;
+    const pkg = data as BookingPackage | null;
 
     if (!pkg) {
         notFound();

@@ -111,6 +111,25 @@ async function fetchFeaturedData() {
       .not("region", "is", null),
   ]);
 
+  // Casts below needed: the Supabase client has no generated Database type,
+  // so TypeScript infers query results as `never` instead of the real row
+  // shape. See supabase_schema.md — generating types would remove this.
+  type PackagePriceRow = { price: number | null; destination_id: string | null };
+  type MapDestinationRow = {
+    id: string;
+    slug: string | null;
+    name: string;
+    description: string | null;
+    cover_image: string | null;
+    image: string | null;
+    region: string | null;
+    state: string | null;
+    lat: number | null;
+    lng: number | null;
+  };
+  const typedPackagePrices = packagePrices as PackagePriceRow[] | null;
+  const typedMapDestinationsRaw = mapDestinationsRaw as MapDestinationRow[] | null;
+
   const mapPackage = (pkg: Record<string, unknown>): Package => ({
     id: pkg.id as string,
     slug: pkg.slug as string | undefined,
@@ -159,7 +178,7 @@ async function fetchFeaturedData() {
 
   const experiences: PopularExperience[] = experiencesData?.length ? experiencesData : staticExperiences;
 
-  const dbPrices = (packagePrices ?? [])
+  const dbPrices = (typedPackagePrices ?? [])
     .map((row) => row.price)
     .filter((price): price is number => typeof price === "number");
 
@@ -168,9 +187,11 @@ async function fetchFeaturedData() {
     ? dbPrices
     : (packages?.length ? packages : staticAllPackages).map((p) => p.price);
 
+  const typedBudgetTiers = budgetTiersData as { id: string; title: string; emoji: string; price_limit: number }[] | null;
+
   const budgetTiers: BudgetTier[] = (
-    budgetTiersData?.length
-      ? budgetTiersData.map((tier) => ({
+    typedBudgetTiers?.length
+      ? typedBudgetTiers.map((tier) => ({
           id: tier.id,
           title: tier.title,
           emoji: tier.emoji,
@@ -187,7 +208,7 @@ async function fetchFeaturedData() {
   // computed from the same published-package rows used for budget tiers
   // above rather than a separate query.
   const packageStatsByDestination = new Map<string, { minPrice: number; count: number }>();
-  for (const row of packagePrices ?? []) {
+  for (const row of typedPackagePrices ?? []) {
     if (!row.destination_id || typeof row.price !== "number") continue;
     const existing = packageStatsByDestination.get(row.destination_id);
     if (existing) {
@@ -198,7 +219,7 @@ async function fetchFeaturedData() {
     }
   }
 
-  const dynamicMapDestinations: MapDestination[] = (mapDestinationsRaw ?? [])
+  const dynamicMapDestinations: MapDestination[] = (typedMapDestinationsRaw ?? [])
     .filter((d): d is typeof d & { region: Region; lat: number; lng: number } =>
       MAP_REGIONS.has(d.region as Region)
     )
@@ -221,7 +242,38 @@ async function fetchFeaturedData() {
   const mapDestinations: MapDestination[] =
     dynamicMapDestinations.length > 0 ? dynamicMapDestinations : staticMapDestinations;
 
-  const reels: Reel[] = (reelsData?.length ? reelsData : staticReels).map((reel) => {
+  const typedReels = reelsData as {
+    id: string;
+    title: string;
+    destination: string | null;
+    description: string | null;
+    video_url: string;
+    thumbnail_url: string;
+    instagram_url: string | null;
+    category: string | null;
+    is_active: boolean;
+    display_order: number;
+    package_id: string | null;
+    packages: {
+      id: string;
+      slug: string;
+      title: string;
+      price: number;
+      original_price: number | null;
+      image: string | null;
+      duration: string | null;
+    } | {
+      id: string;
+      slug: string;
+      title: string;
+      price: number;
+      original_price: number | null;
+      image: string | null;
+      duration: string | null;
+    }[] | null;
+  }[] | null;
+
+  const reels: Reel[] = (typedReels?.length ? typedReels : staticReels).map((reel) => {
     if (!("video_url" in reel)) return reel;
 
     const linkedPkg = Array.isArray(reel.packages) ? reel.packages[0] : reel.packages;
@@ -242,9 +294,9 @@ async function fetchFeaturedData() {
             slug: linkedPkg.slug,
             title: linkedPkg.title,
             price: linkedPkg.price,
-            originalPrice: linkedPkg.original_price,
-            image: linkedPkg.image,
-            duration: linkedPkg.duration,
+            originalPrice: linkedPkg.original_price ?? undefined,
+            image: linkedPkg.image ?? "",
+            duration: linkedPkg.duration ?? "",
           }
         : null,
     };

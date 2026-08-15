@@ -414,15 +414,20 @@ export function PackagesManager() {
       slots_left: form.slots_left !== "" ? Number(form.slots_left) : null,
     };
 
-    const { data: savedPackage, error } = editingId
+    const { data: savedPackageData, error } = editingId
       ? await supabase.from("packages").update(payload).eq("id", editingId).select("id").single()
       : await supabase.from("packages").insert([payload]).select("id").single();
 
-    if (error || !savedPackage) {
+    if (error || !savedPackageData) {
       setSaving(false);
       showToast(`Failed to save package: ${error?.message ?? "Unknown error"}`, "error");
       return;
     }
+
+    // Cast needed: the Supabase client has no generated Database type, so
+    // TypeScript infers query results as `never` instead of the real row
+    // shape. See supabase_schema.md — generating types would remove this.
+    const savedPackage = savedPackageData as { id: string };
 
     // Itinerary days live in a separate table. Simplest consistent approach:
     // replace all days for this package with whatever is currently in the
