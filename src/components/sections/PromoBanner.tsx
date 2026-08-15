@@ -14,7 +14,7 @@ export function PromoBanner() {
           <div className="relative h-[260px] w-full sm:h-[300px] lg:h-[340px]">
             <Image
               src="/promo-banner.png"
-              alt="Plan your next adventure with Dream Travels"
+              alt="Explore Karnataka Packages with Dream Travels"
               fill
               sizes="100vw"
               className="object-cover object-[75%_center] sm:object-center"
@@ -24,19 +24,19 @@ export function PromoBanner() {
 
           <div className="absolute inset-0 flex flex-col justify-center px-6 sm:px-12 lg:px-16">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber sm:text-sm">
-              Limited-time offer
+              Featured Region • Karnataka
             </p>
             <h2 className="display-section mt-1.5 max-w-lg text-2xl text-white sm:text-3xl">
-              Take your longest holiday yet
+              Explore Karnataka Packages
             </h2>
             <p className="mt-2 max-w-md text-sm text-white/80 sm:text-base">
-              Book any 5-day+ package this month and get a free airport transfer, on us.
+              From misty hill stations to scenic trekking trails and cascading waterfalls, discover our curated Karnataka adventures.
             </p>
             <Link
-              href="#packages"
+              href="/packages?q=Karnataka"
               className="mt-4 inline-flex w-fit items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-ink shadow-lg transition-all duration-300 hover:-translate-y-0.5"
             >
-              Book Now
+              Explore Karnataka Packages
               <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>

@@ -10,6 +10,8 @@ export type LinkedPackage = {
   originalPrice?: number;
   image: string;
   duration: string;
+  location?: string;
+  rating?: number;
 };
 
 export type Reel = {
@@ -48,6 +50,8 @@ function findStaticPackage(slug?: string): LinkedPackage | null {
     originalPrice: pkg.originalPrice,
     image: pkg.image,
     duration: pkg.duration,
+    location: pkg.location,
+    rating: pkg.rating,
   };
 }
 

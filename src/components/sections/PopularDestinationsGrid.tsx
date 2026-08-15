@@ -23,7 +23,7 @@ export function PopularDestinationsGrid({
 }) {
   if (destinations.length === 0) return null;
 
-  const featured = destinations.slice(0, 4);
+  const featured = destinations.slice(0, 8);
 
   return (
     <Section tone="light" className="pb-1 sm:pb-2 lg:pb-3">

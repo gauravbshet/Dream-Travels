@@ -17,7 +17,8 @@ export function DreamTravelsReelWidget() {
     pathname?.startsWith("/auth")
   );
 
-  const [reel, setReel] = useState<Reel>(staticReels[0]);
+  const [reelsList, setReelsList] = useState<Reel[]>(staticReels);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [isMinimized, setIsMinimized] = useState(false);
   const [hasUserToggled, setHasUserToggled] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -31,44 +32,97 @@ export function DreamTravelsReelWidget() {
   useEffect(() => {
     if (isHiddenRoute) return;
 
-    async function fetchFeaturedReel() {
+    async function fetchFeaturedReels() {
       try {
         const { data, error } = await supabase
           .from("reels")
-          .select("id,title,destination,description,video_url,thumbnail_url,instagram_url,category,is_active,is_featured_widget")
+          .select(`
+            id,
+            title,
+            destination,
+            description,
+            video_url,
+            thumbnail_url,
+            instagram_url,
+            category,
+            is_active,
+            is_featured_widget,
+            package_id,
+            packages (
+              id,
+              slug,
+              title,
+              location,
+              price,
+              original_price,
+              image,
+              duration,
+              rating
+            )
+          `)
           .eq("is_active", true)
           .order("is_featured_widget", { ascending: false })
-          .limit(1);
+          .order("display_order", { ascending: true });
 
         if (!error && data && data.length > 0) {
-          const row = data[0];
-          setReel((prev) => ({
-            ...prev,
-            id: row.id,
-            title: row.title,
-            destination: row.destination || prev.destination,
-            description: row.description || prev.description,
-            videoUrl: row.video_url,
-            thumbnailUrl: row.thumbnail_url || prev.thumbnailUrl,
-            instagramUrl: row.instagram_url,
-            category: row.category || prev.category,
-            isFeaturedWidget: Boolean(row.is_featured_widget),
-          }));
+          const mapped: Reel[] = data.map((row) => {
+            const linkedPkgData = Array.isArray(row.packages) ? row.packages[0] : row.packages;
+            const linkedPackage = linkedPkgData
+              ? {
+                  id: linkedPkgData.id,
+                  slug: linkedPkgData.slug,
+                  title: linkedPkgData.title,
+                  price: linkedPkgData.price,
+                  originalPrice: linkedPkgData.original_price,
+                  image: linkedPkgData.image,
+                  duration: linkedPkgData.duration,
+                  location: linkedPkgData.location,
+                  rating: linkedPkgData.rating,
+                }
+              : null;
+
+            return {
+              id: row.id,
+              title: row.title,
+              destination: row.destination || linkedPkgData?.location || null,
+              description: row.description,
+              videoUrl: row.video_url,
+              thumbnailUrl: row.thumbnail_url,
+              instagramUrl: row.instagram_url,
+              category: row.category,
+              packageId: row.package_id,
+              linkedPackage: linkedPackage,
+              isFeaturedWidget: Boolean(row.is_featured_widget),
+            };
+          });
+
+          setReelsList(mapped);
+          setSelectedIndex(0);
         }
       } catch {
-        // Fallback to staticReels[0]
+        // Fallback to staticReels
       }
     }
 
-    fetchFeaturedReel();
+    fetchFeaturedReels();
   }, [supabase, isHiddenRoute]);
+
+  // Active reel & package details
+  const reel = reelsList[selectedIndex] || reelsList[0] || staticReels[0];
+  const pkg = reel.linkedPackage;
+
+  // Active package details (uses linked package data if available, falls back to reel properties)
+  const activeTitle = pkg?.title || reel.title;
+  const activeDestination = pkg?.location || reel.destination || "Maharashtra";
+  const activePrice = pkg?.price ?? reel.price ?? 2499;
+  const activeRating = pkg?.rating ?? reel.rating ?? 4.8;
+  const activeDuration = pkg?.duration ?? reel.duration ?? "2D / 1N";
 
   // Auto-minimize widget on scroll down, expand on scroll to top
   useEffect(() => {
     if (isHiddenRoute) return;
 
     const handleScroll = () => {
-      // If user scrolls back to the very top, reset manual override state
       if (window.scrollY < 20) {
         setHasUserToggled(false);
       }
@@ -113,10 +167,7 @@ export function DreamTravelsReelWidget() {
 
   return (
     <>
-      {/* Mobile: always the compact pill — the expanded dual-pane card is
-          ~320px wide, which is most of a phone viewport and floats over
-          whatever content is scrolled behind it. Tapping it opens the
-          full-screen reel view instead of the floating card. */}
+      {/* Mobile: compact pill button */}
       <div className="fixed bottom-4 right-4 z-[180] font-sans sm:hidden">
         <button
           type="button"
@@ -127,7 +178,7 @@ export function DreamTravelsReelWidget() {
             {reel.thumbnailUrl ? (
               <img
                 src={reel.thumbnailUrl}
-                alt={reel.title}
+                alt={activeTitle}
                 className="h-full w-full object-cover"
               />
             ) : (
@@ -145,7 +196,7 @@ export function DreamTravelsReelWidget() {
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
             </div>
             <p className="text-xs font-bold text-ink line-clamp-1">
-              {reel.title} • ₹{(reel.price ?? 2499).toLocaleString("en-IN")}
+              {activeTitle} • ₹{activePrice.toLocaleString("en-IN")}
             </p>
           </div>
         </button>
@@ -173,7 +224,7 @@ export function DreamTravelsReelWidget() {
                 {reel.thumbnailUrl ? (
                   <img
                     src={reel.thumbnailUrl}
-                    alt={reel.title}
+                    alt={activeTitle}
                     className="h-full w-full object-cover"
                   />
                 ) : (
@@ -191,7 +242,7 @@ export function DreamTravelsReelWidget() {
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
                 </div>
                 <p className="text-xs font-bold text-ink group-hover:text-canopy transition-colors line-clamp-1">
-                  {reel.title} • ₹{(reel.price ?? 2499).toLocaleString("en-IN")}
+                  {activeTitle} • ₹{activePrice.toLocaleString("en-IN")}
                 </p>
               </div>
             </motion.button>
@@ -208,10 +259,11 @@ export function DreamTravelsReelWidget() {
               {/* Left Pane: 9:16 Vertical Reel Video Frame */}
               <div
                 onClick={() => setIsExpandedModal(true)}
-                className="group relative h-[160px] w-[120px] sm:h-[180px] sm:w-[135px] shrink-0 overflow-hidden rounded-[20px] border border-white/20 bg-black shadow-2xl cursor-pointer"
+                className="group relative h-[160px] w-[120px] sm:h-[185px] sm:w-[138px] shrink-0 overflow-hidden rounded-[20px] border border-white/20 bg-black shadow-2xl cursor-pointer"
               >
                 <video
                   ref={videoRef}
+                  key={reel.videoUrl || reel.id}
                   src={reel.videoUrl}
                   poster={reel.thumbnailUrl ?? undefined}
                   autoPlay
@@ -236,7 +288,7 @@ export function DreamTravelsReelWidget() {
                   </button>
                 </div>
 
-                {/* Play/Pause Toggle (click here toggles playback without opening the expanded view) */}
+                {/* Play/Pause Toggle */}
                 <button
                   type="button"
                   onClick={togglePlay}
@@ -252,19 +304,19 @@ export function DreamTravelsReelWidget() {
                 <div className="absolute bottom-2 left-2 right-2 z-10">
                   <div className="inline-block rounded-md bg-black/75 backdrop-blur-xs px-2 py-1 text-[10px] font-medium leading-tight text-white shadow-xs">
                     <span className="line-clamp-2">
-                      {reel.description || reel.title}
+                      {reel.description || activeTitle}
                     </span>
                   </div>
                 </div>
               </div>
 
               {/* Right Pane: Featured Package Details Card */}
-              <div className="relative flex h-[160px] w-[190px] sm:h-[180px] sm:w-[210px] flex-col justify-between rounded-[20px] border border-border/80 bg-surface/95 p-3.5 shadow-2xl backdrop-blur-md text-ink">
+              <div className="relative flex h-[160px] w-[200px] sm:h-[185px] sm:w-[220px] flex-col justify-between rounded-[20px] border border-border/80 bg-surface/95 p-3 shadow-2xl backdrop-blur-md text-ink">
                 {/* Header row: Featured Reel Badge & Minimize Button */}
-                <div className="flex items-start justify-between gap-1">
-                  <div className="flex items-center gap-1 text-[10.5px] font-bold text-canopy uppercase tracking-wider">
+                <div className="flex items-center justify-between gap-1">
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-canopy uppercase tracking-wider">
                     <Sparkles className="h-3 w-3 fill-canopy/20" />
-                    <span>Featured Reel</span>
+                    <span>Featured Trip</span>
                   </div>
                   <button
                     type="button"
@@ -280,26 +332,28 @@ export function DreamTravelsReelWidget() {
                   </button>
                 </div>
 
+
+
                 {/* Middle: Destination & Package Title */}
-                <div className="my-auto space-y-1">
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-ink-muted">
+                <div className="my-auto space-y-0.5 py-0.5">
+                  <div className="flex items-center gap-1 text-[10.5px] font-semibold text-ink-muted">
                     <MapPin className="h-3 w-3 shrink-0 text-canopy" />
-                    <span className="truncate">{reel.destination || "Maharashtra"}</span>
+                    <span className="truncate">{activeDestination}</span>
                   </div>
 
-                  <h4 className="text-sm font-extrabold text-ink tracking-tight line-clamp-2 leading-snug">
-                    {reel.title}
+                  <h4 className="text-xs font-extrabold text-ink tracking-tight line-clamp-2 leading-snug">
+                    {activeTitle}
                   </h4>
 
                   {/* Price & Rating Row */}
-                  <div className="flex items-center justify-between text-xs pt-1">
-                    <span className="font-extrabold text-ink text-sm">
-                      ₹{(reel.price ?? 2499).toLocaleString("en-IN")}
-                      <span className="text-[10px] font-normal text-ink-muted ml-0.5">/ person</span>
+                  <div className="flex items-center justify-between text-xs pt-0.5">
+                    <span className="font-extrabold text-ink text-xs">
+                      ₹{activePrice.toLocaleString("en-IN")}
+                      <span className="text-[9.5px] font-normal text-ink-muted ml-0.5">/ person</span>
                     </span>
-                    <span className="inline-flex items-center gap-0.5 text-[11px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-200">
-                      <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                      {reel.rating ?? 4.8}
+                    <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-200">
+                      <Star className="h-2.5 w-2.5 fill-amber-500 text-amber-500" />
+                      {activeRating}
                     </span>
                   </div>
                 </div>
@@ -308,12 +362,12 @@ export function DreamTravelsReelWidget() {
                 <button
                   type="button"
                   onClick={() => setIsBookingOpen(true)}
-                  className="group flex w-full items-center justify-between rounded-full bg-canopy hover:bg-canopy-hover px-3.5 py-2 text-xs font-semibold text-white shadow-md transition-all duration-300 active:scale-95"
+                  className="group flex w-full items-center justify-between rounded-full bg-canopy hover:bg-canopy-hover px-3 py-1.5 text-xs font-semibold text-white shadow-md transition-all duration-300 active:scale-95"
                 >
                   <span>Book Package</span>
                   <div className="flex items-center gap-1">
-                    <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                    <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
                   </div>
                 </button>
               </div>
@@ -326,8 +380,8 @@ export function DreamTravelsReelWidget() {
       <ReelBookingModal
         isOpen={isBookingOpen}
         onClose={() => setIsBookingOpen(false)}
-        reelTitle={reel.title}
-        destination={reel.destination ?? "Maharashtra & Featured Destinations"}
+        reelTitle={activeTitle}
+        destination={activeDestination}
       />
 
       {/* Expanded Full Video Modal View */}
@@ -356,6 +410,7 @@ export function DreamTravelsReelWidget() {
               </button>
 
               <video
+                key={reel.videoUrl || reel.id}
                 src={reel.videoUrl}
                 poster={reel.thumbnailUrl ?? undefined}
                 autoPlay
@@ -368,14 +423,14 @@ export function DreamTravelsReelWidget() {
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="inline-block rounded-full bg-canopy px-3 py-1 text-xs font-bold text-white uppercase tracking-wider">
-                      {reel.destination || "Featured Destination"}
+                      {activeDestination}
                     </span>
                     <span className="text-xs font-extrabold text-amber-400">
-                      ★ {reel.rating ?? 4.8}
+                      ★ {activeRating}
                     </span>
                   </div>
                   <h3 className="text-xl font-bold text-white leading-snug">
-                    {reel.title}
+                    {activeTitle}
                   </h3>
                   {reel.description && (
                     <p className="mt-1 text-xs text-white/80 line-clamp-3">
@@ -383,8 +438,8 @@ export function DreamTravelsReelWidget() {
                     </p>
                   )}
                   <p className="mt-2 text-lg font-extrabold text-white">
-                    ₹{(reel.price ?? 2499).toLocaleString("en-IN")}{" "}
-                    <span className="text-xs font-normal text-white/70">/ person • {reel.duration || "2D / 1N"}</span>
+                    ₹{activePrice.toLocaleString("en-IN")}{" "}
+                    <span className="text-xs font-normal text-white/70">/ person • {activeDuration}</span>
                   </p>
                 </div>
 
@@ -396,7 +451,7 @@ export function DreamTravelsReelWidget() {
                   }}
                   className="w-full rounded-full bg-canopy hover:bg-canopy-hover text-white py-3 font-semibold text-sm shadow-xl flex items-center justify-center gap-2"
                 >
-                  Book This Experience (₹{(reel.price ?? 2499).toLocaleString("en-IN")})
+                  Book This Experience (₹{activePrice.toLocaleString("en-IN")})
                 </button>
               </div>
             </motion.div>

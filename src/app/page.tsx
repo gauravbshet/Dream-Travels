@@ -66,13 +66,12 @@ async function fetchFeaturedData() {
   ] = await Promise.all([
     supabase
       .from("destinations")
-      .select("id,slug,name,description,cover_image,image,price,rating")
-      .eq("is_featured", true)
+      .select("id,slug,name,description,cover_image,image,price,rating,display_order,is_featured")
       .order("display_order", { ascending: true })
-      .order("updated_at", { ascending: false }),
+      .order("created_at", { ascending: false }),
     supabase
       .from("destinations")
-      .select("id,slug,name,description,cover_image,image,price,rating")
+      .select("id,slug,name,description,cover_image,image,price,rating,display_order,is_featured")
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false })
       .limit(8),
