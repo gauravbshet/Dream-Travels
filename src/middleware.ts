@@ -57,10 +57,19 @@ export async function middleware(request: NextRequest) {
   }
 
   // Explicitly validate admin role for /admin paths
-  if (user && isAdminPath && user.user_metadata?.role !== 'admin') {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
+  if (user && isAdminPath) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.role !== 'admin') {
+      const url = request.nextUrl.clone()
+      // If they are logged in but not an admin, redirect them to the dashboard
+      url.pathname = '/dashboard'
+      return NextResponse.redirect(url)
+    }
   }
 
   return supabaseResponse
