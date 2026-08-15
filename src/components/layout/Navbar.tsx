@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Menu, X } from "lucide-react";
@@ -13,6 +13,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase.client";
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [session, setSession] = useState<User | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
@@ -116,6 +117,8 @@ export function Navbar() {
     await supabase.auth.signOut();
     setSession(null);
     setUserRole(null);
+    router.push("/");
+    router.refresh();
   }
 
   const isHomePage = pathname === "/";
