@@ -1,16 +1,26 @@
-export const dynamic = "force-dynamic";
+// Cached for 5 minutes rather than rendered per request. Catalogue content
+// changes rarely, so serving every visitor a fresh Supabase round-trip was
+// pure waste. Admin edits appear within 5 minutes.
+export const revalidate = 300;
 
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PackageCard } from "@/components/cards/PackageCard";
-import { createServerSupabaseClient } from "@/lib/supabase.server";
-import { categoryLabels, isCategorySlug, type CategorySlug } from "@/data/categories";
+import { createPublicSupabaseClient } from "@/lib/supabase.server";
+import { categories, categoryLabels, isCategorySlug, type CategorySlug } from "@/data/categories";
 import { packages as staticPackages, type Package } from "@/data/packages";
+
+// The category set is a fixed, known list, so prerender all four at build
+// time instead of rendering each on first request. Anything outside the list
+// is rejected by `isCategorySlug` below and 404s.
+export function generateStaticParams() {
+  return categories.map((category) => ({ category: category.id }));
+}
 
 async function getPackagesByCategory(category: CategorySlug): Promise<Package[]> {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = createPublicSupabaseClient();
     const { data } = await supabase
       .from("packages")
       .select(

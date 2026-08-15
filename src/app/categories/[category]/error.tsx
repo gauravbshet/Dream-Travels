@@ -14,8 +14,11 @@ export default function CategoryError({
       <Container>
         <div className="mx-auto max-w-md text-center">
           <h2 className="display-section text-ink">Couldn&apos;t load these trips</h2>
+          {/* Deliberately not `error.message`: server-component errors can
+              carry internals (env-var names, connection details) and mean
+              nothing to a traveller. The digest is enough to find the log. */}
           <p className="prose-measure mx-auto mt-2 text-sm text-ink-muted">
-            {error.message || "Something went wrong while fetching packages for this category."}
+            Something went wrong while fetching packages for this category.
           </p>
           <button
             type="button"
@@ -24,6 +27,11 @@ export default function CategoryError({
           >
             Try again
           </button>
+          {error.digest && (
+            <p className="mt-5 text-xs text-ink-muted">
+              Reference: <span className="font-mono">{error.digest}</span>
+            </p>
+          )}
         </div>
       </Container>
     </main>

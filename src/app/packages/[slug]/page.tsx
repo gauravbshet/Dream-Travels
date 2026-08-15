@@ -1,4 +1,7 @@
-export const dynamic = "force-dynamic";
+// Cached for 5 minutes rather than rendered per request. Catalogue content
+// changes rarely, so serving every visitor a fresh Supabase round-trip was
+// pure waste. Admin edits appear within 5 minutes.
+export const revalidate = 300;
 
 import Image from "next/image";
 import Link from "next/link";
@@ -19,7 +22,7 @@ import {
     Headphones,
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { createServerSupabaseClient } from "@/lib/supabase.server";
+import { createPublicSupabaseClient } from "@/lib/supabase.server";
 import { formatPrice } from "@/lib/utils";
 import { PackageGallery } from "@/components/packages/PackageGallery";
 import { PackageBookingCard } from "@/components/packages/PackageBookingCard";
@@ -86,8 +89,30 @@ type RelatedPackage = {
 const PACKAGE_COLUMNS =
     "id,slug,title,location,image,additional_images,category,duration,pickup,drop_point,dates,price,original_price,overview,destination_id,rating,reviews,is_top_pick,status,highlights,inclusions,exclusions,faq,difficulty,best_time,languages,travel_type,max_group_size,transport,accommodation,meals";
 
+// Prerender every published package at build time. Drafts are excluded
+// deliberately — `getPackageData` 404s them anyway. New packages still work:
+// `dynamicParams` defaults to true, so an unknown slug renders on first
+// request and is cached from then on.
+export async function generateStaticParams() {
+    try {
+        const supabase = createPublicSupabaseClient();
+        const { data } = await supabase
+            .from("packages")
+            .select("slug")
+            .eq("status", "published");
+        return (data ?? [])
+            .map((row) => row.slug)
+            .filter((slug): slug is string => Boolean(slug))
+            .map((slug) => ({ slug }));
+    } catch {
+        // No database reachable at build time — render on demand rather than
+        // failing the build.
+        return [];
+    }
+}
+
 async function getPackageData(slug: string) {
-    const supabase = createServerSupabaseClient();
+    const supabase = createPublicSupabaseClient();
 
     const { data: pkg } = await supabase
         .from("packages")

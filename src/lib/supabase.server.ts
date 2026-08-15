@@ -29,6 +29,31 @@ export function createServerSupabaseClient() {
     });
 }
 
+/**
+ * Anonymous, cookie-free client for public catalogue reads (destinations,
+ * packages, reviews — anything an unauthenticated visitor can see).
+ *
+ * Why this exists: `createServerSupabaseClient` reads `cookies()`, and any
+ * route that touches cookies is forced into per-request dynamic rendering, so
+ * `export const revalidate` on those pages silently does nothing. Reading
+ * public data through this client instead lets those pages actually cache.
+ *
+ * It is also the safer client for a cached page: rendering with a
+ * session-bound client and then caching that HTML would serve one visitor's
+ * personalised output to everyone. This client only ever sees what an
+ * anonymous visitor sees, so a shared cache entry is correct by construction.
+ *
+ * Do NOT use it for anything auth-dependent (dashboard, admin, bookings) — it
+ * carries no session, so RLS treats every call as anonymous.
+ */
+export function createPublicSupabaseClient() {
+    assertServerSupabaseEnv();
+
+    return createClient(supabaseUrl!, supabaseAnonKey!, {
+        auth: { persistSession: false, autoRefreshToken: false },
+    });
+}
+
 export function createAdminSupabaseClient() {
     const key = supabaseServiceRoleKey ?? supabaseAnonKey;
 

@@ -13,7 +13,7 @@ import { SeasonalCollections } from "@/components/sections/SeasonalCollections";
 import { EventsSection } from "@/components/sections/EventsSection";
 import { ReelsShowcase } from "@/components/sections/ReelsShowcase";
 import { heroBadge } from "@/data/site";
-import { createServerSupabaseClient } from "@/lib/supabase.server";
+import { createPublicSupabaseClient } from "@/lib/supabase.server";
 import { Destination, MasonryDestination, BudgetTier } from "@/data/destinations";
 import { Package } from "@/data/packages";
 import { reels as staticReels, type Reel } from "@/data/reels";
@@ -29,7 +29,11 @@ import { reviews as staticReviews, type Review } from "@/data/reviews";
 import { events as staticEvents, type TravelEvent } from "@/data/events";
 import type { PopularExperience, SeasonalCollection } from "@/data/destinations";
 
-export const dynamic = "force-dynamic";
+// Cached for 5 minutes rather than rendered per request. This page fires
+// eleven Supabase queries; under `force-dynamic` every visitor paid for all
+// of them. Trip content changes rarely, so a short revalidate window is the
+// right trade — an admin edit appears within 5 minutes.
+export const revalidate = 300;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dreamtravels.com";
 
@@ -47,7 +51,7 @@ const jsonLd = {
 };
 
 async function fetchFeaturedData() {
-  const supabase = createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
 
   const [
     { data: destinations },

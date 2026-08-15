@@ -1,16 +1,37 @@
-export const dynamic = "force-dynamic";
+// Cached for 5 minutes rather than rendered per request. Catalogue content
+// changes rarely, so serving every visitor a fresh Supabase round-trip was
+// pure waste. Admin edits appear within 5 minutes.
+export const revalidate = 300;
 
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
-import { createServerSupabaseClient } from "@/lib/supabase.server";
+import { createPublicSupabaseClient } from "@/lib/supabase.server";
 import { MapPin, Package as PackageIcon } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 
+// Prerender every destination that exists at build time. Destinations added
+// later still work — `dynamicParams` defaults to true, so an unknown slug is
+// rendered on first request and cached from then on.
+export async function generateStaticParams() {
+    try {
+        const supabase = createPublicSupabaseClient();
+        const { data } = await supabase.from("destinations").select("slug");
+        return (data ?? [])
+            .map((row) => row.slug)
+            .filter((slug): slug is string => Boolean(slug))
+            .map((slug) => ({ slug }));
+    } catch {
+        // No database reachable at build time (a CI box without secrets, say).
+        // Fall back to rendering on demand rather than failing the build.
+        return [];
+    }
+}
+
 async function getDestination(slug: string) {
-    const supabase = createServerSupabaseClient();
+    const supabase = createPublicSupabaseClient();
     const { data: destination } = await supabase
         .from("destinations")
         .select("id,slug,name,cover_image,image,description,price,rating")
