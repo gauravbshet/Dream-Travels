@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { cldUrl } from "@/lib/cloudinary";
 
 export function PackageGallery({ images, title }: { images: string[]; title: string }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -28,7 +29,7 @@ export function PackageGallery({ images, title }: { images: string[]; title: str
               )}
             >
               <Image
-                src={src}
+                src={cldUrl(src, 700)}
                 alt={`${title} photo ${i + 1}`}
                 fill
                 sizes="(max-width: 640px) 50vw, 25vw"
@@ -104,7 +105,7 @@ function Lightbox({
 
       <div className="relative h-[70vh] w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
         <Image
-          src={images[index]}
+          src={cldUrl(images[index], 1400)}
           alt={`${title} photo ${index + 1}`}
           fill
           sizes="100vw"

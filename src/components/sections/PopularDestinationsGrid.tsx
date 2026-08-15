@@ -9,6 +9,7 @@ import { Section } from "@/components/ui/Section";
 import { formatPrice } from "@/lib/utils";
 import { recommendedDestinations as staticDestinations, type Destination } from "@/data/destinations";
 import { packages as staticPackages, type Package } from "@/data/packages";
+import { cldUrl } from "@/lib/cloudinary";
 
 /**
  * Popular destination showcase: 2-column grid (no scroll), 2 cards only,
@@ -55,7 +56,7 @@ export function PopularDestinationsGrid({
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
                   {destination.image && destination.image.trim() !== "" ? (
                     <Image
-                      src={destination.image}
+                      src={cldUrl(destination.image, 500)}
                       alt={destination.name}
                       fill
                       sizes="(max-width: 768px) 50vw, 25vw"

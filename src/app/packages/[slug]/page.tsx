@@ -24,6 +24,7 @@ import {
 import { Container } from "@/components/ui/Container";
 import { createPublicSupabaseClient } from "@/lib/supabase.server";
 import { formatPrice } from "@/lib/utils";
+import { cldUrl } from "@/lib/cloudinary";
 import { PackageGallery } from "@/components/packages/PackageGallery";
 import { PackageBookingCard } from "@/components/packages/PackageBookingCard";
 import { PackageMobileBar } from "@/components/packages/PackageMobileBar";
@@ -261,7 +262,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
             <Container className="mb-8">
                 <div className="relative h-[380px] sm:h-[480px] lg:h-[520px] w-full overflow-hidden rounded-[20px] sm:rounded-[24px] shadow-md border border-border/60">
                     {gallery[0] && (
-                        <Image src={gallery[0]} alt={pkg.title} fill priority sizes="100vw" className="object-cover" />
+                        <Image src={cldUrl(gallery[0], 1600)} alt={pkg.title} fill priority sizes="100vw" className="object-cover" />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
 
@@ -536,7 +537,7 @@ export default async function PackagePage({ params }: { params: Promise<{ slug: 
                                             <div className="relative aspect-[4/3] w-full overflow-hidden">
                                                 {item.image && (
                                                     <Image
-                                                        src={item.image}
+                                                        src={cldUrl(item.image, 640)}
                                                         alt={item.title}
                                                         fill
                                                         sizes="320px"

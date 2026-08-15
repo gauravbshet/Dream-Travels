@@ -9,6 +9,7 @@ import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
 import { Section } from "@/components/ui/Section";
 import { events as staticEvents } from "@/data/events";
 import type { TravelEvent } from "@/data/events";
+import { cldUrl } from "@/lib/cloudinary";
 
 export function EventsSection({ events = staticEvents }: { events?: TravelEvent[] }) {
   return (
@@ -22,7 +23,7 @@ export function EventsSection({ events = staticEvents }: { events?: TravelEvent[
             >
               <div className="relative h-32 w-full">
                 <Image
-                  src={event.image}
+                  src={cldUrl(event.image, 400)}
                   alt={event.title}
                   fill
                   sizes="(max-width: 768px) 60vw, 20vw"

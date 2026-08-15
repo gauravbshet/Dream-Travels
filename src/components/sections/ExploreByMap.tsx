@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { formatPrice, cn } from "@/lib/utils";
+import { cldUrl } from "@/lib/cloudinary";
 import {
   INDIA_OUTLINE,
   MAP_VIEWBOX,
@@ -200,7 +201,7 @@ export function ExploreByMap({
               <div data-tone="dark" className="relative aspect-[2.6/1] sm:aspect-[2.8/1] lg:aspect-[2.5/1] w-full overflow-hidden">
                 <Image
                   key={active.id}
-                  src={active.image}
+                  src={cldUrl(active.image, 700)}
                   alt={active.name}
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"

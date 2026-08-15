@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Utensils, Hotel, Sparkles, Route } from "lucide-react";
+import { cldUrl } from "@/lib/cloudinary";
 
 export type ItineraryDay = {
   id: string;
@@ -66,7 +67,7 @@ export function PackageItinerary({ itinerary }: { itinerary: ItineraryDay[] }) {
                   )}
                   {day.image && (
                     <div className="relative h-48 w-full overflow-hidden rounded-[14px]">
-                      <Image src={day.image} alt={day.title} fill sizes="600px" className="object-cover" />
+                      <Image src={cldUrl(day.image, 900)} alt={day.title} fill sizes="600px" className="object-cover" />
                     </div>
                   )}
                   <div className="flex flex-wrap gap-2 text-xs font-semibold text-ink-muted pt-2">

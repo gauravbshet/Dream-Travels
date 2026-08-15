@@ -1,10 +1,20 @@
 import type { Metadata, Viewport } from "next";
+
 import { Archivo, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { RouteAwareNavbar, RouteAwareBottomNav } from "@/components/layout/RouteAwareNavigation";
 import { FooterGuard } from "@/components/layout/FooterGuard";
-import { AtmosphereField } from "@/components/ui/AtmosphereField";
-import { DreamTravelsReelWidget } from "@/components/widgets/DreamTravelsReelWidget";
+
+// Both are purely decorative/floating overlays with zero SEO or above-the-fold
+// content value (AtmosphereField is `aria-hidden`; the reel widget is a
+// floating video pill that fetches its own data client-side). They were
+// previously bundled into every route's initial JS via a static import in
+// the root layout — meaning their combined weight (framer-motion animations,
+// a Supabase client, an mp4 video player, a booking modal) blocked the main
+// thread on pages that never even show them (e.g. /login, /admin,
+// /cancellation-policy). `ssr: false` code-splits them into a chunk that
+// loads after hydration instead of shipping with the critical bundle.
+import { AtmosphereField, DreamTravelsReelWidget } from "@/components/layout/ClientDynamicWrappers";
 
 const archivo = Archivo({
   variable: "--font-archivo",

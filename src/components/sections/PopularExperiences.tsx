@@ -8,6 +8,7 @@ import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
 import { Section } from "@/components/ui/Section";
 import { popularExperiences as staticExperiences } from "@/data/destinations";
 import type { PopularExperience } from "@/data/destinations";
+import { cldUrl } from "@/lib/cloudinary";
 
 export function PopularExperiences({
   experiences = staticExperiences,
@@ -24,7 +25,7 @@ export function PopularExperiences({
               key={exp.id}              className="group relative h-40 w-[42%] xs:w-[36%] sm:w-[26%] shrink-0 snap-start overflow-hidden rounded-[14px] border border-border lg:w-full"
             >
               <Image
-                src={exp.image}
+                src={cldUrl(exp.image, 400)}
                 alt={exp.title}
                 fill
                 sizes="(max-width: 768px) 40vw, 12vw"

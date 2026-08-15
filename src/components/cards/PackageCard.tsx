@@ -9,6 +9,7 @@ import { useSpotlight } from "@/lib/useSpotlight";
 import { formatPrice, cn } from "@/lib/utils";
 import { categoryLabels, type CategorySlug } from "@/data/categories";
 import type { Package } from "@/data/packages";
+import { cldUrl } from "@/lib/cloudinary";
 
 export function PackageCard({
   pkg,
@@ -45,7 +46,7 @@ export function PackageCard({
           >
             {pkg.image && pkg.image.trim() !== "" ? (
               <Image
-                src={pkg.image}
+                src={cldUrl(pkg.image, 500)}
                 alt={pkg.title}
                 fill
                 sizes="(max-width: 640px) 200px, 250px"

@@ -7,6 +7,7 @@ import { WishlistButton } from "@/components/ui/WishlistButton";
 import { useSpotlight } from "@/lib/useSpotlight";
 import { formatPrice, cn } from "@/lib/utils";
 import type { Destination } from "@/data/destinations";
+import { cldUrl } from "@/lib/cloudinary";
 
 export function DestinationCard({
   destination,
@@ -31,7 +32,7 @@ export function DestinationCard({
           {/* Image & Overlay Badges Header */}
           <div data-tone="dark" className="relative h-[135px] w-full overflow-hidden rounded-t-[16px] shrink-0 sm:h-[150px]">
             <Image
-              src={destination.image}
+              src={cldUrl(destination.image, 500)}
               alt={destination.name}
               fill
               sizes="(max-width: 640px) 200px, 250px"

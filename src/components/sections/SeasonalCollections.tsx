@@ -8,6 +8,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
 import { seasonalCollections as staticCollections } from "@/data/destinations";
 import type { SeasonalCollection } from "@/data/destinations";
+import { cldUrl } from "@/lib/cloudinary";
 
 export function SeasonalCollections({
   collections = staticCollections,
@@ -25,7 +26,7 @@ export function SeasonalCollections({
               className="group relative h-36 sm:h-44 lg:h-48 overflow-hidden rounded-[14px] border border-border"
             >
               <Image
-                src={c.image}
+                src={cldUrl(c.image, 600)}
                 alt={c.title}
                 fill
                 sizes="(max-width: 768px) 50vw, 30vw"

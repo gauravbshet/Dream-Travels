@@ -9,6 +9,7 @@ import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
 import { Section } from "@/components/ui/Section";
 import { blogs as staticBlogs } from "@/data/blogs";
 import type { Blog } from "@/data/blogs";
+import { cldUrl } from "@/lib/cloudinary";
 
 export function BlogSection({ blogs = staticBlogs }: { blogs?: Blog[] }) {
   return (
@@ -23,7 +24,7 @@ export function BlogSection({ blogs = staticBlogs }: { blogs?: Blog[] }) {
             >
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[14px] m-1.5">
                 <Image
-                  src={blog.image}
+                  src={cldUrl(blog.image, 600)}
                   alt={blog.title}
                   fill
                   sizes="(max-width: 768px) 70vw, 30vw"

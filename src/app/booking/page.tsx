@@ -10,6 +10,7 @@ import { createPublicSupabaseClient } from "@/lib/supabase.server";
 import { Container } from "@/components/ui/Container";
 import { formatPrice } from "@/lib/utils";
 import { BookingForm } from "@/components/packages/BookingForm";
+import { cldUrl } from "@/lib/cloudinary";
 
 export default async function BookingPage({
     searchParams,
@@ -46,7 +47,7 @@ export default async function BookingPage({
                 <div className="mt-8 grid gap-8 sm:grid-cols-[220px_1fr]">
                     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[16px] border border-border">
                         {pkg.image && (
-                            <Image src={pkg.image} alt={pkg.title} fill sizes="220px" className="object-cover" />
+                            <Image src={cldUrl(pkg.image, 440)} alt={pkg.title} fill sizes="220px" className="object-cover" />
                         )}
                     </div>
                     <div>

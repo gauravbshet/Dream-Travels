@@ -7,6 +7,7 @@ import { ArrowUpRight, MapPin, Star } from "lucide-react";
 import { banners } from "@/data/banners";
 import { heroBadge } from "@/data/site";
 import { cn } from "@/lib/utils";
+import { cldUrl } from "@/lib/cloudinary";
 
 export function HeroCarousel({ className }: { className?: string }) {
   const [index, setIndex] = useState(0);
@@ -59,7 +60,7 @@ export function HeroCarousel({ className }: { className?: string }) {
         }}
       >
         <Image
-          src={banner.image}
+          src={cldUrl(banner.image, 1600)}
           alt={banner.title}
           fill
           priority

@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
 import { packages as staticPackages, type Package } from "@/data/packages";
+import { cldUrl } from "@/lib/cloudinary";
 
 /**
  * Compact "featured stories" style tile strip — small square photo tiles
@@ -37,7 +38,7 @@ export function FeaturedHighlights({
               className="group relative aspect-square w-[42vw] shrink-0 snap-start overflow-hidden rounded-[16px] xs:w-[38vw] sm:w-auto"
             >
               <Image
-                src={pkg.image}
+                src={cldUrl(pkg.image, 450)}
                 alt={pkg.title}
                 fill
                 sizes="(max-width: 640px) 45vw, 220px"

@@ -11,6 +11,7 @@ import { Section } from "@/components/ui/Section";
 import { createPublicSupabaseClient } from "@/lib/supabase.server";
 import { MapPin, Package as PackageIcon } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { cldUrl } from "@/lib/cloudinary";
 
 // Prerender every destination that exists at build time. Destinations added
 // later still work — `dynamicParams` defaults to true, so an unknown slug is
@@ -74,7 +75,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
                                 <div>
                                     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[10px] sm:rounded-[16px]">
                                         <Image
-                                            src={pkg.image}
+                                            src={cldUrl(pkg.image, 500)}
                                             alt={pkg.title}
                                             fill
                                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

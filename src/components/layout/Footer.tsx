@@ -125,7 +125,7 @@ export function Footer() {
           <div className="hidden lg:contents">
             {footerGroups.map((group) => (
               <div key={group.title} className="min-w-0">
-                <h4 className="font-semibold text-ink">{group.title}</h4>
+                <h3 className="font-semibold text-ink">{group.title}</h3>
                 <ul className="mt-4 space-y-2.5">
                   {group.links.map((link) => (
                     <li key={link.label}>
@@ -147,7 +147,7 @@ export function Footer() {
           </div>
 
           <div className="min-w-0">
-            <h4 className="font-semibold text-ink">Newsletter</h4>
+            <h3 className="font-semibold text-ink">Newsletter</h3>
             <p className="mt-4 text-sm leading-relaxed">
               Get exclusive deals and travel inspiration in your inbox.
             </p>

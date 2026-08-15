@@ -11,6 +11,8 @@ export function BookingForm({
     defaultTravellers,
     defaultDate,
     availableDates,
+    availableFrom,
+    availableTo,
     whatsappNumber,
 }: {
     packageTitle: string;

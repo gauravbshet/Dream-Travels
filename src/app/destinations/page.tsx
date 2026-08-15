@@ -9,6 +9,7 @@ import { MapPin, Star } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { createPublicSupabaseClient } from "@/lib/supabase.server";
+import { cldUrl } from "@/lib/cloudinary";
 
 type DestinationRow = {
     id: string;
@@ -58,7 +59,7 @@ export default async function DestinationsListPage() {
                                 <div className="relative aspect-[4/3] w-full overflow-hidden">
                                     {(destination.image || destination.cover_image) && (
                                         <Image
-                                            src={(destination.image || destination.cover_image)!}
+                                            src={cldUrl((destination.image || destination.cover_image)!, 500)}
                                             alt={destination.name}
                                             fill
                                             sizes="(max-width: 768px) 50vw, 25vw"

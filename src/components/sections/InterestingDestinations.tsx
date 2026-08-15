@@ -8,6 +8,7 @@ import { Section } from "@/components/ui/Section";
 import { formatPrice, cn } from "@/lib/utils";
 import { interestingDestinations as staticInterestingDestinations } from "@/data/destinations";
 import type { MasonryDestination } from "@/data/destinations";
+import { cldUrl } from "@/lib/cloudinary";
 
 function DestTile({ d }: { d: MasonryDestination }) {
   return (
@@ -18,7 +19,7 @@ function DestTile({ d }: { d: MasonryDestination }) {
       )}
     >
       <Image
-        src={d.image}
+        src={cldUrl(d.image, 500)}
         alt={d.name}
         fill
         sizes="(max-width: 768px) 45vw, 20vw"

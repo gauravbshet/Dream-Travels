@@ -10,6 +10,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { WishlistButton } from "@/components/ui/WishlistButton";
 import { useSpotlight } from "@/lib/useSpotlight";
 import { formatPrice } from "@/lib/utils";
+import { cldUrl } from "@/lib/cloudinary";
 import { packages as staticPackages, type Package } from "@/data/packages";
 
 export function TopRatedPackages({
@@ -70,7 +71,7 @@ function RatedPackageCard({ pkg, rank }: { pkg: Package; rank: number }) {
           {/* Image & Overlay Badges Header */}
           <div data-tone="dark" className="relative h-[135px] w-full overflow-hidden rounded-t-[16px] shrink-0 sm:h-[150px]">
             <Image
-              src={pkg.image}
+              src={cldUrl(pkg.image, 500)}
               alt={pkg.title}
               fill
               sizes="(max-width: 640px) 200px, 250px"
