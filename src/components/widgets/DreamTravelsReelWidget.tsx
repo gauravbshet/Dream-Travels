@@ -10,6 +10,13 @@ import { ReelBookingModal } from "@/components/modals/ReelBookingModal";
 
 export function DreamTravelsReelWidget() {
   const pathname = usePathname();
+  const isHiddenRoute = Boolean(
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/login") ||
+    pathname?.startsWith("/signup") ||
+    pathname?.startsWith("/auth")
+  );
+
   const [reel, setReel] = useState<Reel>(staticReels[0]);
   const [isMinimized, setIsMinimized] = useState(false);
   const [hasUserToggled, setHasUserToggled] = useState(false);
@@ -22,7 +29,7 @@ export function DreamTravelsReelWidget() {
   const supabase = createBrowserSupabaseClient();
 
   useEffect(() => {
-    if (pathname?.startsWith("/admin")) return;
+    if (isHiddenRoute) return;
 
     async function fetchFeaturedReel() {
       try {
@@ -54,11 +61,11 @@ export function DreamTravelsReelWidget() {
     }
 
     fetchFeaturedReel();
-  }, [supabase, pathname]);
+  }, [supabase, isHiddenRoute]);
 
   // Auto-minimize widget on scroll down, expand on scroll to top
   useEffect(() => {
-    if (pathname?.startsWith("/admin")) return;
+    if (isHiddenRoute) return;
 
     const handleScroll = () => {
       // If user scrolls back to the very top, reset manual override state
@@ -78,7 +85,7 @@ export function DreamTravelsReelWidget() {
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasUserToggled, pathname]);
+  }, [hasUserToggled, isHiddenRoute]);
 
   function toggleMute(e: React.MouseEvent) {
     e.stopPropagation();
@@ -100,7 +107,7 @@ export function DreamTravelsReelWidget() {
     }
   }
 
-  if (pathname?.startsWith("/admin")) {
+  if (isHiddenRoute) {
     return null;
   }
 

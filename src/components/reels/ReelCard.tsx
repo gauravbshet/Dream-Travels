@@ -89,7 +89,7 @@ export function ReelCard({
   return (
     <div
       className={cn(
-        "flex w-[170px] shrink-0 snap-start flex-col gap-2 sm:w-[210px] lg:w-full",
+        "flex w-[180px] shrink-0 snap-start flex-col gap-2 sm:w-[210px] lg:w-full",
         className,
       )}
     >
@@ -195,15 +195,15 @@ export function ReelCard({
           <p className="line-clamp-1 text-[12px] font-bold text-ink">
             {reel.linkedPackage.title}
           </p>
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex min-w-0 items-baseline gap-1">
+          <div className="flex items-center justify-between gap-1.5">
+            <div className="flex flex-col min-w-0">
               {reel.linkedPackage.originalPrice &&
                 reel.linkedPackage.originalPrice > reel.linkedPackage.price && (
                   <span className="text-[10px] font-medium leading-none text-ink-muted line-through">
                     {formatPrice(reel.linkedPackage.originalPrice)}
                   </span>
                 )}
-              <span className="text-[13px] font-extrabold leading-none text-ink">
+              <span className="text-[12.5px] font-extrabold leading-tight text-ink">
                 {formatPrice(reel.linkedPackage.price)}
               </span>
             </div>
