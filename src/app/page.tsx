@@ -54,7 +54,6 @@ async function fetchFeaturedData() {
 
   const [
     { data: destinations },
-    { data: allDestinations },
     { data: packages },
     { data: topPickPackages },
     { data: reviewsData },
@@ -64,17 +63,16 @@ async function fetchFeaturedData() {
     { data: reelsData },
     { data: mapDestinationsRaw },
   ] = await Promise.all([
+    // Single unlimited, ordered query — `allDestinations` below derives its
+    // first-8 slice from this same result instead of firing a second,
+    // near-identical query against the same table with the same order
+    // clauses. That was one full extra DB round-trip on every request the
+    // 5-minute revalidate window didn't already have cached.
     supabase
       .from("destinations")
       .select("id,slug,name,description,cover_image,image,price,rating,display_order,is_featured")
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false }),
-    supabase
-      .from("destinations")
-      .select("id,slug,name,description,cover_image,image,price,rating,display_order,is_featured")
-      .order("display_order", { ascending: true })
-      .order("created_at", { ascending: false })
-      .limit(8),
     supabase
       .from("packages")
       .select(
@@ -129,6 +127,10 @@ async function fetchFeaturedData() {
   };
   const typedPackagePrices = packagePrices as PackagePriceRow[] | null;
   const typedMapDestinationsRaw = mapDestinationsRaw as MapDestinationRow[] | null;
+
+  // Same ordering as the query above, so the first 8 here match exactly
+  // what a separate `.limit(8)` query would have returned.
+  const allDestinations = destinations?.slice(0, 8) ?? null;
 
   const mapPackage = (pkg: Record<string, unknown>): Package => ({
     id: pkg.id as string,

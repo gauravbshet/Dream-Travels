@@ -12,7 +12,7 @@ import {
 import { ArrowUpRight, Star } from "lucide-react";
 import { HeroSearch, HeroSearchCompact } from "./HeroSearch";
 import { heroBadge } from "@/data/site";
-import heroImage from "../../../media/hero.jpg";
+import heroImage from "../../../media/hero.webp";
 
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null);

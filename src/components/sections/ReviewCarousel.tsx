@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -35,10 +32,7 @@ export function ReviewCarousel({ reviews = staticReviews }: { reviews?: Review[]
 
         <Carousel label="Our Travellers' Experiences">
           {reviews.map((review) => (
-            <motion.article
-              key={review.id}
-              className="w-[82%] xs:w-[72%] sm:w-[56%] lg:w-[360px] shrink-0 snap-start flex flex-col rounded-[14px] bg-surface p-6 border border-border"
-            >
+            <article key={review.id} className="w-[82%] xs:w-[72%] sm:w-[56%] lg:w-[360px] shrink-0 snap-start flex flex-col rounded-[14px] bg-surface p-6 border border-border">
               <div className="flex gap-0.5">
                 {Array.from({ length: review.rating }).map((_, idx) => (
                   <Star key={idx} className="h-3.5 w-3.5 fill-secondary text-secondary" />
@@ -56,7 +50,7 @@ export function ReviewCarousel({ reviews = staticReviews }: { reviews?: Review[]
                   <p className="text-xs text-ink-muted">{review.date}</p>
                 </div>
               </div>
-            </motion.article>
+            </article>
           ))}
         </Carousel>
       </Container>

@@ -27,15 +27,41 @@ export function DreamTravelsReelWidget() {
   const [userOverrideState, setUserOverrideState] = useState<ViewState | null>(null);
 
   const [isMuted, setIsMuted] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  // Gates both the reels refetch and the expanded-state video autoplay
+  // below — see the effect a bit further down for why.
+  const [canAutoplay, setCanAutoplay] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isExpandedModal, setIsExpandedModal] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const supabase = createBrowserSupabaseClient();
 
+  // This widget is mounted globally on every route (see
+  // ClientDynamicWrappers) and previously fired a Supabase query and
+  // autoplayed a video the instant hydration finished — on every single
+  // page load, whether or not the visitor ever looks at it. Deferring both
+  // to browser idle time keeps that work off the critical rendering path;
+  // the poster image covers the gap so nothing looks different.
   useEffect(() => {
     if (!isAllowedRoute) return;
+
+    const win = window as typeof window & {
+      requestIdleCallback?: (cb: IdleRequestCallback, opts?: IdleRequestOptions) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    if (typeof win.requestIdleCallback === "function") {
+      const handle = win.requestIdleCallback(() => setCanAutoplay(true), { timeout: 2000 });
+      return () => win.cancelIdleCallback?.(handle);
+    }
+
+    const timeout = window.setTimeout(() => setCanAutoplay(true), 1200);
+    return () => window.clearTimeout(timeout);
+  }, [isAllowedRoute]);
+
+  useEffect(() => {
+    if (!isAllowedRoute || !canAutoplay) return;
 
     async function fetchFeaturedReels() {
       try {
@@ -110,7 +136,7 @@ export function DreamTravelsReelWidget() {
     }
 
     fetchFeaturedReels();
-  }, [supabase, isAllowedRoute]);
+  }, [supabase, isAllowedRoute, canAutoplay]);
 
   // Active reel & package details
   const reel = reelsList[selectedIndex] || reelsList[0] || staticReels[0];
@@ -148,6 +174,23 @@ export function DreamTravelsReelWidget() {
   const currentState: ViewState = userOverrideState ?? (
     scrollY >= 450 ? "circle" : scrollY >= 120 ? "pill" : "expanded"
   );
+
+  // Imperatively starts playback once canAutoplay flips true (see the
+  // idle-deferral effect above) instead of the video's own `autoPlay`
+  // attribute, which would otherwise start decoding immediately on mount.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !canAutoplay) return;
+
+    video
+      .play()
+      .then(() => setIsPlaying(true))
+      .catch(() => {
+        // Autoplay can still be rejected by the browser even though this is
+        // deferred and muted; the play/pause button lets the visitor start
+        // it manually.
+      });
+  }, [canAutoplay, reel.videoUrl]);
 
   function toggleMute(e: React.MouseEvent) {
     e.stopPropagation();
@@ -332,7 +375,7 @@ export function DreamTravelsReelWidget() {
                   key={reel.videoUrl || reel.id}
                   src={reel.videoUrl}
                   poster={reel.thumbnailUrl ?? undefined}
-                  autoPlay
+                  preload={canAutoplay ? "auto" : "none"}
                   loop
                   muted={isMuted}
                   playsInline

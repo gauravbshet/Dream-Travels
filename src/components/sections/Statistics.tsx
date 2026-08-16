@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { Container } from "@/components/ui/Container";
 import { Counter } from "@/components/ui/Counter";
 import { Section } from "@/components/ui/Section";
@@ -17,9 +14,7 @@ export function Statistics() {
       <Container className="relative">
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 lg:gap-6">
           {stats.map((stat) => (
-            <motion.div
-              key={stat.id}              className="text-center"
-            >
+            <div key={stat.id} className="text-center">
               <p className="text-3xl lg:text-5xl font-bold text-ink tabular-nums">
                 <Counter
                   value={stat.value}
@@ -30,7 +25,7 @@ export function Statistics() {
               <p className="mt-2 text-sm lg:text-base text-ink-muted">
                 {stat.label}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </Container>

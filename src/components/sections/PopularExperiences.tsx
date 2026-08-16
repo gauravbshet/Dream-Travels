@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ResponsiveScroller } from "@/components/ui/ResponsiveScroller";
@@ -21,9 +18,7 @@ export function PopularExperiences({
         <SectionHeading title="Popular Experiences" />
         <ResponsiveScroller gridClassName="lg:grid-cols-4 xl:grid-cols-8 lg:gap-4">
           {experiences.map((exp) => (
-            <motion.div
-              key={exp.id}              className="group relative h-40 w-[42%] xs:w-[36%] sm:w-[26%] shrink-0 snap-start overflow-hidden rounded-[14px] border border-border lg:w-full"
-            >
+            <div key={exp.id} className="group relative h-40 w-[42%] xs:w-[36%] sm:w-[26%] shrink-0 snap-start overflow-hidden rounded-[14px] border border-border lg:w-full">
               <Image
                 src={cldUrl(exp.image, 400)}
                 alt={exp.title}
@@ -35,7 +30,7 @@ export function PopularExperiences({
               <span className="absolute inset-x-0 bottom-3 text-center text-sm font-semibold text-white">
                 {exp.title}
               </span>
-            </motion.div>
+            </div>
           ))}
         </ResponsiveScroller>
       </Container>
