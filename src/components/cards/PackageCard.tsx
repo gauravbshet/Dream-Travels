@@ -25,8 +25,8 @@ export function PackageCard({
   const isComingSoon = pkg.category === "international";
   const href = isComingSoon
     ? buildWhatsAppLink(
-        `Hello Dream Travels! I am interested in the upcoming *${pkg.title}* package. Please notify me as soon as bookings open!`
-      )
+      `Hello Dream Travels! I am interested in the upcoming *${pkg.title}* package. Please notify me as soon as bookings open!`
+    )
     : `/packages/${pkg.slug ?? pkg.id}`;
 
   const { ref, onPointerMove } = useSpotlight<HTMLDivElement>();
@@ -136,7 +136,7 @@ export function PackageCard({
 
               <div className="flex shrink-0 items-center gap-0.5 text-[11px] sm:text-[12px] font-bold text-ink">
                 <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                <span>{pkg.rating.toFixed(1)}</span>
+                <span>{pkg.rating ?? 0}</span>
               </div>
             </div>
           </div>

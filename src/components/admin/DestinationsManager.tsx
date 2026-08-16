@@ -355,7 +355,7 @@ export function DestinationsManager() {
                   {locating
                     ? "Locating this destination on the map…"
                     : form.lat != null && form.lng != null
-                      ? `Map pin set (${form.lat.toFixed(2)}, ${form.lng.toFixed(2)}). Edit the name to re-locate.`
+                      ? `Map pin set (${form.lat}, ${form.lng}). Edit the name to re-locate.`
                       : "Map pin will be located automatically from the name when you save. Pick a region above for it to appear on the map."}
                 </div>
               )}
