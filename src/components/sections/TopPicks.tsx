@@ -3,10 +3,11 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Carousel } from "@/components/ui/Carousel";
 import { Section } from "@/components/ui/Section";
 import { PackageCard } from "@/components/cards/PackageCard";
-import { topPicks as staticTopPicks } from "@/data/packages";
 import type { Package } from "@/data/packages";
 
-export function TopPicks({ packages = staticTopPicks }: { packages?: Package[] }) {
+export function TopPicks({ packages = [] }: { packages?: Package[] }) {
+  if (packages.length === 0) return null;
+
   return (
     <Section tone="light">
       <Container>

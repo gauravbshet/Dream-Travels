@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
 import { formatPrice } from "@/lib/utils";
 import { recommendedDestinations as staticDestinations, type Destination } from "@/data/destinations";
-import { packages as staticPackages, type Package } from "@/data/packages";
+import type { Package } from "@/data/packages";
 import { cldUrl } from "@/lib/cloudinary";
 
 /**
@@ -15,7 +15,7 @@ import { cldUrl } from "@/lib/cloudinary";
  */
 export function PopularDestinationsGrid({
   destinations = staticDestinations,
-  packages = staticPackages,
+  packages = [],
 }: {
   destinations?: Destination[];
   packages?: Package[];

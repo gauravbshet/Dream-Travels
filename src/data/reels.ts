@@ -65,7 +65,7 @@ export const reels: Reel[] = [
     description: "Lakeside camping under stars with bonfire, BBQ & live music.",
     videoUrl:
       "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-    thumbnailUrl: "https://images.unsplash.com/photo-1510312305653-8ed496efae75?auto=format&fit=crop&w=800&q=80",
+    thumbnailUrl: "/dt.jpg",
     instagramUrl: "https://instagram.com/dreamtravels",
     category: "group",
     price: 2499,

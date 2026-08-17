@@ -194,16 +194,16 @@ async function fetchFeaturedData() {
   const budgetTiers: BudgetTier[] = (
     typedBudgetTiers?.length
       ? typedBudgetTiers.map((tier) => ({
-          id: tier.id,
-          title: tier.title,
-          emoji: tier.emoji,
-          limit: String(tier.price_limit),
-          count: prices.filter((price) => price <= Number(tier.price_limit)).length,
-        }))
+        id: tier.id,
+        title: tier.title,
+        emoji: tier.emoji,
+        limit: String(tier.price_limit),
+        count: prices.filter((price) => price <= Number(tier.price_limit)).length,
+      }))
       : staticBudgetTiers.map((tier) => ({
-          ...tier,
-          count: prices.filter((price) => price <= Number(tier.limit)).length,
-        }))
+        ...tier,
+        count: prices.filter((price) => price <= Number(tier.limit)).length,
+      }))
   );
 
   // Per-destination package stats for the map cards (min price + count),
@@ -292,14 +292,14 @@ async function fetchFeaturedData() {
       packageId: reel.package_id,
       linkedPackage: linkedPkg
         ? {
-            id: linkedPkg.id,
-            slug: linkedPkg.slug,
-            title: linkedPkg.title,
-            price: linkedPkg.price,
-            originalPrice: linkedPkg.original_price ?? undefined,
-            image: linkedPkg.image ?? "",
-            duration: linkedPkg.duration ?? "",
-          }
+          id: linkedPkg.id,
+          slug: linkedPkg.slug,
+          title: linkedPkg.title,
+          price: linkedPkg.price,
+          originalPrice: linkedPkg.original_price ?? undefined,
+          image: linkedPkg.image ?? "",
+          duration: linkedPkg.duration ?? "",
+        }
         : null,
     };
   });

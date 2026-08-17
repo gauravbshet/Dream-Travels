@@ -54,29 +54,23 @@ async function getPackagesByCategory(category: CategorySlug): Promise<Package[]>
       .order("created_at", { ascending: false });
     const data = rawData as CategoryPackageRow[] | null;
 
-    if (data && data.length > 0) {
-      return (data ?? []).map((pkg) => ({
-        ...pkg,
-        location: pkg.location ?? "",
-        category: pkg.category ?? category,
-        duration: pkg.duration ?? "",
-        pickup: pkg.pickup ?? "",
-        dates: pkg.dates ?? "Flexible",
-        rating: pkg.rating ?? 0,
-        reviews: pkg.reviews ?? 0,
-        original_price: pkg.original_price ?? undefined,
-        destination_id: pkg.destination_id ?? undefined,
-        image: pkg.image ?? "",
-      }));
-    }
+    return (data ?? []).map((pkg) => ({
+      ...pkg,
+      location: pkg.location ?? "",
+      category: pkg.category ?? category,
+      duration: pkg.duration ?? "",
+      pickup: pkg.pickup ?? "",
+      dates: pkg.dates ?? "Flexible",
+      rating: pkg.rating ?? 0,
+      reviews: pkg.reviews ?? 0,
+      original_price: pkg.original_price ?? undefined,
+      destination_id: pkg.destination_id ?? undefined,
+      image: pkg.image ?? "",
+    }));
   } catch (err) {
     console.error("Error fetching category packages from Supabase:", err);
+    return [];
   }
-
-  // Fallback to static demo packages matching the category
-  return staticPackages.filter(
-    (pkg) => pkg.category.toLowerCase() === category.toLowerCase()
-  );
 }
 
 export default async function CategoryPage({
@@ -135,9 +129,25 @@ export default async function CategoryPage({
 
         {packages.length === 0 ? (
           category === "international" ? null : (
-            <p className="mt-10 text-center text-sm text-ink-muted">
-              No packages are available under {label.toLowerCase()} yet — check back soon.
-            </p>
+            <div className="mt-10 text-center py-16 px-6 rounded-[24px] border border-border bg-surface shadow-2xs">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-canopy/10 px-3.5 py-1 text-xs font-bold text-canopy border border-canopy/20">
+                <Sparkles className="h-3.5 w-3.5" /> Coming Soon
+              </span>
+              <h3 className="mt-4 text-xl font-bold text-ink">New {label} Coming Soon!</h3>
+              <p className="mt-2 text-sm text-ink-muted max-w-md mx-auto">
+                No packages are currently open under {label.toLowerCase()}. Check back soon or contact our travel team on WhatsApp to request a custom itinerary!
+              </p>
+              <a
+                href={buildWhatsAppLink(
+                  `Hello Dream Travels! I'm interested in booking a ${label} trip.`
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-canopy hover:bg-canopy-hover px-5 py-2.5 text-xs font-bold text-white transition-all shadow-xs"
+              >
+                <MessageSquare className="h-4 w-4" /> Request Custom {label} Trip
+              </a>
+            </div>
           )
         ) : (
           <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">

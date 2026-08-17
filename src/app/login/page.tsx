@@ -140,10 +140,13 @@ export default function LoginPage() {
         setError(null);
         setGoogleLoading(true);
         const supabase = createBrowserSupabaseClient();
+        const siteUrl =
+            process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
+            window.location.origin;
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
+                redirectTo: `${siteUrl}/auth/callback`,
             },
         });
         if (error) {

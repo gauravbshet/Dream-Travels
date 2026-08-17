@@ -11,16 +11,20 @@ import { WishlistButton } from "@/components/ui/WishlistButton";
 import { useSpotlight } from "@/lib/useSpotlight";
 import { formatPrice } from "@/lib/utils";
 import { cldUrl } from "@/lib/cloudinary";
-import { packages as staticPackages, type Package } from "@/data/packages";
+import { type Package } from "@/data/packages";
 
 export function TopRatedPackages({
-  packages = staticPackages,
+  packages = [],
 }: {
   packages?: Package[];
 }) {
+  if (packages.length === 0) return null;
+
   const topRated = [...packages]
     .sort((a, b) => b.rating - a.rating || b.reviews - a.reviews)
     .slice(0, 10);
+
+  if (topRated.length === 0) return null;
 
   return (
     <Section tone="light" id="top-rated">

@@ -5,14 +5,15 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Carousel } from "@/components/ui/Carousel";
 import { Section } from "@/components/ui/Section";
 import { PackageCard } from "@/components/cards/PackageCard";
-import { packages } from "@/data/packages";
 import type { Package } from "@/data/packages";
 
 export function TrendingTrips({
-  packages: featuredPackages = packages,
+  packages: featuredPackages = [],
 }: {
   packages?: Package[];
 }) {
+  if (featuredPackages.length === 0) return null;
+
   return (
     <Section tone="light" id="community">
       <Container>
