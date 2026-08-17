@@ -11,7 +11,7 @@ export function PromoBanner() {
         <Reveal className="relative overflow-hidden rounded-[20px] sm:rounded-[24px]">
           <div className="relative h-[260px] w-full sm:h-[300px] lg:h-[340px]">
             <Image
-              src="/promo-banner.png"
+              src="/promo-banner.webp"
               alt="Explore Karnataka Packages with Dream Travels"
               fill
               sizes="100vw"

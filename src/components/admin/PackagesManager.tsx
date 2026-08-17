@@ -279,8 +279,19 @@ export function PackagesManager() {
     if (error) {
       showToast(`Failed to load itinerary days: ${error.message}`, "error");
     } else {
+      type ItineraryDayRow = {
+        id: string;
+        title: string | null;
+        description: string | null;
+        stay_location: string | null;
+        stay_type: string | null;
+        meals: string | null;
+        image: string | null;
+        optional_note: string | null;
+      };
+
       setDays(
-        (data ?? []).map((row) => ({
+        ((data ?? []) as ItineraryDayRow[]).map((row) => ({
           id: row.id,
           title: row.title ?? "",
           description: row.description ?? "",
