@@ -12,13 +12,13 @@ const contentSecurityPolicy = [
   // Next.js ships inline bootstrap data and this app renders JSON-LD via
   // dangerouslySetInnerHTML <script> tags — both need 'unsafe-inline' since
   // there's no nonce/hash pipeline wired up yet.
-  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
   // Tailwind arbitrary values and inline style={} usage throughout the UI.
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: https://images.unsplash.com https://cdn-icons-png.flaticon.com https://res.cloudinary.com ${SUPABASE_ORIGIN}`,
   "font-src 'self' data:",
   `media-src 'self' https://res.cloudinary.com https://interactive-examples.mdn.mozilla.net ${SUPABASE_ORIGIN}`,
-  `connect-src 'self' ${SUPABASE_ORIGIN} wss://${SUPABASE_ORIGIN.replace("https://", "")} https://api.cloudinary.com`,
+ `connect-src 'self' ${SUPABASE_ORIGIN} wss://${SUPABASE_ORIGIN.replace("https://", "")} https://api.cloudinary.com https://static.cloudflareinsights.com https://cloudflareinsights.com`,
   "frame-src 'none'",
   "object-src 'none'",
   "base-uri 'self'",

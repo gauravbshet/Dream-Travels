@@ -415,12 +415,48 @@ export function PackagesManager() {
     };
 
     const { data: savedPackageData, error } = editingId
-      ? await supabase.from("packages").update(payload).eq("id", editingId).select("id").single()
-      : await supabase.from("packages").insert([payload]).select("id").single();
+      ? await supabase.from("packages").update(payload).eq("id", editingId).select("id").maybeSingle()
+      : await supabase.from("packages").insert([payload]).select("id").maybeSingle();
 
-    if (error || !savedPackageData) {
+    if (error) {
       setSaving(false);
-      showToast(`Failed to save package: ${error?.message ?? "Unknown error"}`, "error");
+      console.error("[PackagesManager] save failed:", {
+        mode: editingId ? "update" : "insert",
+        editingId,
+        slug: payload.slug,
+        status: payload.status,
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+      });
+
+      if (error.code === "23505") {
+        showToast(
+          `That slug ("${payload.slug}") is already used by another package. Choose a different slug.`,
+          "error"
+        );
+      } else {
+        showToast(`Failed to save package: ${error.message}`, "error");
+      }
+      return;
+    }
+
+    if (!savedPackageData) {
+      setSaving(false);
+      console.error("[PackagesManager] save returned no row:", {
+        mode: editingId ? "update" : "insert",
+        editingId,
+        slug: payload.slug,
+        status: payload.status,
+      });
+
+      showToast(
+        editingId
+          ? "Package save did not return the updated record. Either it no longer exists, or a database permission (row-level security) is hiding it from this account right after the write — check that admins can read packages regardless of status."
+          : "Package save did not return the created record. This usually means a database permission (row-level security) is hiding the new row from this account right after the insert — check that admins can read packages regardless of status.",
+        "error"
+      );
       return;
     }
 
