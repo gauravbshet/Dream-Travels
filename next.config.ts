@@ -13,8 +13,11 @@ const contentSecurityPolicy = [
 
   // Next.js ships inline bootstrap data and this app renders JSON-LD via
   // dangerouslySetInnerHTML <script> tags — both need 'unsafe-inline' since
-  // there's no nonce/hash pipeline wired up yet.
-  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""
+  // there's no nonce/hash pipeline wired up yet. Cloudflare auto-injects its
+  // Web Analytics beacon (static.cloudflareinsights.com) into every response
+  // on the zone; without allowlisting it here the browser silently blocks
+  // the script and Cloudflare collects zero real-user-monitoring data.
+  `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""
   }`,
 
   // Tailwind arbitrary values and inline style={} usage throughout the UI.
@@ -28,10 +31,12 @@ const contentSecurityPolicy = [
 
   `media-src 'self' https://res.cloudinary.com https://interactive-examples.mdn.mozilla.net ${SUPABASE_ORIGIN}`,
 
+  // The Cloudflare beacon script reports RUM data back via a beacon/fetch
+  // call to the same host it was loaded from.
   `connect-src 'self' ${SUPABASE_ORIGIN} wss://${SUPABASE_ORIGIN.replace(
     "https://",
     ""
-  )} https://api.cloudinary.com`,
+  )} https://api.cloudinary.com https://static.cloudflareinsights.com`,
 
   "frame-src 'none'",
   "object-src 'none'",

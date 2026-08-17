@@ -425,13 +425,65 @@ export function PackagesManager() {
       slots_left: form.slots_left !== "" ? Number(form.slots_left) : null,
     };
 
+    // `.maybeSingle()`, not `.single()`: `id` is the primary key, so this
+    // update/insert can only ever touch 0 or 1 row -- never "multiple". A
+    // 0-row result here is real information, not a shape mismatch to crash
+    // on: `.single()` throws PostgREST's PGRST116 ("Cannot coerce the
+    // result to a single JSON object") for that exact case, which is what
+    // was surfacing as "Failed to save package: Cannot coerce...". The
+    // write can succeed while its own `.select()` read-back still comes
+    // back empty if `packages` row-level security allows the write but
+    // doesn't grant the admin session SELECT on the row it just
+    // wrote/updated (e.g. a policy that only allows reading
+    // `status = 'published'` rows, which a draft or newly-created package
+    // wouldn't satisfy) -- see supabase/migrations for the RLS policy that
+    // fixes that at the source. `.maybeSingle()` returns `data: null`
+    // instead of throwing, so we can tell that case apart from a genuine
+    // Supabase error and report it clearly instead of masking it.
     const { data: savedPackageData, error } = editingId
-      ? await supabase.from("packages").update(payload).eq("id", editingId).select("id").single()
-      : await supabase.from("packages").insert([payload]).select("id").single();
+      ? await supabase.from("packages").update(payload).eq("id", editingId).select("id").maybeSingle()
+      : await supabase.from("packages").insert([payload]).select("id").maybeSingle();
 
-    if (error || !savedPackageData) {
+    if (error) {
       setSaving(false);
-      showToast(`Failed to save package: ${error?.message ?? "Unknown error"}`, "error");
+      console.error("[PackagesManager] save failed:", {
+        mode: editingId ? "update" : "insert",
+        editingId,
+        slug: payload.slug,
+        status: payload.status,
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+      });
+
+      if (error.code === "23505") {
+        // Unique violation -- packages.slug has a unique constraint.
+        showToast(
+          `That slug ("${payload.slug}") is already used by another package. Choose a different slug.`,
+          "error"
+        );
+      } else {
+        showToast(`Failed to save package: ${error.message}`, "error");
+      }
+      return;
+    }
+
+    if (!savedPackageData) {
+      setSaving(false);
+      console.error("[PackagesManager] save returned no row:", {
+        mode: editingId ? "update" : "insert",
+        editingId,
+        slug: payload.slug,
+        status: payload.status,
+      });
+
+      showToast(
+        editingId
+          ? "Package save did not return the updated record. Either it no longer exists, or a database permission (row-level security) is hiding it from this account right after the write — check that admins can read packages regardless of status."
+          : "Package save did not return the created record. This usually means a database permission (row-level security) is hiding the new row from this account right after the insert — check that admins can read packages regardless of status.",
+        "error"
+      );
       return;
     }
 
