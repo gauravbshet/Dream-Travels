@@ -76,5 +76,19 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/dashboard/:path*'],
+  matcher: [
+    /*
+     * Run on every request EXCEPT:
+     *  - _next/static  (static files)
+     *  - _next/image   (image optimisation)
+     *  - favicon.ico   (browser default)
+     *  - Any file with an extension (images, fonts, etc.)
+     *
+     * This ensures the Supabase auth token is refreshed on every page,
+     * so the browser client can read a valid session on pages like the
+     * homepage, category pages, etc. where the WishlistButton lives.
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff2?|ttf|otf|eot)$).*)',
+  ],
 }
+

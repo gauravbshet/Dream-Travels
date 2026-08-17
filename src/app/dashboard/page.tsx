@@ -6,6 +6,9 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { createServerSupabaseClient } from "@/lib/supabase.server";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
+import Image from "next/image";
+import { cldUrl } from "@/lib/cloudinary";
+import { RemoveWishlistButton } from "./RemoveWishlistButton";
 
 type WishlistItem = {
     id: string;
@@ -96,21 +99,35 @@ export default async function DashboardPage() {
                                         key={item.id}
                                         className="rounded-[16px] border border-border bg-sage-100/60 p-4"
                                     >
-                                        <div className="flex items-start justify-between gap-4">
-                                            <div>
-                                                <p className="text-sm text-text-secondary">Saved package</p>
-                                                <h4 className="mt-1 text-lg font-semibold text-ink">
-                                                    {item.packages?.title}
-                                                </h4>
-                                                <p className="mt-1 text-sm text-text-secondary">
-                                                    {item.packages?.duration}
-                                                </p>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className="text-sm text-text-secondary">Price</p>
-                                                <p className="mt-1 text-lg font-semibold text-ink">
-                                                    {formatPrice(item.packages?.price ?? 0)}
-                                                </p>
+                                        <div className="flex items-start gap-4">
+                                            {/* Thumbnail */}
+                                            {item.packages?.image && (
+                                                <div className="relative h-16 w-20 shrink-0 overflow-hidden rounded-[10px]">
+                                                    <Image
+                                                        src={cldUrl(item.packages.image, 200)}
+                                                        alt={item.packages.title ?? "Package"}
+                                                        fill
+                                                        sizes="80px"
+                                                        className="object-cover"
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="flex flex-1 items-start justify-between gap-2">
+                                                <div>
+                                                    <p className="text-sm text-text-secondary">Saved package</p>
+                                                    <h4 className="mt-1 text-base font-semibold text-ink">
+                                                        {item.packages?.title}
+                                                    </h4>
+                                                    <p className="mt-0.5 text-sm text-text-secondary">
+                                                        {item.packages?.duration}
+                                                    </p>
+                                                </div>
+                                                <div className="text-right shrink-0">
+                                                    <p className="text-sm text-text-secondary">Price</p>
+                                                    <p className="mt-1 text-base font-semibold text-ink">
+                                                        {formatPrice(item.packages?.price ?? 0)}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="mt-4 flex items-center justify-between gap-3">
@@ -120,12 +137,7 @@ export default async function DashboardPage() {
                                             >
                                                 View package
                                             </Link>
-                                            <button
-                                                type="button"
-                                                className="rounded-[10px] border border-border bg-surface px-4 py-2 text-sm text-ink transition hover:bg-surface-2"
-                                            >
-                                                Remove
-                                            </button>
+                                            <RemoveWishlistButton wishlistId={item.id} />
                                         </div>
                                     </div>
                                 ))
