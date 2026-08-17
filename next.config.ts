@@ -7,18 +7,46 @@ import type { NextConfig } from "next";
 // sync if a new external host is ever added to next.config's image
 // remotePatterns or fetched from client code.
 const SUPABASE_ORIGIN = "https://xyswpbhobzcmhswowyra.supabase.co";
+
 const contentSecurityPolicy = [
   "default-src 'self'",
+
   // Next.js ships inline bootstrap data and this app renders JSON-LD via
   // dangerouslySetInnerHTML <script> tags — both need 'unsafe-inline' since
+<<<<<<< HEAD
   // there's no nonce/hash pipeline wired up yet.
   `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+=======
+  // there's no nonce/hash pipeline wired up yet. Cloudflare auto-injects its
+  // Web Analytics beacon (static.cloudflareinsights.com) into every response
+  // on the zone; without allowlisting it here the browser silently blocks
+  // the script and Cloudflare collects zero real-user-monitoring data.
+  `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""
+  }`,
+
+>>>>>>> 77c4a0611093258443a6995c959dbf30b11cc113
   // Tailwind arbitrary values and inline style={} usage throughout the UI.
-  "style-src 'self' 'unsafe-inline'",
+  // Google Fonts stylesheet is allowed here.
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+
   `img-src 'self' data: blob: https://images.unsplash.com https://cdn-icons-png.flaticon.com https://res.cloudinary.com ${SUPABASE_ORIGIN}`,
-  "font-src 'self' data:",
+
+  // Google Fonts font files are served from fonts.gstatic.com.
+  "font-src 'self' data: https://fonts.gstatic.com",
+
   `media-src 'self' https://res.cloudinary.com https://interactive-examples.mdn.mozilla.net ${SUPABASE_ORIGIN}`,
+<<<<<<< HEAD
  `connect-src 'self' ${SUPABASE_ORIGIN} wss://${SUPABASE_ORIGIN.replace("https://", "")} https://api.cloudinary.com https://static.cloudflareinsights.com https://cloudflareinsights.com`,
+=======
+
+  // The Cloudflare beacon script reports RUM data back via a beacon/fetch
+  // call to the same host it was loaded from.
+  `connect-src 'self' ${SUPABASE_ORIGIN} wss://${SUPABASE_ORIGIN.replace(
+    "https://",
+    ""
+  )} https://api.cloudinary.com https://static.cloudflareinsights.com`,
+
+>>>>>>> 77c4a0611093258443a6995c959dbf30b11cc113
   "frame-src 'none'",
   "object-src 'none'",
   "base-uri 'self'",
@@ -28,25 +56,44 @@ const contentSecurityPolicy = [
 ].join("; ");
 
 const securityHeaders = [
-  { key: "Content-Security-Policy", value: contentSecurityPolicy },
-  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
-  { key: "X-Content-Type-Options", value: "nosniff" },
-  { key: "X-Frame-Options", value: "SAMEORIGIN" },
-  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  {
+    key: "Content-Security-Policy",
+    value: contentSecurityPolicy,
+  },
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains",
+  },
+  {
+    key: "X-Content-Type-Options",
+    value: "nosniff",
+  },
+  {
+    key: "X-Frame-Options",
+    value: "SAMEORIGIN",
+  },
+  {
+    key: "Referrer-Policy",
+    value: "strict-origin-when-cross-origin",
+  },
+  {
+    key: "Cross-Origin-Opener-Policy",
+    value: "same-origin",
+  },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=()",
+  },
 ];
 
 const nextConfig: NextConfig = {
-  // lucide-react (per-icon imports) and framer-motion are both used
-  // throughout the UI. Next already auto-optimizes a default list of
-  // packages, but naming these explicitly guarantees each import is
-  // compiled down to its own module rather than pulling in the package's
-  // barrel file, which is the usual source of Lighthouse's "unused
-  // JavaScript" finding for icon libraries.
+  // lucide-react and framer-motion are both used throughout the UI.
+  // Explicit optimization helps avoid pulling unnecessary code from
+  // their package barrel files.
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
+
   async headers() {
     return [
       {
@@ -55,21 +102,17 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
   turbopack: {
     root: __dirname,
   },
+
   images: {
-    // Cloudinary already optimizes every image we serve (resize/format/
-    // quality via URL params). Next's own optimizer needs an explicit
-    // Cloudflare Images binding to work on Workers (via @opennextjs/cloudflare)
-    // which we don't have configured — leaving it enabled without that binding
-    // risks images silently passing through unoptimized or erroring. Disabling
-    // it here means next/image just renders the Cloudinary URL directly.
+    // Cloudinary already optimizes every image we serve.
     unoptimized: true,
-    // Every host serving an image referenced from the database has to be listed
-    // here. `next/image` throws on an unlisted host, and because that throw
-    // happens during render it takes the entire page down with a 500 — not just
-    // the one image. Add the host here before its URLs go into the CMS.
+
+    // Every host serving an image referenced from the database has to be
+    // listed here.
     remotePatterns: [
       {
         protocol: "https",
@@ -92,10 +135,10 @@ const nextConfig: NextConfig = {
   },
 };
 
-import withBundleAnalyzer from '@next/bundle-analyzer';
+import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const analyzer = withBundleAnalyzer({
-  enabled: process.env.ANALYZE === 'true',
+  enabled: process.env.ANALYZE === "true",
 });
 
 export default analyzer(nextConfig);

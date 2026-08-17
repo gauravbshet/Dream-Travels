@@ -6,6 +6,7 @@ export const revalidate = 300;
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import {
     MapPin,
@@ -119,7 +120,13 @@ export async function generateStaticParams() {
     }
 }
 
-async function getPackageData(slug: string) {
+// Wrapped in React's `cache()` so the single render pass that calls both
+// `generateMetadata` and the page component only fires this query set once.
+// Without it, Next.js does NOT dedupe an arbitrary async function the way it
+// dedupes `fetch()` — each caller ran its own full set of Supabase queries,
+// doubling the DB round-trips (and the ISR-window cost) on every request to
+// this route.
+const getPackageData = cache(async (slug: string) => {
     const supabase = createPublicSupabaseClient();
 
     const { data: pkg } = await supabase
@@ -171,7 +178,7 @@ async function getPackageData(slug: string) {
         itinerary: (itinerary ?? []) as ItineraryDay[],
         related,
     };
-}
+});
 
 export async function generateMetadata({
     params,

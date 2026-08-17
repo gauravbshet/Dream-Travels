@@ -96,7 +96,33 @@ export function DreamTravelsReelWidget() {
           .order("display_order", { ascending: true });
 
         if (!error && data && data.length > 0) {
-          const mapped: Reel[] = data.map((row) => {
+          type LinkedPackageRow = {
+            id: string;
+            slug: string;
+            title: string;
+            location: string | null;
+            price: number;
+            original_price: number | null;
+            image: string | null;
+            duration: string | null;
+            rating: number | null;
+          };
+
+          type FeaturedReelRow = {
+            id: string;
+            title: string;
+            destination: string | null;
+            description: string | null;
+            video_url: string;
+            thumbnail_url: string;
+            instagram_url: string | null;
+            category: string | null;
+            is_featured_widget: boolean | null;
+            package_id: string | null;
+            packages: LinkedPackageRow | LinkedPackageRow[] | null;
+          };
+
+          const mapped: Reel[] = (data as FeaturedReelRow[]).map((row) => {
             const linkedPkgData = Array.isArray(row.packages) ? row.packages[0] : row.packages;
             const linkedPackage = linkedPkgData
               ? {
@@ -104,11 +130,11 @@ export function DreamTravelsReelWidget() {
                   slug: linkedPkgData.slug,
                   title: linkedPkgData.title,
                   price: linkedPkgData.price,
-                  originalPrice: linkedPkgData.original_price,
-                  image: linkedPkgData.image,
-                  duration: linkedPkgData.duration,
-                  location: linkedPkgData.location,
-                  rating: linkedPkgData.rating,
+                  originalPrice: linkedPkgData.original_price ?? undefined,
+                  image: linkedPkgData.image ?? "",
+                  duration: linkedPkgData.duration ?? "",
+                  location: linkedPkgData.location ?? undefined,
+                  rating: linkedPkgData.rating ?? undefined,
                 }
               : null;
 

@@ -4,6 +4,7 @@ import { Archivo, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { RouteAwareNavbar, RouteAwareBottomNav } from "@/components/layout/RouteAwareNavigation";
 import { FooterGuard } from "@/components/layout/FooterGuard";
+import { WishlistProvider } from "@/components/providers/WishlistProvider";
 
 // Both are purely decorative/floating overlays with zero SEO or above-the-fold
 // content value (AtmosphereField is `aria-hidden`; the reel widget is a
@@ -93,7 +94,7 @@ export default function RootLayout({
         <AtmosphereField />
         <div className="relative flex min-h-full flex-1 flex-col" style={{ zIndex: 1 }}>
           <RouteAwareNavbar />
-          {children}
+          <WishlistProvider>{children}</WishlistProvider>
           <FooterGuard />
           <RouteAwareBottomNav />
         </div>

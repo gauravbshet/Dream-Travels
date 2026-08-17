@@ -279,8 +279,19 @@ export function PackagesManager() {
     if (error) {
       showToast(`Failed to load itinerary days: ${error.message}`, "error");
     } else {
+      type ItineraryDayRow = {
+        id: string;
+        title: string | null;
+        description: string | null;
+        stay_location: string | null;
+        stay_type: string | null;
+        meals: string | null;
+        image: string | null;
+        optional_note: string | null;
+      };
+
       setDays(
-        (data ?? []).map((row) => ({
+        ((data ?? []) as ItineraryDayRow[]).map((row) => ({
           id: row.id,
           title: row.title ?? "",
           description: row.description ?? "",
@@ -414,6 +425,21 @@ export function PackagesManager() {
       slots_left: form.slots_left !== "" ? Number(form.slots_left) : null,
     };
 
+    // `.maybeSingle()`, not `.single()`: `id` is the primary key, so this
+    // update/insert can only ever touch 0 or 1 row -- never "multiple". A
+    // 0-row result here is real information, not a shape mismatch to crash
+    // on: `.single()` throws PostgREST's PGRST116 ("Cannot coerce the
+    // result to a single JSON object") for that exact case, which is what
+    // was surfacing as "Failed to save package: Cannot coerce...". The
+    // write can succeed while its own `.select()` read-back still comes
+    // back empty if `packages` row-level security allows the write but
+    // doesn't grant the admin session SELECT on the row it just
+    // wrote/updated (e.g. a policy that only allows reading
+    // `status = 'published'` rows, which a draft or newly-created package
+    // wouldn't satisfy) -- see supabase/migrations for the RLS policy that
+    // fixes that at the source. `.maybeSingle()` returns `data: null`
+    // instead of throwing, so we can tell that case apart from a genuine
+    // Supabase error and report it clearly instead of masking it.
     const { data: savedPackageData, error } = editingId
       ? await supabase.from("packages").update(payload).eq("id", editingId).select("id").maybeSingle()
       : await supabase.from("packages").insert([payload]).select("id").maybeSingle();
@@ -432,6 +458,10 @@ export function PackagesManager() {
       });
 
       if (error.code === "23505") {
+<<<<<<< HEAD
+=======
+        // Unique violation -- packages.slug has a unique constraint.
+>>>>>>> 77c4a0611093258443a6995c959dbf30b11cc113
         showToast(
           `That slug ("${payload.slug}") is already used by another package. Choose a different slug.`,
           "error"
