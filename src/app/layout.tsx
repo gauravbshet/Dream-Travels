@@ -30,8 +30,8 @@ const bricolage = Bricolage_Grotesque({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://dreamtravels.com"
-  ),
+  process.env.NEXT_PUBLIC_SITE_URL || "https://dream-travels.in"
+),
   title: "Dream Travels | Discover Your Next Adventure",
   description:
     "Dream Travels is a premium travel booking platform for curated trips, dream destinations, and unforgettable experiences across the globe.",

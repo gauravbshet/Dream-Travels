@@ -34,7 +34,7 @@ const MAP_REGIONS = new Set<Region>(["Himalayas", "Northeast", "West Coast", "We
 // right trade — an admin edit appears within 5 minutes.
 export const revalidate = 300;
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dreamtravels.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dream-travels.in";
 
 // No `aggregateRating` here on purpose. Google requires that a published
 // aggregateRating reflect genuine reviews collected from customers; emitting
