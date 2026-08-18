@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Star, Flame } from "lucide-react";
-import { WishlistButton } from "@/components/ui/WishlistButton";
 import { useSpotlight } from "@/lib/useSpotlight";
 import { formatPrice, cn } from "@/lib/utils";
 import type { Destination } from "@/data/destinations";
@@ -46,8 +45,9 @@ export function DestinationCard({
               Destination
             </span>
 
-            {/* Top Right: Wishlist Heart */}
-            <WishlistButton className="absolute right-2.5 top-2.5 z-[3] rounded-full bg-black/30 p-1 sm:p-1.5 text-white backdrop-blur-md hover:bg-black/50" />
+            {/* No wishlist heart here: `wishlists.package_id` references
+                packages, so a destination cannot be saved. The button used to
+                render and silently do nothing on every click. */}
 
             {/* Bottom Left: Duration & Flame Badge Overlay */}
             <span className="absolute bottom-2.5 left-2.5 z-[3] flex items-center gap-1 rounded-full bg-canopy px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold tracking-wide text-white shadow-xs">

@@ -21,6 +21,43 @@ export default function LoginPage() {
     const [googleLoading, setGoogleLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string | null>(null);
+    const [resetLoading, setResetLoading] = useState(false);
+
+    /**
+     * Sends a Supabase password-reset email. The link in that email returns
+     * the visitor to /login with a recovery token in the URL fragment; the
+     * Supabase client picks it up automatically and puts the session into
+     * recovery mode, so they can set a new password.
+     *
+     * The same confirmation shows whether or not the address has an account.
+     * Saying "no account found" would let anyone test which emails are
+     * registered here.
+     */
+    async function handleForgotPassword() {
+        setError(null);
+        setMessage(null);
+
+        if (!email) {
+            setError("Enter your email address first, then click “Forgot password?”.");
+            return;
+        }
+
+        setResetLoading(true);
+        const supabase = createBrowserSupabaseClient();
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/login`,
+        });
+        setResetLoading(false);
+
+        if (resetError) {
+            setError(resetError.message);
+            return;
+        }
+
+        setMessage(
+            `If an account exists for ${email}, a password reset link is on its way. Check your inbox and spam folder.`
+        );
+    }
 
     async function resolvePostAuthRoute(supabase: ReturnType<typeof createBrowserSupabaseClient>, userId: string) {
         const { data: profileData, error: profileError } = await supabase
@@ -292,9 +329,11 @@ export default function LoginPage() {
                                     <div className="text-right">
                                         <button
                                             type="button"
-                                            className="text-xs font-semibold text-canopy hover:underline"
+                                            onClick={handleForgotPassword}
+                                            disabled={resetLoading}
+                                            className="text-xs font-semibold text-canopy hover:underline disabled:opacity-60"
                                         >
-                                            Forgot password?
+                                            {resetLoading ? "Sending reset link…" : "Forgot password?"}
                                         </button>
                                     </div>
                                 )}
