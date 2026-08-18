@@ -458,10 +458,7 @@ export function PackagesManager() {
       });
 
       if (error.code === "23505") {
-<<<<<<< HEAD
-=======
         // Unique violation -- packages.slug has a unique constraint.
->>>>>>> 77c4a0611093258443a6995c959dbf30b11cc113
         showToast(
           `That slug ("${payload.slug}") is already used by another package. Choose a different slug.`,
           "error"
