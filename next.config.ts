@@ -29,7 +29,6 @@ const contentSecurityPolicy = [
   "font-src 'self' data: https://fonts.gstatic.com",
 
   `media-src 'self' https://res.cloudinary.com https://interactive-examples.mdn.mozilla.net ${SUPABASE_ORIGIN}`,
-  `connect-src 'self' ${SUPABASE_ORIGIN} wss://${SUPABASE_ORIGIN.replace("https://", "")} https://api.cloudinary.com https://static.cloudflareinsights.com https://cloudflareinsights.com`,
 
   // The Cloudflare beacon script reports RUM data back via a beacon/fetch
   // call. Both hosts are allowed: it loads from static.cloudflareinsights.com

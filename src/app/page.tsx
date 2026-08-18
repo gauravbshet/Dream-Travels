@@ -90,7 +90,7 @@ async function fetchFeaturedData() {
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false })
       .limit(6),
-    supabase.from("reviews").select("id,name,avatar,rating,review,date").order("created_at", { ascending: false }),
+    supabase.from("reviews").select("id,name,rating,review,date").order("created_at", { ascending: false }),
     supabase.from("popular_experiences").select("id,title,image").order("created_at", { ascending: false }),
     supabase.from("budget_tiers").select("id,title,emoji,price_limit").order("price_limit", { ascending: true }),
     supabase.from("packages").select("price,destination_id").eq("status", "published"),
@@ -176,7 +176,7 @@ async function fetchFeaturedData() {
 
   const topPicks: Package[] = (topPickPackages?.length ? topPickPackages : staticTopPicks).map(mapPackage);
 
-  const reviews: Review[] = reviewsData?.length ? reviewsData : staticReviews;
+  const reviews: Review[] = (reviewsData as Review[] | null) ?? [];
 
   const experiences: PopularExperience[] = experiencesData?.length ? experiencesData : staticExperiences;
 

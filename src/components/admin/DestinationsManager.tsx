@@ -44,8 +44,8 @@ type FormState = {
   display_order: string;
   region: string;
   state: string;
-  lat: number | null;
-  lng: number | null;
+  lat: string;
+  lng: string;
 };
 
 const emptyForm: FormState = {
@@ -62,8 +62,8 @@ const emptyForm: FormState = {
   display_order: "0",
   region: "",
   state: "",
-  lat: null,
-  lng: null,
+  lat: "",
+  lng: "",
 };
 
 /** Looks up lat/lng (and state, as a fallback) for a place name via the
@@ -140,8 +140,8 @@ export function DestinationsManager() {
       display_order: destination.display_order?.toString() ?? "0",
       region: destination.region ?? "",
       state: destination.state ?? "",
-      lat: destination.lat,
-      lng: destination.lng,
+      lat: destination.lat != null ? String(destination.lat) : "",
+      lng: destination.lng != null ? String(destination.lng) : "",
     });
     setShowForm(true);
   }
@@ -177,11 +177,8 @@ export function DestinationsManager() {
 
     setSaving(true);
 
-    // Auto-locate on the map: only re-geocode if we don't already have
-    // coordinates, or the name/state changed since the last save (a
-    // typo fix shouldn't silently keep stale coordinates).
-    let lat = form.lat;
-    let lng = form.lng;
+    let lat = form.lat !== "" && !isNaN(Number(form.lat)) ? Number(form.lat) : null;
+    let lng = form.lng !== "" && !isNaN(Number(form.lng)) ? Number(form.lng) : null;
     let state = form.state.trim();
 
     const needsGeocode = lat == null || lng == null;
@@ -273,7 +270,7 @@ export function DestinationsManager() {
               <AdminField label="Name">
                 <input
                   value={form.name}
-                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value, lat: null, lng: null }))}
+                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                   className="admin-input"
                   placeholder="Paris, Bali, Kyoto"
                 />
@@ -345,18 +342,38 @@ export function DestinationsManager() {
               <AdminField label="State">
                 <input
                   value={form.state}
-                  onChange={(e) => setForm((f) => ({ ...f, state: e.target.value, lat: null, lng: null }))}
+                  onChange={(e) => setForm((f) => ({ ...f, state: e.target.value }))}
                   className="admin-input"
                   placeholder="Auto-filled on save if left blank"
+                />
+              </AdminField>
+              <AdminField label="Latitude (Optional)">
+                <input
+                  type="number"
+                  step="any"
+                  value={form.lat}
+                  onChange={(e) => setForm((f) => ({ ...f, lat: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. 11.9416 (auto-located if blank)"
+                />
+              </AdminField>
+              <AdminField label="Longitude (Optional)">
+                <input
+                  type="number"
+                  step="any"
+                  value={form.lng}
+                  onChange={(e) => setForm((f) => ({ ...f, lng: e.target.value }))}
+                  className="admin-input"
+                  placeholder="e.g. 79.8083 (auto-located if blank)"
                 />
               </AdminField>
               {form.region && (
                 <div className="sm:col-span-2 rounded-lg bg-admin-surface-2 px-3 py-2 text-xs text-admin-ink-muted">
                   {locating
                     ? "Locating this destination on the map…"
-                    : form.lat != null && form.lng != null
-                      ? `Map pin set (${form.lat}, ${form.lng}). Edit the name to re-locate.`
-                      : "Map pin will be located automatically from the name when you save. Pick a region above for it to appear on the map."}
+                    : form.lat !== "" && form.lng !== ""
+                      ? `Map pin set (${form.lat}, ${form.lng}).`
+                      : "Map pin will be located automatically from the name when you save if left blank."}
                 </div>
               )}
               <div className="sm:col-span-2">

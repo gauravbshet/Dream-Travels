@@ -11,7 +11,6 @@ export function ReviewsManager() {
       createLabel="New review"
       fields={[
         { key: "name", label: "Name", required: true },
-        { key: "avatar", label: "Avatar image URL" },
         { key: "rating", label: "Rating (1-5)", type: "number", required: true },
         { key: "date", label: "Date label", required: true },
         { key: "review", label: "Review", type: "textarea", full: true, required: true },
