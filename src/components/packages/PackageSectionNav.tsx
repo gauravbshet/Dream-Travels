@@ -15,7 +15,20 @@ const SECTIONS = [
 export function PackageSectionNav() {
   const [activeSection, setActiveSection] = useState("overview");
 
+  // Not every package has every section: one with no itinerary rows renders
+  // no #itinerary element, and the same goes for highlights or inclusions
+  // left empty in the admin. The nav used to render all six buttons
+  // regardless, so those tabs were visible but did nothing when clicked —
+  // scrollToSection just no-ops when getElementById returns null.
+  //
+  // Starts as the full list so the server render and first client render
+  // agree, then narrows to what is actually on the page once mounted.
+  const [visibleSections, setVisibleSections] = useState(SECTIONS);
+
   useEffect(() => {
+    const present = SECTIONS.filter(({ id }) => document.getElementById(id));
+    setVisibleSections(present);
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -27,7 +40,7 @@ export function PackageSectionNav() {
       { rootMargin: "-120px 0px -50% 0px" }
     );
 
-    SECTIONS.forEach(({ id }) => {
+    present.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -54,7 +67,7 @@ export function PackageSectionNav() {
   return (
     <div className="sticky top-[72px] lg:top-[80px] z-30 mb-6 border-b border-border/80 bg-surface/95 backdrop-blur-md transition-all">
       <div className="mx-auto flex max-w-7xl items-center gap-1.5 overflow-x-auto px-3 sm:px-4 py-2 no-scrollbar scroll-smooth">
-        {SECTIONS.map(({ id, label }) => {
+        {visibleSections.map(({ id, label }) => {
           const isActive = activeSection === id;
           return (
             <button

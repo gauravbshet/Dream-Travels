@@ -8,8 +8,18 @@ import { cn } from "@/lib/utils";
 import { useWishlist } from "@/components/providers/WishlistProvider";
 
 interface WishlistButtonProps {
-  /** The UUID of the package row in Supabase. When omitted the button is cosmetic only. */
-  packageId?: string;
+  /**
+   * UUID of the package row in Supabase. Required.
+   *
+   * This was previously optional, and three of the four call sites rendered
+   * the heart without passing it — so those buttons looked interactive but
+   * every click was a silent no-op. Making it required turns that mistake
+   * into a compile error instead of a bug nobody notices.
+   *
+   * Only packages can be wishlisted: `wishlists.package_id` references
+   * `packages.id`, so there is no valid id to pass for a destination.
+   */
+  packageId: string;
   className?: string;
 }
 
@@ -21,11 +31,9 @@ export function WishlistButton({ packageId, className }: WishlistButtonProps) {
   const { userId, isWishlisted, toggle } = useWishlist();
   const [isPending, startTransition] = useTransition();
 
-  const active = packageId ? isWishlisted(packageId) : false;
+  const active = isWishlisted(packageId);
 
   const handleToggle = () => {
-    if (!packageId) return;
-
     if (!userId) {
       router.push("/login");
       return;

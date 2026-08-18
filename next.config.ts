@@ -13,18 +13,12 @@ const contentSecurityPolicy = [
 
   // Next.js ships inline bootstrap data and this app renders JSON-LD via
   // dangerouslySetInnerHTML <script> tags — both need 'unsafe-inline' since
-<<<<<<< HEAD
-  // there's no nonce/hash pipeline wired up yet.
-  `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
-=======
   // there's no nonce/hash pipeline wired up yet. Cloudflare auto-injects its
   // Web Analytics beacon (static.cloudflareinsights.com) into every response
   // on the zone; without allowlisting it here the browser silently blocks
   // the script and Cloudflare collects zero real-user-monitoring data.
-  `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""
-  }`,
+  `script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
 
->>>>>>> 77c4a0611093258443a6995c959dbf30b11cc113
   // Tailwind arbitrary values and inline style={} usage throughout the UI.
   // Google Fonts stylesheet is allowed here.
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
@@ -40,13 +34,14 @@ const contentSecurityPolicy = [
 =======
 
   // The Cloudflare beacon script reports RUM data back via a beacon/fetch
-  // call to the same host it was loaded from.
+  // call. Both hosts are allowed: it loads from static.cloudflareinsights.com
+  // and, depending on the beacon version, posts to either that host or the
+  // apex cloudflareinsights.com.
   `connect-src 'self' ${SUPABASE_ORIGIN} wss://${SUPABASE_ORIGIN.replace(
     "https://",
     ""
-  )} https://api.cloudinary.com https://static.cloudflareinsights.com`,
+  )} https://api.cloudinary.com https://static.cloudflareinsights.com https://cloudflareinsights.com`,
 
->>>>>>> 77c4a0611093258443a6995c959dbf30b11cc113
   "frame-src 'none'",
   "object-src 'none'",
   "base-uri 'self'",
