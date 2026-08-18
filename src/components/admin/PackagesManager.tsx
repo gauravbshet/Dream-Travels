@@ -458,10 +458,6 @@ export function PackagesManager() {
       });
 
       if (error.code === "23505") {
-<<<<<<< HEAD
-=======
-        // Unique violation -- packages.slug has a unique constraint.
->>>>>>> 77c4a0611093258443a6995c959dbf30b11cc113
         showToast(
           `That slug ("${payload.slug}") is already used by another package. Choose a different slug.`,
           "error"
@@ -610,8 +606,8 @@ export function PackagesManager() {
                   type="button"
                   onClick={() => setActiveTab(tab.key)}
                   className={`-mb-px border-b-2 px-4 py-2 text-sm font-semibold transition-colors ${activeTab === tab.key
-                      ? "border-admin-accent text-admin-accent"
-                      : "border-transparent text-admin-ink-muted hover:text-admin-ink"
+                    ? "border-admin-accent text-admin-accent"
+                    : "border-transparent text-admin-ink-muted hover:text-admin-ink"
                     }`}
                 >
                   {tab.label}
