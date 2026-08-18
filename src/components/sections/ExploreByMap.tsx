@@ -59,8 +59,10 @@ export function ExploreByMap({
             <div>
               <h2 className="display-section text-ink">Explore by map</h2>
               <p className="prose-measure mt-1.5 text-base text-ink-muted lg:text-lg">
-                Tap a pin to see what we run there. {totalPackages} curated
-                departures across {mapDestinations.length} destinations.
+                Tap a pin to see what we run there. {totalPackages} curated{" "}
+                {totalPackages === 1 ? "departure" : "departures"} across{" "}
+                {mapDestinations.length}{" "}
+                {mapDestinations.length === 1 ? "destination" : "destinations"}.
               </p>
             </div>
             <Link
