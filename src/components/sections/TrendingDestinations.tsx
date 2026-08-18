@@ -7,7 +7,6 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Carousel } from "@/components/ui/Carousel";
 import { Reveal } from "@/components/ui/Reveal";
-import { WishlistButton } from "@/components/ui/WishlistButton";
 import { useSpotlight } from "@/lib/useSpotlight";
 import { mapDestinations, type MapDestination } from "@/data/map";
 import { formatPrice } from "@/lib/utils";
@@ -84,8 +83,9 @@ function TrendingTile({ destination }: { destination: MapDestination }) {
               Trending
             </span>
 
-            {/* Top Right: Wishlist Heart */}
-            <WishlistButton className="absolute right-2.5 top-2.5 z-[3] rounded-full bg-black/30 p-1 sm:p-1.5 text-white backdrop-blur-md hover:bg-black/50" />
+            {/* No wishlist heart here: `wishlists.package_id` references
+                packages, so a destination cannot be saved. The button used to
+                render and silently do nothing on every click. */}
 
             {/* Bottom Left: Duration/Trip Count Badge */}
             <span className="absolute bottom-2.5 left-2.5 z-[3] flex items-center gap-1 rounded-full bg-canopy px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold tracking-wide text-white shadow-xs">

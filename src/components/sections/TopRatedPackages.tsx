@@ -93,8 +93,9 @@ function RatedPackageCard({ pkg, rank }: { pkg: Package; rank: number }) {
               </span>
             </div>
 
-            {/* Wishlist Heart */}
-            <WishlistButton className="absolute right-2.5 top-2.5 z-[3] rounded-full bg-black/30 p-1 sm:p-1.5 text-white backdrop-blur-md hover:bg-black/50" />
+            {/* Wishlist Heart — packageId is required. Without it the heart
+                still renders but every click is a no-op. */}
+            <WishlistButton packageId={pkg.id} className="absolute right-2.5 top-2.5 z-[3] rounded-full bg-black/30 p-1 sm:p-1.5 text-white backdrop-blur-md hover:bg-black/50" />
 
             {/* Bottom Left: Duration Badge Overlay */}
             <span className="absolute bottom-2.5 left-2.5 z-[3] flex items-center gap-1 rounded-full bg-canopy px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold tracking-wide text-white shadow-xs">
